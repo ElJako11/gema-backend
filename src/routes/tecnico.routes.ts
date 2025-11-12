@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   createTecnicoHandler,
   getAllTecnicosHandler,
-} from './tecnico.controller';
+} from '../controllers/tecnico/tecnico.controller';
 
 const router = Router();
 

@@ -4,7 +4,7 @@ import {
   deleteTrabajaEnGrupoHandler,
   getAllTrabajaEnGrupoHandler,
   getAllTrabajaEnTodosLosGruposHandler,
-} from './trabajaEnGrupo.controller';
+} from '../controllers/trabajaEnGrupo/trabajaEnGrupo.controller';
 
 const router = Router();
 

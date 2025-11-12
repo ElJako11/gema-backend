@@ -9,7 +9,7 @@ import {
   getUbicacionesPorNivelHandler,
   getPadresByIdHijoHandler,
   exportUbicacionesToExcelHandler,
-} from './ubicacionesTecnicas.controller';
+} from '../controllers/ubicacionesTecnicas/ubicacionesTecnicas.controller';
 
 const router = Router();
 

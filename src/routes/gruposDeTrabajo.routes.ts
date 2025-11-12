@@ -5,7 +5,7 @@ import {
   getGruposDeTrabajoByIdHandler,
   getGruposDeTrabajoHandler,
   updateGrupoDeTrabajoHandler,
-} from './gruposDeTrabajo.controller';
+} from '../controllers/gruposDeTrabajo/gruposDeTrabajo.controller';
 
 const router = Router();
 
