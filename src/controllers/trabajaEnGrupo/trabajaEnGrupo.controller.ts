@@ -4,7 +4,7 @@ import {
   deleteTrabajaEnGrupo,
   getAllWorkersInAllGroups,
   getAllWorkersInGroup,
-} from './trabajaEnGrupo.service';
+} from '../../services/trabajaEnGrupo/trabajaEnGrupo.service';
 import { trabajaEnGrupo } from '../../tables/trabajaEnGrupo';
 import { error } from 'console';
 

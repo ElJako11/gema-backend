@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { db } from './db';
-import routes from './routes';
+import routes from './router';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './swagger';
 

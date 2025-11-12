@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { login, AuthError } from './auth.service';
+import { login, AuthError } from '../../services/auth/auth.service';
 
 export const loginHandler = async (
   req: Request,

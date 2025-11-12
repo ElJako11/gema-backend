@@ -4,7 +4,7 @@ import { ubicacionTecnica } from '../tables/ubicacionTecnica';
 import { incluyen } from '../tables/incluyen';
 import dotenv from 'dotenv';
 import { hashPassword, comparePassword } from '../utils/password';
-import { createUbicacionTecnica } from '../controllers/ubicacionesTecnicas/ubicacionesTecnicas.service';
+import { createUbicacionTecnica } from '../services/ubicacionesTecnicas/ubicacionesTecnicas.service';
 import { CreateUbicacionesTecnicasParams } from '../types/ubicacionesTecnicas';
 dotenv.config();
 
@@ -42,7 +42,6 @@ const initDB = async () => {
     });
 
     console.log('Usuario coordinador agregado correctamente.');
-
   } catch (error) {
     console.error('Error al crear trigger y función:', error);
     console.error('Error al agregar usuario:', error);

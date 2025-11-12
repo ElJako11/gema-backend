@@ -8,7 +8,7 @@ import {
   getUbicacionesDependientes,
   getUbicacionesPorNivel,
   getPadresByIdHijo,
-} from './ubicacionesTecnicas.service';
+} from '../../services/ubicacionesTecnicas/ubicacionesTecnicas.service';
 import { exportUbicacionesToExcel } from '../../scripts/exportToExcel';
 
 /**

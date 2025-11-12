@@ -3,12 +3,12 @@ import {
   createGrupoDeTrabajo,
   getGrupoDeTrabajoById,
   getGruposDeTrabajo,
-} from './gruposDeTrabajo.service';
+} from '../../services/gruposDeTrabajos/gruposDeTrabajo.service';
 import { json } from 'stream/consumers';
 import {
   updateGrupoDeTrabajo,
   deleteGrupoDeTrabajo,
-} from './gruposDeTrabajo.service';
+} from '../../services/gruposDeTrabajos/gruposDeTrabajo.service';
 import { error } from 'console';
 import { db } from '../../db';
 

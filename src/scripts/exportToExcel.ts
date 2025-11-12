@@ -1,5 +1,5 @@
 import * as ExcelJS from 'exceljs';
-import { getUbicacionesTecnicas } from '../controllers/ubicacionesTecnicas/ubicacionesTecnicas.service';
+import { getUbicacionesTecnicas } from '../services/ubicacionesTecnicas/ubicacionesTecnicas.service';
 import { UbicacionNode } from '../types/ubicacionesTecnicas';
 
 interface FlatLocation {

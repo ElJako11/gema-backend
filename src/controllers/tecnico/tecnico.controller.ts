@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { createTecnico, getAllTecnicos } from './tecnico.service';
+import {
+  createTecnico,
+  getAllTecnicos,
+} from '../../services/tecnico/tecnico.service';
 
 export const createTecnicoHandler = async (
   req: Request,
