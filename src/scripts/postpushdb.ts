@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../config/db';
 
 const triggerSQL = `
 DROP FUNCTION IF EXISTS actualizar_codigos_identificacion_recursivo(integer);

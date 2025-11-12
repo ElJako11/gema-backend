@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../../db';
+import { db } from '../../config/db';
 import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
 import { createGrupoDeTrabajoParams } from '../../types/gruposDeTrabajo';
 

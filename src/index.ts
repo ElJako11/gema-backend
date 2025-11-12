@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import { db } from './db';
+import { db } from './config/db';
 import routes from './router';
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './swagger';
+import { swaggerSpec } from './config/swagger';
 
 const app = express();
 const port = process.env.PORT || 3000;

@@ -1,4 +1,4 @@
-import { db } from '../../db';
+import { db } from '../../config/db';
 import { usuarios } from '../../tables/usuarios';
 import { authParams } from '../../types/types';
 import { comparePassword, hashPassword } from '../../utils/password';

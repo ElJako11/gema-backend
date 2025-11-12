@@ -1,4 +1,4 @@
-import { db } from '../../db';
+import { db } from '../../config/db';
 import { usuarios } from '../../tables/usuarios';
 import { CreateTecnicoParams } from '../../types/types';
 import { eq } from 'drizzle-orm';

@@ -1,4 +1,4 @@
-import { DB } from '../db';
+import { DB } from '../config/db';
 
 async function dropTriggerAndFunction() {
   try {

@@ -10,7 +10,7 @@ import {
   deleteGrupoDeTrabajo,
 } from '../../services/gruposDeTrabajos/gruposDeTrabajo.service';
 import { error } from 'console';
-import { db } from '../../db';
+import { db } from '../../config/db';
 
 export const createGrupoDeTrabajoHandler = async (
   req: Request,

@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../config/db';
 import { usuarios } from '../tables/usuarios';
 import { ubicacionTecnica } from '../tables/ubicacionTecnica';
 import { incluyen } from '../tables/incluyen';

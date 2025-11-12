@@ -1,4 +1,4 @@
-import { db } from '../../db';
+import { db } from '../../config/db';
 import { trabajaEnGrupo } from '../../tables/trabajaEnGrupo';
 import { createTrabajaEnGrupoParams } from '../../types/trabajaEnGrupo';
 import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
