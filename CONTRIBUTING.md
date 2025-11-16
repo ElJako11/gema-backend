@@ -1,31 +1,31 @@
-# CONTRIBUTIONS
+# CONTRIBUCIONES
 
-Guidelines for contributions to the project
+Guía para contribuir al proyecto
 
 ## COMMITS
 
-- Each commit message must be descriptive and clear.
-- Use conventional commits
-  - feat: Add new feature
-  - fix: fix bug
-  - chore: update dependencies
-  - refactor: Internal code restructuring
+- Cada mensaje debe ser claro y descriptivo.
+- Use conventional commits (estándar para commits)
+  - feat: Agregar nueva funcionalidad
+  - fix: Arreglar bug
+  - chore: Actualizar dependencias
+  - refactor: Reestructuración del código
 
 ## BRANCHES
 
-- Main branch contains stable releases for production
-- Develop branch is the development branch, for new features and bug fixes.
-- Each brand must be named according to the feature or bug it is addressing, eg: feat/add-new-feature, fix/fix-bug, chore/update-dependencies, etc.
+- La rama `main` solo contiene versiones estables para producción
+- La rama `develop` es la rama de desarrollo, para nuevas funcionalidades y correcciones de errores.
+- Cada rama debe nombrarse según la funcionalidad o error que aborda, ej: `feat/add-new-feature`, `fix/fix-bug`, `chore/update-dependencies`, etc.
 
 ## PULL REQUEST
 
-- Create PRs from specific branches (feat/, fix/, chore/, refactor/) into their parent branch
-- Never push directly to develop or main.
-- Make sure the base branch is up to date before opening the PR.
-- Provide a clear description of the PR, including:
-  - What functionality is implemented or fixed.
-  - Which modules or files are affected.
-  - How to test the changes, if applicable.
+- Crea PR's desde ramas específicas (feat/, fix/, chore/, refactor/) hacia su rama madre.
+- Nunca hacer push directamente hacia `main` o `develop`
+- La rama base debe estar actualizada antes de abrir el PR.
+- Proporciona una descripción clara del PR, que incluya:
+  - Qué funcionalidad está siendo implementada o corregida.
+  - A qué archivos o módulos está vinculado.
+  - Cómo probar los cambios (si aplica).
 
-** Order of branches: **
+** Orden de las ramas: **
 `main` <- `develop` <- `feat/add-new-feature` | `fix/fix-bug` | `chore/update-dependencies`
