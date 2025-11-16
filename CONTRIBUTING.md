@@ -17,5 +17,15 @@ Guidelines for contributions to the project
 - Develop branch is the development branch, for new features and bug fixes.
 - Each brand must be named according to the feature or bug it is addressing, eg: feat/add-new-feature, fix/fix-bug, chore/update-dependencies, etc.
 
+## PULL REQUEST
+
+- Create PRs from specific branches (feat/, fix/, chore/, refactor/) into their parent branch
+- Never push directly to develop or main.
+- Make sure the base branch is up to date before opening the PR.
+- Provide a clear description of the PR, including:
+  - What functionality is implemented or fixed.
+  - Which modules or files are affected.
+  - How to test the changes, if applicable.
+
 ** Order of branches: **
 `main` <- `develop` <- `feat/add-new-feature` | `fix/fix-bug` | `chore/update-dependencies`
