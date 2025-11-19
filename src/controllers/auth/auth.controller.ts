@@ -9,12 +9,12 @@ export const loginHandler = async (
 ): Promise<void> => {
   try {
     const user = await login(req.body);
+    // Seteo de la cookie.
+    setCookie(res, 'accessToken', user.token);
+
     res.status(201).json({
       data: user,
     });
-
-    // Seteo de la cookie.
-    setCookie(res, 'accessToken', user.token);
     return;
   } catch (error: any) {
     if (error instanceof AuthError) {
