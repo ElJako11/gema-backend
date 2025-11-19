@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { loginHandler } from '../controllers/auth/auth.controller';
+import {
+  loginHandler,
+  registerHandler,
+} from '../controllers/auth/auth.controller';
 
 const router = Router();
 /**
@@ -33,6 +36,7 @@ const router = Router();
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/', loginHandler);
+router.post('/login', loginHandler);
+router.post('/register', registerHandler);
 
 export default router;
