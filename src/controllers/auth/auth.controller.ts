@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { login, AuthError,register } from '../../services/auth/auth.service';
+import { login, AuthError, register } from '../../services/auth/auth.service';
 import { setCookie } from '../../utils/CookieHandler';
-
-import { setCookie } from '../../utils/cookieHandler';
 
 export const loginHandler = async (
   req: Request,
