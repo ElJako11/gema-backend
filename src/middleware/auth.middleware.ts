@@ -10,10 +10,12 @@ export const authenticate = (authorizedRoles: string[] = []) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
     const token: string | undefined = req.cookies.accessToken;
 
-    if (!token)
-      return res
+    if (!token) {
+      res
         .status(401)
         .json({ error: 'Token no obtenido. Usuario no autorizado' });
+      return;
+    }
 
     // Verifico si el token es valido.
     try {
@@ -36,9 +38,10 @@ export const authenticate = (authorizedRoles: string[] = []) => {
         role => role === decoded.tipo
       );
 
-      if (role === undefined)
-        return res.status(401).json({ error: 'Usuario no autorizado' });
-
+      if (role === undefined) {
+        res.status(401).json({ error: 'Usuario no autorizado' });
+        return;
+      }
       next();
       return;
     } catch (error) {
