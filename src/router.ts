@@ -11,6 +11,6 @@ const router = Router();
 router.use('/tecnicos', authenticate, tecnicoRoutes);
 router.use('/grupos', authenticate, grupoDeTrabajoRoutes);
 router.use('/trabajaEnGrupo', authenticate, trabajaEnGrupoRoutes);
-router.use('/login', authRoutes);
+router.use('/auth', authRoutes);
 router.use('/ubicaciones-tecnicas', authenticate, ubicacionesTecnicasRoutes);
 export default router;
