@@ -109,7 +109,6 @@ export const register = async (data: any) => {
     const { Contraseña: _, ...usuarioSinContraseña } = nuevoUsuario;
 
     return { token, usuario: usuarioSinContraseña };
-
   } catch (error) {
     if (error instanceof AuthError) throw error;
 
@@ -117,5 +116,3 @@ export const register = async (data: any) => {
     throw new Error('Error al registrar usuario');
   }
 };
-
-
