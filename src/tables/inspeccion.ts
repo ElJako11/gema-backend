@@ -7,6 +7,6 @@ export const inspeccion = pgTable('inspeccion', {
     .primaryKey()
     .notNull()
     .references(() => trabajo.idTrabajo),
-  observacion: varchar('observacion', { length: 200 }).notNull(),
-  frecuencia: varchar('frecuencia', { length: 100 }),
+  observacion: varchar('observacion', { length: 200 }),
+  frecuencia: varchar('frecuencia', { length: 100 }).notNull(),
 });
