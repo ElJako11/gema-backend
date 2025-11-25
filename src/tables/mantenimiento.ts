@@ -5,15 +5,16 @@ import {
   date,
   varchar,
   pgEnum,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { trabajo } from './trabajo';
+import { table } from 'console';
 
-const tipoEnum = pgEnum('tipo', ['Periodico', 'Condicion']);
+export const tipoEnum = pgEnum('tipo', ['Periodico', 'Condicion']);
 
 export const mantenimiento = pgTable('mantenimiento', {
-  idMantenimiento: serial('idMantenimiento').primaryKey().notNull(),
+  idMantenimiento: serial('idMantenimiento').notNull(),
   idTrabajo: integer('idTrabajo')
-    .primaryKey()
     .notNull()
     .references(() => trabajo.idTrabajo),
   fechaLimite: date('fechaLimite').notNull(),
@@ -23,4 +24,8 @@ export const mantenimiento = pgTable('mantenimiento', {
   frecuencia: varchar('frecuencia'),
   instancia: varchar('instancia'),
   condicion: varchar('condicion', { length: 100 }),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.idMantenimiento, table.idTrabajo] }),
+  };
 });
