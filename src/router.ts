@@ -8,9 +8,13 @@ import trabajaEnGrupoRoutes from './routes/trabajaEnGrupo.routes';
 const router = Router();
 
 // Protege la ruta de tecnicos
-router.use('/tecnicos', authenticate, tecnicoRoutes);
-router.use('/grupos', authenticate, grupoDeTrabajoRoutes);
-router.use('/trabajaEnGrupo', authenticate, trabajaEnGrupoRoutes);
-router.use('/login', authRoutes);
-router.use('/ubicaciones-tecnicas', authenticate, ubicacionesTecnicasRoutes);
+router.use('/tecnicos', authenticate([]), tecnicoRoutes);
+router.use('/grupos', authenticate([]), grupoDeTrabajoRoutes);
+router.use('/trabajaEnGrupo', authenticate([]), trabajaEnGrupoRoutes);
+router.use('/auth', authRoutes);
+router.use(
+  '/ubicaciones-tecnicas',
+  authenticate([]),
+  ubicacionesTecnicasRoutes
+);
 export default router;

@@ -59,3 +59,60 @@ export const login = async ({ Correo, Contraseña }: authParams) => {
     throw new Error('Error al autenticar usuario');
   }
 };
+
+// ----------------------------------------------------------
+// ----------------------- REGISTRO --------------------------
+// ----------------------------------------------------------
+
+export const register = async (data: any) => {
+  try {
+    const { Correo, Contraseña, ...restoCampos } = data;
+
+    // Validaciones básicas
+    if (!Correo || !Contraseña) {
+      throw new AuthError('Correo y Contraseña son campos obligatorios');
+    }
+
+    // Verificar si ya existe un usuario con ese correo
+    const existe = await db
+      .select()
+      .from(usuarios)
+      .where(eq(usuarios.Correo, Correo));
+
+    if (existe.length > 0) {
+      throw new AuthError('Ya existe un usuario con ese correo');
+    }
+
+    // Hashear contraseña
+    const hashedPassword = await hashPassword(Contraseña);
+
+    // Crear usuario en DB
+    const insertResult = await db
+      .insert(usuarios)
+      .values({
+        Correo,
+        Contraseña: hashedPassword,
+        ...restoCampos, // Nombre, Tipo, etc.
+      })
+      .returning();
+
+    const nuevoUsuario = insertResult[0];
+
+    // Generar token igual que login
+    const token = jwt.sign(
+      { userId: nuevoUsuario.Id, tipo: nuevoUsuario?.Tipo },
+      process.env.JWT_SECRET!,
+      { expiresIn: '15d' }
+    );
+
+    // Excluir contraseña antes de devolver
+    const { Contraseña: _, ...usuarioSinContraseña } = nuevoUsuario;
+
+    return { token, usuario: usuarioSinContraseña };
+  } catch (error) {
+    if (error instanceof AuthError) throw error;
+
+    console.error('Error registrando usuario:', error);
+    throw new Error('Error al registrar usuario');
+  }
+};

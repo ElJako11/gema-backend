@@ -19,7 +19,7 @@ export const createTecnico = async ({
       .values({
         Nombre,
         Correo,
-        Tipo: 'TECNICO',
+        Tipo: 'SUPERVISOR',
       })
       .returning({ Id: usuarios.Id });
 
@@ -45,7 +45,7 @@ export const getAllTecnicos = async () => {
       Correo: usuarios.Correo,
     })
     .from(usuarios)
-    .where(eq(usuarios.Tipo, 'TECNICO'));
+    .where(eq(usuarios.Tipo, 'SUPERVISOR'));
 
   return tecnicos;
 };

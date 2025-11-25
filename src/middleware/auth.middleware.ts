@@ -1,31 +1,52 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
-  user?: { userId: number; tipo: string };
+  user?: JwtPayload;
 }
 
-export const authenticate = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'No has Iniciado Sesión' });
-    return;
-  }
+export const authenticate = (authorizedRoles: string[] = []) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    const token: string | undefined = req.cookies.accessToken;
 
-  const token = authHeader.split(' ')[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: number;
-      tipo: string;
-    };
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Inicia Sesión' });
-    return;
-  }
+    if (!token) {
+      res
+        .status(401)
+        .json({ error: 'Token no obtenido. Usuario no autorizado' });
+      return;
+    }
+
+    // Verifico si el token es valido.
+    try {
+      const decoded: JwtPayload = jwt.verify(
+        token,
+        process.env.JWT_SECRET!
+      ) as {
+        userId: number;
+        tipo: string;
+      };
+
+      req.user = decoded;
+
+      if (authorizedRoles.length === 0) {
+        next();
+        return;
+      }
+
+      const role: string | undefined = authorizedRoles.find(
+        role => role === decoded.tipo
+      );
+
+      if (role === undefined) {
+        res.status(401).json({ error: 'Usuario no autorizado' });
+        return;
+      }
+      next();
+      return;
+    } catch (error) {
+      res.status(401).json({ message: 'Inicia Sesión' });
+      return;
+    }
+  };
 };

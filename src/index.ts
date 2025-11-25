@@ -4,26 +4,22 @@ import { db } from './config/db';
 import routes from './router';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuración condicional de CORS
-if (process.env.NODE_ENV === 'development') {
-  // En desarrollo, permite solicitudes desde cualquier origen
-  app.use(cors());
-} else {
-  // En producción, solo permite solicitudes desde la URL autorizada
-  const productionUrl = process.env.PRODUCTION_URL;
-  if (!productionUrl) {
-    console.error('Error: PRODUCTION_URL environment variable is not defined.');
-    process.exit(1);
-  }
-  app.use(cors({ origin: productionUrl }));
-}
+// Configuración del CORS.
+app.use(
+  cors({
+    origin: process.env.PRODUCTION_URL as string | 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cookieParser());
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
