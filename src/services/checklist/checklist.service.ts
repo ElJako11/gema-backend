@@ -16,6 +16,11 @@ export const getAllChecklist = async () => {
 
 //Post Checklist
 export const createChecklist = async (params: CreateChecklistParams) => {
+    //Validacion de campo nombre Obligatorio
+    if (!params.nombre) {
+        throw new Error('El campo nombre es obligatorio');
+    }
+
     try {
         const inserted = await db.insert(checklist)
         .values(params)
@@ -30,6 +35,9 @@ export const createChecklist = async (params: CreateChecklistParams) => {
 
 //Put Checklist
 export const updateChecklist = async (id: number, params: CreateChecklistParams) => {
+    //Validacion de ID
+    if (isNaN(id)) return null;
+    
     try{
         const updated = await db.update(checklist)
         .set(params)
@@ -55,6 +63,9 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
 //Delete Checklist
 
 export const deleteChecklistByID = async(id: number) =>{
+    //Validacion de ID
+    if (isNaN(id)) return null;
+    
     try{
         const deleted = await db
         .delete(checklist)
