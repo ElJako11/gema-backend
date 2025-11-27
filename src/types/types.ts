@@ -1,3 +1,6 @@
+import { JwtPayload } from 'jsonwebtoken';
+import { Request } from 'express';
+
 export type UsuarioTipo = 'TECNICO' | 'COORDINADOR'; // Add other allowed values if needed
 
 export type CreateTecnicoParams = {
@@ -17,3 +20,7 @@ export type authParams = {
   Correo: string;
   Contraseña: string;
 };
+
+export interface AuthRequest extends Request {
+  user?: JwtPayload;
+}
