@@ -55,7 +55,6 @@ export const insertItem = async (insertdata: InsertItem) => {
 export const updateItem = async (updateAttr: UpdateItem) => {
   const { idChecklist, descripcion = '', titulo = '' } = updateAttr;
 
-  // ! Colocar validación isNaN.
   if (!idChecklist || idChecklist <= 0) {
     throw new Error('El ID del item no es valido');
   }
@@ -93,7 +92,6 @@ export const updateItem = async (updateAttr: UpdateItem) => {
 };
 
 export const deleteItem = async (idCheck: number) => {
-  // ! Colocar validación isNaN.
   if (!idCheck || idCheck <= 0) {
     throw new Error('El ID del item no es valido');
   }
