@@ -4,13 +4,10 @@ import {
   getGrupoDeTrabajoById,
   getGruposDeTrabajo,
 } from '../../services/gruposDeTrabajos/gruposDeTrabajo.service';
-import { json } from 'stream/consumers';
 import {
   updateGrupoDeTrabajo,
   deleteGrupoDeTrabajo,
 } from '../../services/gruposDeTrabajos/gruposDeTrabajo.service';
-import { error } from 'console';
-import { db } from '../../config/db';
 
 export const createGrupoDeTrabajoHandler = async (
   req: Request,
@@ -88,8 +85,14 @@ export const updateGrupoDeTrabajoHandler = async (
       return;
     }
 
-    const { codigo, nombre, idSupervisor } = req.body;
-    if (!codigo && !nombre && !idSupervisor === undefined) {
+    const { codigo, nombre, area, supervisorId } = req.body;
+    // validate that at least one field to update exists
+    if (
+      codigo === undefined &&
+      nombre === undefined &&
+      area === undefined &&
+      supervisorId === undefined
+    ) {
       res.status(400).json({
         error:
           'Se requiere al menos un campo (codigo, nombre, idSupervisor) para actualizar',
@@ -100,9 +103,8 @@ export const updateGrupoDeTrabajoHandler = async (
     const result = await updateGrupoDeTrabajo(id, req.body);
 
     if (result === null) {
-      res.status(400).json({
-        error: 'Grupo de trabajo no encontrado',
-      });
+      // no row was updated -> not found
+      res.status(404).json({ error: 'Grupo de trabajo no encontrado' });
       return;
     }
 

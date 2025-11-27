@@ -1,16 +1,10 @@
-import { Router } from 'express';
-import {
-  createTrabajaEnGrupoHandler,
-  deleteTrabajaEnGrupoHandler,
-  getAllTrabajaEnGrupoHandler,
-  getAllTrabajaEnTodosLosGruposHandler,
-} from '../controllers/trabajaEnGrupo/trabajaEnGrupo.controller';
-import { validateBody, validateParams } from '../middleware/validate.middleware';
-import { createTrabajaEnGrupoSchema, deleteTrabajaEnGrupoSchema, paramsTrabajaEnGrupoSchema } from '../validations/trabajaEnGrupo.Schema';
-import { param } from 'drizzle-orm';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const trabajaEnGrupo_controller_1 = require("../controllers/trabajaEnGrupo/trabajaEnGrupo.controller");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const trabajaEnGrupo_Schema_1 = require("../validations/trabajaEnGrupo.Schema");
+const router = (0, express_1.Router)();
 /**
  * @openapi
  * /trabajaEnGrupo:
@@ -44,8 +38,7 @@ const router = Router();
  *       500:
  *         description: Error al asignar trabajador al grupo
  */
-router.post('/', validateBody(createTrabajaEnGrupoSchema), createTrabajaEnGrupoHandler);
-
+router.post('/', (0, validate_middleware_1.validateBody)(trabajaEnGrupo_Schema_1.createTrabajaEnGrupoSchema), trabajaEnGrupo_controller_1.createTrabajaEnGrupoHandler);
 /**
  * @openapi
  * /trabajaEnGrupo:
@@ -59,8 +52,7 @@ router.post('/', validateBody(createTrabajaEnGrupoSchema), createTrabajaEnGrupoH
  *       200:
  *         description: Lista de grupos con sus trabajadores
  */
-router.get('/', getAllTrabajaEnTodosLosGruposHandler);
-
+router.get('/', trabajaEnGrupo_controller_1.getAllTrabajaEnTodosLosGruposHandler);
 /**
  * @openapi
  * /trabajaEnGrupo/{grupoDeTrabajoId}:
@@ -83,8 +75,7 @@ router.get('/', getAllTrabajaEnTodosLosGruposHandler);
  *       404:
  *         description: Grupo de trabajo no encontrado
  */
-router.get('/:grupoDeTrabajoId', validateParams(paramsTrabajaEnGrupoSchema), getAllTrabajaEnGrupoHandler);
-
+router.get('/:grupoDeTrabajoId', (0, validate_middleware_1.validateParams)(trabajaEnGrupo_Schema_1.paramsTrabajaEnGrupoSchema), trabajaEnGrupo_controller_1.getAllTrabajaEnGrupoHandler);
 /**
  * @openapi
  * /trabajaEnGrupo/{tecnicoId}/{grupoDeTrabajoId}:
@@ -115,5 +106,5 @@ router.get('/:grupoDeTrabajoId', validateParams(paramsTrabajaEnGrupoSchema), get
  *       500:
  *         description: Error al eliminar la asignación
  */
-router.delete('/:tecnicoId/:grupoDeTrabajoId', validateParams(deleteTrabajaEnGrupoSchema), deleteTrabajaEnGrupoHandler);
-export default router;
+router.delete('/:tecnicoId/:grupoDeTrabajoId', (0, validate_middleware_1.validateParams)(trabajaEnGrupo_Schema_1.deleteTrabajaEnGrupoSchema), trabajaEnGrupo_controller_1.deleteTrabajaEnGrupoHandler);
+exports.default = router;

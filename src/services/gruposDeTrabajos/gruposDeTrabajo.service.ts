@@ -7,11 +7,17 @@ export const createGrupoDeTrabajo = async (
   params: createGrupoDeTrabajoParams
 ) => {
   try {
+    // validate required fields
+    if (!params.codigo || !params.nombre || !params.area) {
+      throw new Error('Los campos codigo, nombre y area son obligatorios');
+    }
+
     const inserted = await db
       .insert(grupoDeTrabajo)
       .values({
         codigo: params.codigo,
         nombre: params.nombre,
+        area: params.area,
         supervisorId: params.supervisorId,
       })
       .returning();
@@ -56,7 +62,8 @@ export const getGrupoDeTrabajoById = async (id: number) => {
       .from(grupoDeTrabajo)
       .where(eq(grupoDeTrabajo.id, id))
       .limit(1);
-    return result;
+    // return the single object or null if not found
+    return result.length ? result[0] : null;
   } catch (error) {
     console.error(`Error al obtener el grupo de trabajo con ID ${id}:`, error);
     throw new Error('No se pudo obtener el grupo de trabajo.');
@@ -79,14 +86,16 @@ export const updateGrupoDeTrabajo = async (
       .set({
         codigo: params.codigo,
         nombre: params.nombre,
+        area: params.area,
         supervisorId: params.supervisorId,
       })
       .where(eq(grupoDeTrabajo.id, id))
       .returning();
-
     if (!updated.length) {
-      throw new Error('Error al actualizar grupo de trabajo');
+      // nothing was updated -> treat as not found
+      return null;
     }
+
     return {
       message: 'Grupo de trabajo actualizado correctamente',
       grupo: updated[0],
@@ -113,7 +122,8 @@ export const deleteGrupoDeTrabajo = async (id: number) => {
       .returning();
 
     if (!deleted.length) {
-      throw new Error('No se encontró al grupo');
+      // not found
+      return null;
     }
 
     return {

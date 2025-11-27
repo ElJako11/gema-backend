@@ -1,12 +1,10 @@
-import { Router } from 'express';
-import {
-  loginHandler,
-  registerHandler,
-} from '../controllers/auth/auth.controller';
-import { validateBody } from '../middleware/validate.middleware';
-import { loginSchema } from '../validations/loginSchema';
-
-const router = Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_controller_1 = require("../controllers/auth/auth.controller");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const loginSchema_1 = require("../validations/loginSchema");
+const router = (0, express_1.Router)();
 /**
  * @openapi
  * /login:
@@ -38,7 +36,6 @@ const router = Router();
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/login', validateBody(loginSchema), loginHandler);
-router.post('/register', registerHandler);
-
-export default router;
+router.post('/login', (0, validate_middleware_1.validateBody)(loginSchema_1.loginSchema), auth_controller_1.loginHandler);
+router.post('/register', auth_controller_1.registerHandler);
+exports.default = router;
