@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { getAllChecklist, createChecklist, updateChecklist, deleteChecklistByID } from "../../services/checklist/checklist.service";    
+import { AuthRequest } from "../../types/types";
 
-export const getChecklistHandler = async (req: Request, res: Response) => {
+export const getChecklistHandler = async (req: AuthRequest, res: Response) => {
     try {
         const checklists = await getAllChecklist();
         res.status(200).json({ data: checklists });
@@ -10,7 +11,7 @@ export const getChecklistHandler = async (req: Request, res: Response) => {
     }
 }
 
-export const postChecklistHandler = async (req: Request, res: Response) => {
+export const postChecklistHandler = async (req: AuthRequest, res: Response) => {
     try {
         const newChecklist = await createChecklist(req.body);
         res.status(201).json({ data: newChecklist });
@@ -19,7 +20,7 @@ export const postChecklistHandler = async (req: Request, res: Response) => {
     }
 }
 
-export const putChecklistHandler = async (req: Request, res: Response) => {
+export const putChecklistHandler = async (req: AuthRequest, res: Response) => {
     try {
         const id = parseInt(req.params.id, 10);
 
@@ -34,7 +35,7 @@ export const putChecklistHandler = async (req: Request, res: Response) => {
     }
 }
 
-export const deleteChecklistHandler = async(req: Request, res: Response) => {
+export const deleteChecklistHandler = async(req: AuthRequest, res: Response) => {
     try {
         const id = parseInt(req.params.id, 10);
 

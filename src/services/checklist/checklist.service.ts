@@ -36,7 +36,7 @@ export const createChecklist = async (params: CreateChecklistParams) => {
 //Put Checklist
 export const updateChecklist = async (id: number, params: CreateChecklistParams) => {
     //Validacion de ID
-    if (isNaN(id)) return null;
+    if (isNaN(id)) throw new Error('ID inválido');
     
     try{
         const updated = await db.update(checklist)
@@ -45,9 +45,7 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
         .returning()
 
         //Si el idChecklist no existe
-        if (!updated[0]) {
-            return null; 
-        }
+        if (!updated[0]) throw new Error('Checklist no encontrado');
 
         return updated[0]
 
@@ -64,7 +62,7 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
 
 export const deleteChecklistByID = async(id: number) =>{
     //Validacion de ID
-    if (isNaN(id)) return null;
+    if (isNaN(id)) throw new Error('ID inválido');
     
     try{
         const deleted = await db
@@ -73,9 +71,7 @@ export const deleteChecklistByID = async(id: number) =>{
         .returning()
 
         //Si el idChecklist no existe
-        if (!deleted[0]) {
-            return null; 
-        }
+        if (!deleted[0]) throw new Error('Checklist no encontrado');
 
         return deleted[0]
 
