@@ -36,7 +36,7 @@ export const authenticate = (authorizedRoles: string[] = []) => {
       );
 
       if (role === undefined) {
-        res.status(401).json({ error: 'Usuario no autorizado' });
+        res.status(403).json({ error: 'Usuario no autorizado' });
         return;
       }
       next();
