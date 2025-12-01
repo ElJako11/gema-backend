@@ -17,3 +17,8 @@ export type authParams = {
   Correo: string;
   Contraseña: string;
 };
+
+export type tokenPayload = {
+  userId: number;
+  tipo: string;
+};

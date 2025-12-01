@@ -35,9 +35,11 @@ export const getGruposDeTrabajoHandler = async (
 ) => {
   try {
     const grupos = await getGruposDeTrabajo();
+
     res.status(200).json({
       data: grupos,
     });
+    return;
   } catch (error) {
     console.error('Error in getGruposDeTrabajoHandler: ', error);
     res.status(500).json({
