@@ -10,6 +10,11 @@ export const autorizationMiddleware = (authorizedRoles: string[] = []) => {
       return;
     }
 
+    if (authorizedRoles.length === 0) {
+      next();
+      return;
+    }
+
     const role: string | undefined = authorizedRoles.find(
       role => role === userdata.tipo
     );
