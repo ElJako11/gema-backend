@@ -6,6 +6,8 @@ import ubicacionesTecnicasRoutes from './routes/ubicacionesTecnicas.routes';
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
 import trabajaEnGrupoRoutes from './routes/trabajaEnGrupo.routes';
+import itemChecklistRoutes from './routes/itemChecklist.routes';
+
 const router = Router();
 
 // Protege la ruta de tecnicos
@@ -33,4 +35,6 @@ router.use(
   autorizationMiddleware(),
   ubicacionesTecnicasRoutes
 );
+
+router.use('/item-checklist', authenticate(), itemChecklistRoutes);
 export default router;
