@@ -80,6 +80,7 @@ export const updateGrupoDeTrabajo = async (
       .set({
         codigo: params.codigo,
         nombre: params.nombre,
+        area: params.area,
         supervisorId: params.supervisorId,
       })
       .where(eq(grupoDeTrabajo.id, id))
