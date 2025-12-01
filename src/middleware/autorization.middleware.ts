@@ -10,6 +10,11 @@ export const autorizationMiddleware = (authorizedRoles: string[] = []) => {
       return;
     }
 
+    if (userdata.tipo === 'DIRECTOR') {
+      next();
+      return;
+    }
+
     if (authorizedRoles.length === 0) {
       next();
       return;

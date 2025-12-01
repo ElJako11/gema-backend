@@ -12,6 +12,7 @@ export const createGrupoDeTrabajo = async (
       .values({
         codigo: params.codigo,
         nombre: params.nombre,
+        area: params.area,
         supervisorId: params.supervisorId,
       })
       .returning();
