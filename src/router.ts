@@ -36,5 +36,10 @@ router.use(
   ubicacionesTecnicasRoutes
 );
 
-router.use('/item-checklist', authenticate(), itemChecklistRoutes);
+router.use(
+  '/item-checklist',
+  authenticate,
+  autorizationMiddleware(),
+  itemChecklistRoutes
+);
 export default router;

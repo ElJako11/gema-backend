@@ -56,15 +56,17 @@ export const patchItemHandler = async (req: Request, res: Response) => {
 };
 
 export const deleteItemHandler = async (req: Request, res: Response) => {
-  if (!req.body) {
+  if (!req.params) {
     res
       .status(400)
       .json({ message: 'No se recibieron los datos de la peticion' });
     return;
   }
 
+  const id = parseInt(req.params.id, 10);
+
   try {
-    const deletedItem = await deleteItem(req.body);
+    const deletedItem = await deleteItem(id);
 
     res.status(200).json({ data: deletedItem });
     return;
