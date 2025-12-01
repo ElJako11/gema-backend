@@ -1,13 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-<<<<<<< HEAD
-import { AuthRequest } from '../types/types';
-import { JwtPayload } from 'jsonwebtoken';
-
-export const authenticate = (authorizedRoles: string[] = []) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
-    const token: string | undefined = req.cookies.accessToken;
-=======
 import { tokenPayload } from '../types/types';
 
 export interface AuthRequest extends Request {
@@ -20,7 +12,6 @@ export const authenticate = (
   next: NextFunction
 ) => {
   const token: string | undefined = req.cookies.accessToken;
->>>>>>> feat/auth
 
   if (!token) {
     res.status(401).json({ error: 'Token no obtenido. Usuario no autorizado' });

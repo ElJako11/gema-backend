@@ -3,5 +3,4 @@ export type createGrupoDeTrabajoParams = {
   nombre: string;
   area: string;
   supervisorId: number;
-  area: string;
 };

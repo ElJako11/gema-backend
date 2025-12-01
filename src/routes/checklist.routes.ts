@@ -6,12 +6,18 @@ import {
   postChecklistHandler,
   putChecklistHandler,
 } from '../controllers/checklist/checklist.controller';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
-router.get('/', authenticate(), getChecklistHandler);
-router.post('/', authenticate(), postChecklistHandler);
-router.put('/', authenticate(), putChecklistHandler);
-router.delete('/', authenticate(), deleteChecklistHandler);
+router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
+router.post('/', authenticate, autorizationMiddleware(), postChecklistHandler);
+router.put('/', authenticate, autorizationMiddleware(), putChecklistHandler);
+router.delete(
+  '/',
+  authenticate,
+  autorizationMiddleware(),
+  deleteChecklistHandler
+);
 
 export default router;
