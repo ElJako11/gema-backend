@@ -7,7 +7,7 @@ import {
 const router = Router();
 /**
  * @openapi
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Inicia sesión y obtiene un token JWT
  *     tags:
@@ -19,10 +19,12 @@ const router = Router();
  *           schema:
  *             type: object
  *             properties:
- *               Correo:
+ *               Correo: 
  *                 type: string
+ *                 example: coordinador@ucab.edu.ve
  *               Contraseña:
  *                 type: string
+ *                 example: 123456
  *     responses:
  *       200:
  *         description: Token JWT generado correctamente

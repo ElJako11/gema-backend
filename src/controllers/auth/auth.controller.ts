@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { login, AuthError, register } from '../../services/auth/auth.service';
-import { setCookie } from '../../utils/CookieHandler';
+import { setCookie } from '../../utils/cookieHandler';
 
 export const loginHandler = async (
   req: Request,
@@ -11,7 +11,7 @@ export const loginHandler = async (
     // Seteo de la cookie.
     setCookie(res, 'accessToken', user.token);
 
-    res.status(201).json({
+    res.status(200).json({
       data: user,
     });
     return;
