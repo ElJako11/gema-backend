@@ -11,7 +11,7 @@ export const loginHandler = async (
     // Seteo de la cookie.
     setCookie(res, 'accessToken', user.token);
 
-    res.status(201).json({
+    res.status(200).json({
       data: user,
     });
     return;

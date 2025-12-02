@@ -1,16 +1,10 @@
-import { Router } from 'express';
-import {
-  createGrupoDeTrabajoHandler,
-  deleteGrupoDeTrabajoHandler,
-  getGruposDeTrabajoByIdHandler,
-  getGruposDeTrabajoHandler,
-  updateGrupoDeTrabajoHandler,
-} from '../controllers/gruposDeTrabajo/gruposDeTrabajo.controller';
-import { validateBody } from '../middleware/validate.middleware';
-import { grupoTrabajoSchema } from '../validations/grupoTrabajoSchema';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const gruposDeTrabajo_controller_1 = require("../controllers/gruposDeTrabajo/gruposDeTrabajo.controller");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const grupoTrabajoSchema_1 = require("../validations/grupoTrabajoSchema");
+const router = (0, express_1.Router)();
 /**
  * @openapi
  * /grupos:
@@ -48,7 +42,7 @@ const router = Router();
  *       500:
  *         description: Error al crear el grupo de trabajo
  */
-router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
+router.post('/', (0, validate_middleware_1.validateBody)(grupoTrabajoSchema_1.grupoTrabajoSchema), gruposDeTrabajo_controller_1.createGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos:
@@ -62,8 +56,7 @@ router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
  *       200:
  *         description: Lista de grupos de trabajo
  */
-router.get('/', getGruposDeTrabajoHandler);
-
+router.get('/', gruposDeTrabajo_controller_1.getGruposDeTrabajoHandler);
 /**
  * @openapi
  * /grupos/{id}:
@@ -86,8 +79,7 @@ router.get('/', getGruposDeTrabajoHandler);
  *       404:
  *         description: Grupo de trabajo no encontrado
  */
-router.get('/:id', getGruposDeTrabajoByIdHandler);
-
+router.get('/:id', gruposDeTrabajo_controller_1.getGruposDeTrabajoByIdHandler);
 /**
  * @openapi
  * /grupos/{id}:
@@ -127,8 +119,7 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *       500:
  *         description: Error al actualizar el grupo de trabajo
  */
-
-router.put('/:id', updateGrupoDeTrabajoHandler);
+router.put('/:id', gruposDeTrabajo_controller_1.updateGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos/{id}:
@@ -153,5 +144,5 @@ router.put('/:id', updateGrupoDeTrabajoHandler);
  *       500:
  *         description: Error al eliminar el grupo de trabajo
  */
-router.delete('/:id', deleteGrupoDeTrabajoHandler);
-export default router;
+router.delete('/:id', gruposDeTrabajo_controller_1.deleteGrupoDeTrabajoHandler);
+exports.default = router;

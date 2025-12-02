@@ -1,27 +1,10 @@
-import { Router } from 'express';
-import {
-  createUbicacionTecnicaHandler,
-  updateUbicacionTecnicaHandler,
-  deleteUbicacionTecnicaHandler,
-  getUbicacionesTecnicasHandler,
-  getUbicacionTecnicaByIdHandler,
-  getUbicacionesDependientesHandler,
-  getUbicacionesPorNivelHandler,
-  getPadresByIdHijoHandler,
-  exportUbicacionesToExcelHandler,
-} from '../controllers/ubicacionesTecnicas/ubicacionesTecnicas.controller';
-import { validateBody, validateParams, validateQuery } from '../middleware/validate.middleware';
-import {
-  createUbicacionSchema,
-  updateUbicacionSchema,
-  idParamSchema,
-  idHijoParamSchema,
-  nivelParamSchema,
-  ramasQuerySchema,
-} from '../validations/ubicacionesTecnicasSchema';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ubicacionesTecnicas_controller_1 = require("../controllers/ubicacionesTecnicas/ubicacionesTecnicas.controller");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const ubicacionesTecnicasSchema_1 = require("../validations/ubicacionesTecnicasSchema");
+const router = (0, express_1.Router)();
 /**
  * @openapi
  * /ubicaciones-tecnicas/export/excel:
@@ -35,8 +18,7 @@ const router = Router();
  *       200:
  *         description: Archivo Excel generado correctamente
  */
-router.get('/export/excel', exportUbicacionesToExcelHandler);
-
+router.get('/export/excel', ubicacionesTecnicas_controller_1.exportUbicacionesToExcelHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/ramas/{id}:
@@ -59,8 +41,7 @@ router.get('/export/excel', exportUbicacionesToExcelHandler);
  *       404:
  *         description: Ubicación técnica no encontrada
  */
-router.get('/ramas/:id', validateParams(idParamSchema), validateQuery(ramasQuerySchema), getUbicacionesDependientesHandler);
-
+router.get('/ramas/:id', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.idParamSchema), (0, validate_middleware_1.validateQuery)(ubicacionesTecnicasSchema_1.ramasQuerySchema), ubicacionesTecnicas_controller_1.getUbicacionesDependientesHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/nivel/{nivel}:
@@ -81,8 +62,7 @@ router.get('/ramas/:id', validateParams(idParamSchema), validateQuery(ramasQuery
  *       200:
  *         description: Lista de ubicaciones técnicas por nivel
  */
-router.get('/nivel/:nivel', validateParams(nivelParamSchema), getUbicacionesPorNivelHandler); // GET /ubicaciones-tecnicas/nivel/:nivel
-
+router.get('/nivel/:nivel', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.nivelParamSchema), ubicacionesTecnicas_controller_1.getUbicacionesPorNivelHandler); // GET /ubicaciones-tecnicas/nivel/:nivel
 /**
  * @openapi
  * /ubicaciones-tecnicas:
@@ -96,8 +76,7 @@ router.get('/nivel/:nivel', validateParams(nivelParamSchema), getUbicacionesPorN
  *       200:
  *         description: Lista de ubicaciones técnicas
  */
-router.get('/', getUbicacionesTecnicasHandler);
-
+router.get('/', ubicacionesTecnicas_controller_1.getUbicacionesTecnicasHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/{id}:
@@ -120,8 +99,7 @@ router.get('/', getUbicacionesTecnicasHandler);
  *       404:
  *         description: Ubicación técnica no encontrada
  */
-router.get('/:id', validateParams(idParamSchema), getUbicacionTecnicaByIdHandler);
-
+router.get('/:id', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.idParamSchema), ubicacionesTecnicas_controller_1.getUbicacionTecnicaByIdHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas:
@@ -154,8 +132,7 @@ router.get('/:id', validateParams(idParamSchema), getUbicacionTecnicaByIdHandler
  *       500:
  *         description: Error al crear la ubicación técnica
  */
-router.post('/', validateBody(createUbicacionSchema), createUbicacionTecnicaHandler);
-
+router.post('/', (0, validate_middleware_1.validateBody)(ubicacionesTecnicasSchema_1.createUbicacionSchema), ubicacionesTecnicas_controller_1.createUbicacionTecnicaHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/{id}:
@@ -197,8 +174,7 @@ router.post('/', validateBody(createUbicacionSchema), createUbicacionTecnicaHand
  *       500:
  *         description: Error al actualizar la ubicación técnica
  */
-router.put('/:id', validateParams(idParamSchema), validateBody(updateUbicacionSchema), updateUbicacionTecnicaHandler);
-
+router.put('/:id', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.idParamSchema), (0, validate_middleware_1.validateBody)(ubicacionesTecnicasSchema_1.updateUbicacionSchema), ubicacionesTecnicas_controller_1.updateUbicacionTecnicaHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/{id}:
@@ -223,8 +199,7 @@ router.put('/:id', validateParams(idParamSchema), validateBody(updateUbicacionSc
  *       500:
  *         description: Error al eliminar la ubicación técnica
  */
-router.delete('/:id', validateParams(idParamSchema), deleteUbicacionTecnicaHandler);
-
+router.delete('/:id', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.idParamSchema), ubicacionesTecnicas_controller_1.deleteUbicacionTecnicaHandler);
 /**
  * @openapi
  * /ubicaciones-tecnicas/padres/{idHijo}:
@@ -247,6 +222,5 @@ router.delete('/:id', validateParams(idParamSchema), deleteUbicacionTecnicaHandl
  *       404:
  *         description: Ubicación técnica no encontrada
  */
-router.get('/padres/:idHijo', validateParams(idHijoParamSchema), getPadresByIdHijoHandler); // GET /ubicaciones-tecnicas/padres/:idHijo
-
-export default router;
+router.get('/padres/:idHijo', (0, validate_middleware_1.validateParams)(ubicacionesTecnicasSchema_1.idHijoParamSchema), ubicacionesTecnicas_controller_1.getPadresByIdHijoHandler); // GET /ubicaciones-tecnicas/padres/:idHijo
+exports.default = router;
