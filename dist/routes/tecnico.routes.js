@@ -1,13 +1,10 @@
-import { Router } from 'express';
-import {
-  createTecnicoHandler,
-  getAllTecnicosHandler,
-} from '../controllers/tecnico/tecnico.controller';
-import { createTecnicoSchema } from '../validations/tecnico.schema';
-import { validateBody } from '../middleware/validate.middleware';
-
-const router = Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tecnico_controller_1 = require("../controllers/tecnico/tecnico.controller");
+const tecnico_schema_1 = require("../validations/tecnico.schema");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const router = (0, express_1.Router)();
 /**
  * @openapi
  * /tecnicos:
@@ -53,7 +50,7 @@ const router = Router();
  *       500:
  *         description: Error al crear el técnico
  */
-router.post('/', validateBody(createTecnicoSchema), createTecnicoHandler);
+router.post('/', (0, validate_middleware_1.validateBody)(tecnico_schema_1.createTecnicoSchema), tecnico_controller_1.createTecnicoHandler);
 /**
  * @openapi
  * /tecnicos:
@@ -72,5 +69,5 @@ router.post('/', validateBody(createTecnicoSchema), createTecnicoHandler);
  * @param req Express request
  * @param res Express response
  */
-router.get('/', getAllTecnicosHandler);
-export default router;
+router.get('/', tecnico_controller_1.getAllTecnicosHandler);
+exports.default = router;

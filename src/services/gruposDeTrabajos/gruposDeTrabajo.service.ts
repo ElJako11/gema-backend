@@ -57,7 +57,7 @@ export const getGrupoDeTrabajoById = async (id: number) => {
       .from(grupoDeTrabajo)
       .where(eq(grupoDeTrabajo.id, id))
       .limit(1);
-    return result;
+    return result
   } catch (error) {
     console.error(`Error al obtener el grupo de trabajo con ID ${id}:`, error);
     throw new Error('No se pudo obtener el grupo de trabajo.');
@@ -80,14 +80,15 @@ export const updateGrupoDeTrabajo = async (
       .set({
         codigo: params.codigo,
         nombre: params.nombre,
+        area: params.area,
         supervisorId: params.supervisorId,
       })
       .where(eq(grupoDeTrabajo.id, id))
       .returning();
-
     if (!updated.length) {
       throw new Error('Error al actualizar grupo de trabajo');
     }
+
     return {
       message: 'Grupo de trabajo actualizado correctamente',
       grupo: updated[0],
