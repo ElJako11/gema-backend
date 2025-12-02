@@ -12,9 +12,9 @@ const router = Router();
 
 router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
 router.post('/', authenticate, autorizationMiddleware(), postChecklistHandler);
-router.put('/', authenticate, autorizationMiddleware(), putChecklistHandler);
+router.put('/:id', authenticate, autorizationMiddleware(), putChecklistHandler);
 router.delete(
-  '/',
+  '/:id',
   authenticate,
   autorizationMiddleware(),
   deleteChecklistHandler
