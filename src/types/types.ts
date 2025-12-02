@@ -24,3 +24,8 @@ export type authParams = {
 export interface AuthRequest extends Request {
   user?: JwtPayload;
 }
+
+export type tokenPayload = {
+  userId: number;
+  tipo: string;
+};
