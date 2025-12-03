@@ -58,7 +58,7 @@ export const exportUbicacionesToExcel = async (): Promise<Buffer> => {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return buffer as Buffer;
+    return buffer as unknown as Buffer;
   } catch (error) {
     console.error('Error exporting to Excel:', error);
     throw new Error('Error al exportar a Excel');
