@@ -1,0 +1,1477 @@
+{
+	"info": {
+		"_postman_id": "6990f449-e833-46de-9175-969f4385caa7",
+		"name": "GEMA-UCAB",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48233956"
+	},
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(pm.response.json().data.token);\r",
+									"pm.environment.set(\"token\",pm.response.json().data.token); \r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Correo\": \"{{email}}\",\r\n  \"Contraseña\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "GrupoDeTrabajo",
+			"item": [
+				{
+					"name": "Tecnico",
+					"item": [
+						{
+							"name": "Tecnico-grupo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// evaluamos si existen tecnicos \r",
+											"\r",
+											"const data = pm.response.json().data; \r",
+											"\r",
+											"if(data.length > 0){\r",
+											"    // Tomammos el primer tecnico \r",
+											"    pm.environment.set(\"tecnico-id\", data[0].Id);\r",
+											"\r",
+											"    console.log('Se ha encontrado un técnico con id: ' + data[0].Id); \r",
+											"\r",
+											"    pm.test(\"Obtener Tecnicos\",function(){\r",
+											"        pm.response.to.have.status(200); \r",
+											"    })\r",
+											"    //nos movemos a crear un grupo \r",
+											"    postman.setNextRequest('Nuevo-grupo'); \r",
+											"}else{ \r",
+											"    //No existen tecnicos así que procedemos a crearlo \r",
+											"    postman.setNextRequest('Nuevo-tecnico-grupo'); \r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/tecnicos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"tecnicos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Nuevo-tecnico-grupo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"//craemos un nuevo recurso\r",
+											"let nombres = [\"Joaquim\", \"Juan\", \"Maria\", \"Pedro\", \"Ana\",\"Mario\",\"Alfonso\",\"Luis\",\"Sebastian\",\"José\"];\r",
+											"\r",
+											"let apellidos = [\"Juja\",\"Perez\",\"Lopez\",\"Martinez\",\"Gonzalez\"];\r",
+											"\r",
+											"let nombre = nombres[Math.floor(Math.random() * nombres.length)];\r",
+											"let apellido = apellidos[Math.floor(Math.random() * apellidos.length)];\r",
+											"let correo = nombre.toLowerCase() + \".\" + apellido.toLowerCase() + \"@email.com\";\r",
+											"\r",
+											"pm.environment.set('nombre',nombre + ' ' + apellido); \r",
+											"pm.environment.set('correo',correo); "
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"// en caso de error \r",
+											"if(pm.response.code == 500){\r",
+											"    console.log('No se puedo crear el tecnico'); \r",
+											"    postman.setNextRequest(null); \r",
+											"}\r",
+											"\r",
+											"//si se creó correctamente \r",
+											"pm.environment.set('tecnico-id',pm.response.json().data.userId); \r",
+											"console.log('se ha obtenido el tecnico-id: ' + pm.environment.get('tecnico-id')); \r",
+											"\r",
+											"// nos movemos a crear un grupo \r",
+											"postman.setNextRequest('Nuevo-grupo'); \r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Correo\": \"{{correo}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/tecnicos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"tecnicos"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Nuevo-grupo",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// --- FUNCIONES DE GENERACIÓN ---\r",
+									"\r",
+									"// 1. Genera un código aleatorio en formato XX-NNN\r",
+									"function generarCodigo() {\r",
+									"    // Dos letras mayúsculas aleatorias (código ASCII 65 a 90)\r",
+									"    const letra1 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    const letra2 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    \r",
+									"    // Un número aleatorio de 3 dígitos (100 a 999)\r",
+									"    const numero = Math.floor(Math.random() * 900) + 100;\r",
+									"    \r",
+									"    return `${letra1}${letra2}-${numero}`;\r",
+									"}\r",
+									"\r",
+									"// 2. Genera un nombre de área aleatorio en formato XX-NNN\r",
+									"function generarArea() {\r",
+									"    // Dos letras mayúsculas aleatorias\r",
+									"    const letra1 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    const letra2 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    \r",
+									"    // Un número aleatorio de 3 dígitos (100 a 999)\r",
+									"    const numero = Math.floor(Math.random() * 900) + 100;\r",
+									"    \r",
+									"    return `${letra1}${letra2}-${numero}`;\r",
+									"}\r",
+									"\r",
+									"// 3. Nombres de Grupos de Mantenimiento (Ejemplos)\r",
+									"const nombresGrupos = [\r",
+									"    \"Equipo Fénix\", \"Brigada Alpha\", \"Unidad de Choque 1\", \"Mantenimiento Preventivo A\",\r",
+									"    \"Soporte de Infraestructura\", \"Turno Noche Delta\", \"Técnicos de Campo Sur\",\r",
+									"    \"Revisión de Motores\", \"Grupo de Calibración\", \"Electrónica Rápida\",\r",
+									"    \"Unidad de Emergencia 24H\", \"Mecánica Pesada\", \"Control de Calidad (MQ)\",\r",
+									"    \"Servicios Generales A1\", \"Taller Central\"\r",
+									"];\r",
+									"\r",
+									"// Selecciona un nombre aleatorio de la lista\r",
+									"const nombreAleatorio = nombresGrupos[Math.floor(Math.random() * nombresGrupos.length)];\r",
+									"\r",
+									"// --- ALMACENAMIENTO DE VARIABLES ---\r",
+									"\r",
+									"// Almacena los valores generados como variables de entorno/colección\r",
+									"pm.environment.set(\"codigo-grupo\", generarCodigo());\r",
+									"pm.environment.set(\"nombre-grupo\", nombreAleatorio);\r",
+									"pm.environment.set(\"area\", generarArea());\r",
+									"// Puedes usar un supervisorId fijo o también generarlo aleatoriamente si es necesario\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// una vez creado el grupo procedemos a consultarlos por id \r",
+									"pm.test(\"Grupo de trabajo creado correctamente\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"}); \r",
+									"\r",
+									"pm.environment.set(\"grupo-id\", pm.response.json().data.grupo.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigo\": \"{{codigo-grupo}}\",\r\n  \"nombre\": \"{{nombre-grupo}}\",\r\n  \"supervisorId\": {{tecnico-id}},\r\n  \"area\": \"{{area}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/grupos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"grupos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grupos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Prueba de obtención de Grupos',function(){\r",
+									"    pm.response.to.have.status(200); \r",
+									"}); \r",
+									"\r",
+									"const grupoId = pm.environment.get('grupo-id'); \r",
+									"\r",
+									"//Buscamos el grupo en esa lista \r",
+									"const grupos = pm.response.json().data; \r",
+									"\r",
+									"const codition = grupos.some(function(grupo){\r",
+									"    return grupo.id == grupoId;\r",
+									"}); \r",
+									"\r",
+									"pm.test('Grupo encontrado en la lista de grupos',function(){\r",
+									"    pm.response.to.have.status(200); \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/grupos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"grupos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grupo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// evalumos si el grupo existe si lo buscamos por su id \r",
+									"pm.test(\"Grupo encontrado por ID\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"}); \r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/grupos/{{grupo-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"grupos",
+								"{{grupo-id}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//evaluamos si el grupo se pudo actualizar \r",
+									"\r",
+									"pm.test(\"Alctualizar grupo\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"}); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// cambiamos los datos \r",
+									"\r",
+									"// 1. Genera un código aleatorio en formato XX-NNN\r",
+									"function generarCodigo() {\r",
+									"    // Dos letras mayúsculas aleatorias (código ASCII 65 a 90)\r",
+									"    const letra1 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    const letra2 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    \r",
+									"    // Un número aleatorio de 3 dígitos (100 a 999)\r",
+									"    const numero = Math.floor(Math.random() * 900) + 100;\r",
+									"    \r",
+									"    return `${letra1}${letra2}-${numero}`;\r",
+									"}\r",
+									"\r",
+									"// 2. Genera un nombre de área aleatorio en formato XX-NNN\r",
+									"function generarArea() {\r",
+									"    // Dos letras mayúsculas aleatorias\r",
+									"    const letra1 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    const letra2 = String.fromCharCode(65 + Math.floor(Math.random() * 26));\r",
+									"    \r",
+									"    // Un número aleatorio de 3 dígitos (100 a 999)\r",
+									"    const numero = Math.floor(Math.random() * 900) + 100;\r",
+									"    \r",
+									"    return `${letra1}${letra2}-${numero}`;\r",
+									"}\r",
+									"\r",
+									"// 3. Nombres de Grupos de Mantenimiento (Ejemplos)\r",
+									"const nombresGrupos = [\r",
+									"    \"Equipo Fénix\", \"Brigada Alpha\", \"Unidad de Choque 1\", \"Mantenimiento Preventivo A\",\r",
+									"    \"Soporte de Infraestructura\", \"Turno Noche Delta\", \"Técnicos de Campo Sur\",\r",
+									"    \"Revisión de Motores\", \"Grupo de Calibración\", \"Electrónica Rápida\",\r",
+									"    \"Unidad de Emergencia 24H\", \"Mecánica Pesada\", \"Control de Calidad (MQ)\",\r",
+									"    \"Servicios Generales A1\", \"Taller Central\"\r",
+									"];\r",
+									"\r",
+									"// Selecciona un nombre aleatorio de la lista\r",
+									"const nombreAleatorio = nombresGrupos[Math.floor(Math.random() * nombresGrupos.length)];\r",
+									"\r",
+									"// --- ALMACENAMIENTO DE VARIABLES ---\r",
+									"\r",
+									"// Almacena los valores generados como variables de entorno/colección\r",
+									"pm.environment.set(\"codigo-grupo\", generarCodigo());\r",
+									"pm.environment.set(\"nombre-grupo\", nombreAleatorio);\r",
+									"pm.environment.set(\"area\", generarArea());\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigo\": \"{{grupo-id}}\", // <- se puede cambiar el codigo  \r\n  \"nombre\": \"{{nombre-grupo}}\", // <- se puede cambiar el nombre\r\n  \"area\": {{area}}\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/grupos/{{grupo-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"grupos",
+								"{{grupo-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//evaluamos si el grupo se ha eliminado con exito \r",
+									"pm.test(\"Grupo eliminado con exito\", function () {\r",
+									"    pm.response.to.have.status(204); \r",
+									"}); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/grupos/{{grupo-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"grupos",
+								"{{grupo-id}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							"//Setiamos los datos \r",
+							"\r",
+							"\r",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Trabaja en Grupo",
+			"item": [
+				{
+					"name": "Consultar-tecnico",
+					"item": [
+						{
+							"name": "Tecnicos-asignar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Obtenemos 6 tecnicos \r",
+											"\r",
+											"const tecnicosData = pm.response.json().data; \r",
+											"\r",
+											"let tecnicosId = []; \r",
+											"\r",
+											"var cantidad = 6; \r",
+											"\r",
+											"if(tecnicosData.length < 6){\r",
+											"    cantidad = tecnicosData.length; \r",
+											"}\r",
+											"\r",
+											"while (tecnicosId.length < cantidad){\r",
+											"    let randomIndex = Math.floor(Math.random() * tecnicosData.length);\r",
+											"\r",
+											"    //evaluamos si el tecnico no existe en la lista \r",
+											"    if (!tecnicosId.includes(tecnicosData[randomIndex])){\r",
+											"        tecnicosId.push(tecnicosData[randomIndex].Id); \r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Técnicos aleatorios\", function () {\r",
+											"    pm.response.to.have.status(200); \r",
+											"}); \r",
+											"\r",
+											"pm.environment.set('tecnicos-id',tecnicosId); \r",
+											"pm.environment.set(\"tecnicos-por-asignar\",tecnicosId); \r",
+											"pm.environment.set(\"tecnicos-agregados\",new Array); \r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/tecnicos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"tecnicos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grupo-asignar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Grupos obtenidos correctamente',function(){\r",
+											"    pm.response.to.have.status(200); \r",
+											"}); \r",
+											"\r",
+											"//obtenemos un grupo al azar \r",
+											"const randomIndex = Math.floor(Math.random() * pm.response.json().data.length);\r",
+											"\r",
+											"const grupo = pm.response.json().data[randomIndex];\r",
+											"\r",
+											"pm.environment.set(\"grupo-id\", grupo.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/grupos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"grupos"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Nueva-asignación",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//esto se repetirá hasta que se terminé la lista \r",
+									"const tecnicosId = pm.environment.get(\"tecnicos-por-asignar\");\r",
+									"const tecnicosAgregadosId = pm.environment.get(\"tecnicos-agregados\"); \r",
+									"\r",
+									"const id = tecnicosId.pop(0); \r",
+									"tecnicosAgregadosId.push(id); \r",
+									"\r",
+									"pm.environment.set(\"tecnico-id\",id); \r",
+									"pm.environment.set(\"tecnicos-agregados\",tecnicosAgregadosId); \r",
+									"pm.environment.set(\"tecnicos-por-asignar\",tecnicosId); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Tecnico asignado\",function(){\r",
+									"    pm.response.to.have.status(201); \r",
+									"})\r",
+									"\r",
+									"//obtenemos la cantidad de tecnicos por asignar y evaluamos las cantidades \r",
+									"\r",
+									"const tecnicosId = pm.environment.get(\"tecnicos-id\");\r",
+									"const grupo_asignado = pm.environment.get(\"tecnicos-agregados\")\r",
+									"\r",
+									"if(tecnicosId.length === grupo_asignado.length){\r",
+									"    postman.setNextRequest(\"Trabaja-en-grupo\"); \r",
+									"}else{\r",
+									"    console.log('entre'); \r",
+									"    postman.setNextRequest(\"Nueva-asignación\"); \r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"tecnicoId\": {{tecnico-id}},\r\n  \"grupoDeTrabajoId\": {{grupo-id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/trabajaEnGrupo",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"trabajaEnGrupo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trabaja-en-grupo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Buscamos el grupo donde se acaban de ingresar los tecnicos \r",
+									"const grupos = pm.response.json().data; \r",
+									"const grupoId = pm.environment.get(\"grupo-id\"); \r",
+									"const tecnicosId = pm.environment.get(\"tecnicos-id\"); \r",
+									"const gruposAsignado = pm.environment.get(\"tecnicos-agregados\");\r",
+									"\r",
+									"\r",
+									"pm.test(\"Es obtuvieron los grupos correctamente\",function(){\r",
+									"    pm.response.to.have.status(200);  \r",
+									"}); \r",
+									"\r",
+									"pm.test(\"Existe el grupo al que se le fueron asignados\",function(){\r",
+									"\r",
+									"    //buscamos lo grupos \r",
+									"    const existe = grupos.some(function(grupo){\r",
+									"        return grupo.grupoDeTrabajoId === parseInt(grupoId); \r",
+									"    }); \r",
+									"\r",
+									"    pm.expect(existe).to.be.true;\r",
+									"}); \r",
+									"\r",
+									"pm.test(\"El grupo tiene la misma cantidad de miembros asignados\",function(){\r",
+									"    pm.expect(tecnicosId.length).to.equal(gruposAsignado.length);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"El grupo tiene todos los tecnicos asignados\", function () {\r",
+									"    const grupoIncompleto = tecnicosId.some(function(tecnicoId){\r",
+									"        return !gruposAsignado.include(tecnicoId); \r",
+									"    })\r",
+									"    pm.expect(grupoIncompleto).to.be.false;\r",
+									"}); \r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/trabajaEnGrupo",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"trabajaEnGrupo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuarios-asignados-grupo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//buscamos el grupo por le ID \r",
+									"pm.test(\"Grupo encontrado por ID\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"}); \r",
+									"\r",
+									"//tecnicos por asignar lo dejamos en vacio \r",
+									"pm.environment.set(\"tecnicos-por-asignar\",Array); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/trabajaEnGrupo/{{grupo-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"trabajaEnGrupo",
+								"{{grupo-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar-asignación",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//tomamos el primero de la lista de grupos asignados y los eliminamos \r",
+									"const tecnicosId = pm.environment.get(\"tecnicos-id\"); \r",
+									"\r",
+									"const grupo_asignado = pm.environment.get(\"tecnicos-agregados\");\r",
+									"\r",
+									"//sacamos al tecnico\r",
+									"const tecnico_id = grupo_asignado.pop(0); \r",
+									"console.log(tecnico_id); \r",
+									"pm.environment.set(\"tecnico-id\", tecnico_id);\r",
+									"\r",
+									"//volvemos a setear la lista de asignados\r",
+									"pm.environment.set(\"tecnicos-agregados\",grupo_asignado); \r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//evaluamos si se elminó correctamente \r",
+									"pm.test(\"Tecnico eliminado\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"}); \r",
+									"\r",
+									"//evalumos la cantidad de tecnicos en el grupo\r",
+									"const tecnicosEnGrupo = pm.environment.get(\"tecnicos-agregados\")\r",
+									"\r",
+									"if(tecnicosEnGrupo.length > 0){\r",
+									"    postman.setNextRequest(\"Eliminar-asignación\"); \r",
+									"}else{\r",
+									"    const tecnicosEliminados = pm.environment.get(\"tecnicos-agregados\"); \r",
+									"    console.log(tecnicosEliminados); \r",
+									"\r",
+									"    pm.test(\"El grupo se eliminó por completo\",function(){\r",
+									"        pm.expect(tecnicosEliminados.length === 0).to.be.true; \r",
+									"    }); \r",
+									"\r",
+									"    postman.setNextRequest(null); \r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/trabajaEnGrupo/{{tecnico-id}}/{{grupo-id}}\n",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"trabajaEnGrupo",
+								"{{tecnico-id}}",
+								"{{grupo-id}}\n"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ubicaciones Técnicas",
+			"item": [
+				{
+					"name": "Nueva-ubicacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"PGA\",\r\n  \"descripcion\": \"SI a lo mejor \",\r\n  \"nivel\": 0,\r\n  \"padreId\": 0,\r\n  \"abreviacion\": \"PG\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar-ubicacion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"string\",\r\n  \"descripcion\": \"string\",\r\n  \"nivel\": 0,\r\n  \"padreId\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/{{ubicacionesTécnicasID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"{{ubicacionesTécnicasID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nueva-ubicacion Copy 2",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"string\",\r\n  \"descripcion\": \"string\",\r\n  \"nivel\": 0,\r\n  \"padreId\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/{{ubicacionesTécnicasID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"{{ubicacionesTécnicasID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exportar-excel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/export/excel",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"export",
+								"excel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubicaciones-hijas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/ramas/{{ubicacionesTécnicasID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"ramas",
+								"{{ubicacionesTécnicasID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubicaciones-nivel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/nivel/{{nivelID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"nivel",
+								"{{nivelID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubicaciones-tecnicas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubicaciones-tecnicas-ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/{{ubicacionesTécnicasID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"{{ubicacionesTécnicasID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubicaciones-padre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/ubicaciones-tecnicas/padres/{{ubicacionHijaID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"ubicaciones-tecnicas",
+								"padres",
+								"{{ubicacionHijaID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Técnicos",
+			"item": [
+				{
+					"name": "Nuevo tecnico",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"//evaluamos la iteración\r",
+									"if(!pm.environment.get('2da-iteración')){\r",
+									"\r",
+									"    //craemos un nuevo recurso\r",
+									"    let nombres = [\"Alejandro\", \"Gabriel\", \"Valentina\", \"Santiago\", \"Lucía\", \"Mateo\", \"Daniel\", \"Benjamín\", \"Emilio\", \"Julián\", \"Camila\", \"Nicolás\", \"Martina\", \"Tomás\", \"Antonella\", \"Lucas\", \"Victoria\", \"Thiago\", \"Alma\", \"Facundo\"];\r",
+									"\r",
+									"    let apellidos = [\r",
+									"        \"Juja\", \"Perez\", \"Lopez\", \"Martinez\", \"Gonzalez\", \"Rodríguez\", \"Sánchez\", \"Gómez\", \"Fernández\", \"Díaz\", \"Vázquez\", \"Ruiz\", \"Hernández\", \"Torres\", \"Ramírez\",\"Castro\", \"Moreno\", \"Gil\", \"Flores\", \"Bravo\", \"Rojas\", \"Solís\", \"Paredes\", \"Soto\", \"Moya\", \"Cifuentes\", \"Salgado\", \"Muñoz\", \"Herrera\", \"Silva\"\r",
+									"    ];\r",
+									"\r",
+									"    let nombre = nombres[Math.floor(Math.random() * nombres.length)];\r",
+									"    let apellido = apellidos[Math.floor(Math.random() * apellidos.length)];\r",
+									"    let correo = nombre.toLowerCase() + apellido.toLowerCase() + \"@email.com\";\r",
+									"\r",
+									"    pm.environment.set('nombre',nombre + ' ' + apellido); \r",
+									"    pm.environment.set('correo',correo); \r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test de nuevo elemento\r",
+									"if(!pm.environment.get('2da-iteración')){\r",
+									"        \r",
+									"    pm.test(\"Tecnico creado\", function () {\r",
+									"        pm.response.to.have.status(201); \r",
+									"    }); \r",
+									"\r",
+									"    pm.environment.set('tecnicoID', pm.response.json().data.userId);\r",
+									"\r",
+									"}else{\r",
+									"    pm.test(\"Tecnico ya registrado\",function(){\r",
+									"        pm.response.to.have.status(400); \r",
+									"    }); \r",
+									"    postman.setNextRequest(null); \r",
+									"    pm.environment.set('2da-iteración',false); \r",
+									"}\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Correo\": \"{{correo}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tecnicos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tecnicos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tecnios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var tecnicos = pm.response.json().data;\r",
+									"const iteracion = pm.environment.get('iteration'); \r",
+									"console.log(pm.environment.get('iteration') + ' carperta gonsultando ')\r",
+									"\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.response.to.have.status(200); \r",
+									"    }); \r",
+									"\r",
+									"    // buscamos el ID del tecnico\r",
+									"    pm.test(\"ID del técnico registrado correctamente\", function () {\r",
+									"        // Es buena práctica asegurarse de que el ID sea el tipo correcto (ej. número)\r",
+									"        const idEsperado = parseInt(pm.environment.get('tecnicoID')); \r",
+									"\r",
+									"        // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
+									"        const idEncontrado = tecnicos.some(function (tecnico) {\r",
+									"            // Compara el ID de entorno con el ID del técnico actual\r",
+									"            return idEsperado === tecnico.Id; \r",
+									"        });\r",
+									"\r",
+									"        // Aserción final: Si idEncontrado es 'false', la prueba falla.\r",
+									"        pm.expect(idEncontrado, `ERROR: El ID '${idEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
+									"    }); \r",
+									"\r",
+									"    // buscamos el nombre del técnico del tecnico \r",
+									"    pm.test(\"Nombre del técnico registrado correctamente\", function () {\r",
+									"        const nombreEsperado = pm.environment.get('nombre');\r",
+									"\r",
+									"        // 1. Usa Array.some() para verificar si AL MENOS UN elemento cumple la condición\r",
+									"        const tecnicoEncontrado = tecnicos.some(function (tecnico) {\r",
+									"            // Devuelve true si la condición se cumple\r",
+									"            return nombreEsperado === tecnico.Nombre;\r",
+									"        });\r",
+									"\r",
+									"        // 2. Aserción final: Valida que el resultado booleano sea 'true'\r",
+									"        pm.expect(tecnicoEncontrado, `ERROR: El técnico '${nombreEsperado}' no está en la lista.`).to.be.true;\r",
+									"    }); \r",
+									"\r",
+									"    // buscamos el correo del tecnico\r",
+									"    pm.test(\"Correo del técnico registrado correctamente\", function () {\r",
+									"        const correoEsperado = pm.environment.get('correo'); \r",
+									"\r",
+									"        // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
+									"        const correoEncontrado = tecnicos.some(function (tecnico) {\r",
+									"            // En JavaScript estándar, usa === para comparar strings\r",
+									"            return correoEsperado === tecnico.Correo; \r",
+									"        });\r",
+									"\r",
+									"        // Aserción final: Si correoEncontrado es 'false', la prueba falla.\r",
+									"        pm.expect(correoEncontrado, `ERROR: El correo '${correoEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
+									"    }); \r",
+									"\r",
+									"\r",
+									"//pasamos a la segunda iteración \r",
+									"console.log('entró parte 2')\r",
+									"pm.environment.set(\"2da-iteración\", true);\r",
+									"postman.setNextRequest('Nuevo tecnico'); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tecnicos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tecnicos"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": ""
+		},
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		},
+		{
+			"key": "tecnicoId",
+			"value": ""
+		},
+		{
+			"key": "grupoDeTrabajoID",
+			"value": ""
+		},
+		{
+			"key": "trabaEnGrupoID",
+			"value": ""
+		},
+		{
+			"key": "ubicacionesTécnicasID",
+			"value": ""
+		},
+		{
+			"key": "nivelID",
+			"value": ""
+		},
+		{
+			"key": "ubicacionHijaID",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "usuario",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "correo",
+			"value": ""
+		}
+	]
+}
