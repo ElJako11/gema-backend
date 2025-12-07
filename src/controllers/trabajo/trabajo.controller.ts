@@ -17,6 +17,12 @@ export const getTrabajoByIdHandler = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     try{
         const trabajo = await getTrabajoById(id);
+
+        if (!trabajo){
+            res.status(404).json({messsage: 'Trabajo no encontrado'});
+            return;
+        }
+
         res.status(200).json(trabajo);
     }
     catch(error){
@@ -33,11 +39,23 @@ export const createTrabajoHandler = async (req: AuthRequest, res: Response) => {
         res.status(500).json({message: (error as Error).message});
     }
 }
-//Put Trabajo
+//Patch Trabajo
 export const updateTrabajoHandler = async (req: AuthRequest, res: Response) => {
     const id = parseInt(req.params.id);
+
+    if (Object.keys(req.body).length === 0){
+        res.status(400).json({ message: 'No se enviaron datos para actualizar'});
+        return;
+    }
+
     try{
-        await updateTrabajo(id, req.body);
+        const updatedTrabajo = await updateTrabajo(id, req.body);
+
+        if (!updatedTrabajo){
+            res.status(404).json({ message: 'Trabajo no encontrado para actualizar'})
+            return
+        }
+
         res.status(200).json({message: 'Trabajo actualizado correctamente'});
     }catch(error){
         res.status(500).json({message: (error as Error).message});
@@ -47,8 +65,20 @@ export const updateTrabajoHandler = async (req: AuthRequest, res: Response) => {
 //Delete Trabajo
 export const deleteTrabajoHandler = async (req: AuthRequest, res: Response) => {
     const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+        res.status(400).json({ message: 'ID inválido' });
+        return;
+    }
+    
     try{
-        await deleteTrabajo(id);
+        const deletedTrabajo = await deleteTrabajo(id);
+
+        if(!deletedTrabajo){
+            res.status(404).json({ message: 'Trabajo no encontrado para eliminar'})
+            return;
+        }
+
         res.status(200).json({message: 'Trabajo eliminado correctamente'});
     }catch(error){
         res.status(500).json({message: (error as Error).message});
