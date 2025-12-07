@@ -14,8 +14,8 @@ router.get('/:id', middleware.validateParams(validators.urlParamsSchema), contro
 //Post Trabajo
 router.post('/', middleware.validateBody(validators.createTrabajoSchema), controllers.createTrabajoHandler);
 
-//Put Trabajo
-router.put('/:id', middleware.validateParams(validators.urlParamsSchema), middleware.validateBody(validators.updateTrabajoSchema), controllers.updateTrabajoHandler);
+//Patch Trabajo
+router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), middleware.validateBody(validators.updateTrabajoSchema), controllers.updateTrabajoHandler);
 
 //Delete Trabajo
 router.delete('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
