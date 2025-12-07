@@ -18,7 +18,8 @@ export const getAllTrabajos = async () => {
 export const getTrabajoById = async (id: number) => {
     try{
          const trabajoById = await db.select().from(trabajo).where(eq(trabajo.idTrabajo, id));
-         return trabajoById;
+
+         return trabajoById[0] || null;
     }
     catch(error){
         console.error('Error al obtener el Trabajo por ID', error);
@@ -28,50 +29,31 @@ export const getTrabajoById = async (id: number) => {
 
 //Post Trabajo
 export const createTrabajo = async (params: CreateTrabajoParams) => {
-    //Validacion de campos Obligatorios
-    if (!params.nombre) {
-        throw new Error('El campo nombre es obligatorio');
-    }
-    if (!params.idC) {
-        throw new Error('El campo "idChecklist" es obligatorio');
-    }
-    if (!params.idU) {
-        throw new Error('El campo "idUbicacionTecnica" es obligatorio');
-    }
-    if (!params.fecha) {
-        throw new Error('El campo "fecha" es obligatorio');
-    }
-    if (!params.est) {
-        throw new Error('El campo "estado" es obligatorio');
-    }
-    if (!params.tipo) {
-        throw new Error('El campo "tipo" es obligatorio');
-    }
-
     try {
         const newTrabajo = await db.insert(trabajo)
         .values(params)
         .returning();
-        return newTrabajo[0];
+
+        return newTrabajo[0] || null;
     } catch (error) {
         console.error('Error al crear el Trabajo', error);
         throw new Error('No se pudo crear el Trabajo');
     }
 }
 
-//Put Trabajo
-export const updateTrabajo = async (id: number, params: CreateTrabajoParams) => {
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
+//Patch Trabajo
+export const updateTrabajo = async (id: number, params: Partial<CreateTrabajoParams>) => {
+    if (Object.keys(params).length === 0) {
+        return null; // No hay campos para actualizar
+    }
+    
     try{
         const updated = await db.update(trabajo)
         .set(params)
         .where(eq(trabajo.idTrabajo, id))
         .returning()
 
-        //Si el idTrabajo no existe
-        if (!updated[0]) throw new Error('Trabajo no encontrado');
-
+        return updated[0] || null;
     }catch(error){
         console.error(
             `Error al actualizar trabajo con ID ${id}`,
@@ -83,16 +65,12 @@ export const updateTrabajo = async (id: number, params: CreateTrabajoParams) => 
 
 //Delete Trabajo
 export const deleteTrabajo = async (id: number) => {
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
     try{
         const deleted = await db.delete(trabajo)
         .where(eq(trabajo.idTrabajo, id))
         .returning();
 
-        //Si el idTrabajo no existe
-        if (!deleted[0]) throw new Error('Trabajo no encontrado');
-
+        return deleted[0] || null;
     }catch(error){
         console.error(
             `Error al eliminar trabajo con ID ${id}`, error
