@@ -7,7 +7,7 @@ export const createTrabajoSchema = z.object({
     idC: positiveIntId,
     idU: positiveIntId,
     nombre: z.string().min(1).max(100),
-    fecha: z.date(),
+    fecha: z.coerce.date(),
     est: z.string().min(1).max(100),
     tipo: tipoTrabajoEnum,
 });
