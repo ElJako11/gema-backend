@@ -14,40 +14,45 @@ export const getAllChecklist = async () => {
     }
 }
 
+//Get Checklist by ID
+export const getCheclistByID = async (id: number) => {
+    try{
+        const checklistById = await db.select().from(checklist).where(eq(checklist.idChecklist,id));
+
+        return checklistById[0] || null;
+    }catch(error){
+        console.error('Error al encontrar el checklist por ID', error);
+        throw new Error('No se pudo obtener el checklist por ID');
+    }
+} 
+
 //Post Checklist
 export const createChecklist = async (params: CreateChecklistParams) => {
-    //Validacion de campo nombre Obligatorio
-    if (!params.nombre) {
-        throw new Error('El campo nombre es obligatorio');
-    }
-
     try {
         const inserted = await db.insert(checklist)
         .values(params)
         .returning();
 
-        return inserted[0];
+        return inserted[0] || null;
     } catch (error) {
         console.error('Error al crear el checklist', error);
         throw new Error('No se pudo crear el checklist');
     }
 }
 
-//Put Checklist
-export const updateChecklist = async (id: number, params: CreateChecklistParams) => {
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
-    
+//Patch Checklist
+export const updateChecklist = async (id: number, params: Partial<CreateChecklistParams>) => {
+    if (Object.keys(params).length === 0) {
+        return null; // No hay campos para actualizar
+    }
+
     try{
         const updated = await db.update(checklist)
         .set(params)
         .where(eq(checklist.idChecklist, id))
         .returning()
 
-        //Si el idChecklist no existe
-        if (!updated[0]) throw new Error('Checklist no encontrado');
-
-        return updated[0]
+        return updated[0] || null;
 
     }catch(error){
         console.error(
@@ -59,21 +64,14 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
 }
 
 //Delete Checklist
-
 export const deleteChecklistByID = async(id: number) =>{
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
-    
     try{
         const deleted = await db
         .delete(checklist)
         .where(eq(checklist.idChecklist, id))
         .returning()
 
-        //Si el idChecklist no existe
-        if (!deleted[0]) throw new Error('Checklist no encontrado');
-
-        return deleted[0]
+        return deleted[0] || null;
 
     }catch(error){
         console.error(
