@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6990f449-e833-46de-9175-969f4385caa7",
+		"_postman_id": "aeae6093-c37e-45e7-b51d-8924fc8301af",
 		"name": "GEMA-UCAB",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -96,6 +96,61 @@
 					"name": "Tecnico",
 					"item": [
 						{
+							"name": "login-grupo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"token\",pm.response.json().data.token); \r",
+											"\r",
+											"pm.test('login pass',function(){\r",
+											"    pm.response.to.have.status(200); \r",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Correo\": \"{{email}}\",\r\n  \"Contraseña\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Tecnico-grupo",
 							"event": [
 								{
@@ -104,22 +159,22 @@
 										"exec": [
 											"// evaluamos si existen tecnicos \r",
 											"\r",
-											"const data = pm.response.json().data; \r",
+											"const tecnicos = pm.response.json().data; \r",
 											"\r",
-											"if(data.length > 0){\r",
+											"if(tecnicos.length > 0){\r",
 											"    // Tomammos el primer tecnico \r",
-											"    pm.environment.set(\"tecnico-id\", data[0].Id);\r",
+											"    pm.environment.set(\"tecnico-id\", tecnicos[0].Id);\r",
 											"\r",
-											"    console.log('Se ha encontrado un técnico con id: ' + data[0].Id); \r",
+											"    console.log('Se ha encontrado un técnico con id: ' + tecnicos[0].Id); \r",
 											"\r",
 											"    pm.test(\"Obtener Tecnicos\",function(){\r",
 											"        pm.response.to.have.status(200); \r",
 											"    })\r",
 											"    //nos movemos a crear un grupo \r",
-											"    postman.setNextRequest('Nuevo-grupo'); \r",
+											"    pm.execution.setNextRequest('Nuevo-grupo'); \r",
 											"}else{ \r",
 											"    //No existen tecnicos así que procedemos a crearlo \r",
-											"    postman.setNextRequest('Nuevo-tecnico-grupo'); \r",
+											"    pm.execution.setNextRequest('Nuevo-tecnico-grupo'); \r",
 											"}"
 										],
 										"type": "text/javascript",
@@ -186,7 +241,7 @@
 											"// en caso de error \r",
 											"if(pm.response.code == 500){\r",
 											"    console.log('No se puedo crear el tecnico'); \r",
-											"    postman.setNextRequest(null); \r",
+											"    pm.execution.setNextRequest(null); \r",
 											"}\r",
 											"\r",
 											"//si se creó correctamente \r",
@@ -194,7 +249,7 @@
 											"console.log('se ha obtenido el tecnico-id: ' + pm.environment.get('tecnico-id')); \r",
 											"\r",
 											"// nos movemos a crear un grupo \r",
-											"postman.setNextRequest('Nuevo-grupo'); \r",
+											"pm.execution.setNextRequest('Nuevo-grupo'); \r",
 											""
 										],
 										"type": "text/javascript",
@@ -538,7 +593,7 @@
 							"script": {
 								"exec": [
 									"//evaluamos si el grupo se ha eliminado con exito \r",
-									"pm.test(\"Grupo eliminado con exito\", function () {\r",
+									"pm.test(\"Grupo eliminado\", function () {\r",
 									"    pm.response.to.have.status(204); \r",
 									"}); "
 								],
@@ -606,6 +661,60 @@
 				{
 					"name": "Consultar-tecnico",
 					"item": [
+						{
+							"name": "login-trabaja-grupo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Login pass\",function(){\r",
+											"    pm.response.to.have.status(200); \r",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Correo\": \"{{email}}\",\r\n  \"Contraseña\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "Tecnicos-asignar",
 							"event": [
@@ -1176,31 +1285,12 @@
 			"name": "Técnicos",
 			"item": [
 				{
-					"name": "Nuevo tecnico",
+					"name": "login-tecnicos",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"\r",
-									"//evaluamos la iteración\r",
-									"if(!pm.environment.get('2da-iteración')){\r",
-									"\r",
-									"    //craemos un nuevo recurso\r",
-									"    let nombres = [\"Alejandro\", \"Gabriel\", \"Valentina\", \"Santiago\", \"Lucía\", \"Mateo\", \"Daniel\", \"Benjamín\", \"Emilio\", \"Julián\", \"Camila\", \"Nicolás\", \"Martina\", \"Tomás\", \"Antonella\", \"Lucas\", \"Victoria\", \"Thiago\", \"Alma\", \"Facundo\"];\r",
-									"\r",
-									"    let apellidos = [\r",
-									"        \"Juja\", \"Perez\", \"Lopez\", \"Martinez\", \"Gonzalez\", \"Rodríguez\", \"Sánchez\", \"Gómez\", \"Fernández\", \"Díaz\", \"Vázquez\", \"Ruiz\", \"Hernández\", \"Torres\", \"Ramírez\",\"Castro\", \"Moreno\", \"Gil\", \"Flores\", \"Bravo\", \"Rojas\", \"Solís\", \"Paredes\", \"Soto\", \"Moya\", \"Cifuentes\", \"Salgado\", \"Muñoz\", \"Herrera\", \"Silva\"\r",
-									"    ];\r",
-									"\r",
-									"    let nombre = nombres[Math.floor(Math.random() * nombres.length)];\r",
-									"    let apellido = apellidos[Math.floor(Math.random() * apellidos.length)];\r",
-									"    let correo = nombre.toLowerCase() + apellido.toLowerCase() + \"@email.com\";\r",
-									"\r",
-									"    pm.environment.set('nombre',nombre + ' ' + apellido); \r",
-									"    pm.environment.set('correo',correo); \r",
-									"}\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript",
@@ -1212,23 +1302,78 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"\r",
+									"pm.test(\"Login pass\",function(){\r",
+									"    pm.response.to.have.status(200); \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Correo\": \"{{email}}\",\r\n  \"Contraseña\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nuevo tecnico",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//craemos un nuevo recurso\r",
+									"let nombres = [\"Alejandro\", \"Gabriel\", \"Valentina\", \"Santiago\", \"Lucía\", \"Mateo\", \"Daniel\", \"Benjamín\", \"Emilio\", \"Julián\", \"Camila\", \"Nicolás\", \"Martina\", \"Tomás\", \"Antonella\", \"Lucas\", \"Victoria\", \"Thiago\", \"Alma\", \"Facundo\"];\r",
+									"\r",
+									"let apellidos = [\r",
+									"    \"Juja\", \"Perez\", \"Lopez\", \"Martinez\", \"Gonzalez\", \"Rodríguez\", \"Sánchez\", \"Gómez\", \"Fernández\", \"Díaz\", \"Vázquez\", \"Ruiz\", \"Hernández\", \"Torres\", \"Ramírez\",\"Castro\", \"Moreno\", \"Gil\", \"Flores\", \"Bravo\", \"Rojas\", \"Solís\", \"Paredes\", \"Soto\", \"Moya\", \"Cifuentes\", \"Salgado\", \"Muñoz\", \"Herrera\", \"Silva\"\r",
+									"];\r",
+									"\r",
+									"let nombre = nombres[Math.floor(Math.random() * nombres.length)];\r",
+									"let apellido = apellidos[Math.floor(Math.random() * apellidos.length)];\r",
+									"let correo = nombre.toLowerCase() + apellido.toLowerCase() + \"@email.com\";\r",
+									"\r",
+									"pm.environment.set('nombre',nombre + ' ' + apellido); \r",
+									"pm.environment.set('correo',correo); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
 									"// test de nuevo elemento\r",
-									"if(!pm.environment.get('2da-iteración')){\r",
-									"        \r",
-									"    pm.test(\"Tecnico creado\", function () {\r",
-									"        pm.response.to.have.status(201); \r",
-									"    }); \r",
+									" pm.test(\"Tecnico creado\", function () {\r",
+									"    pm.response.to.have.status(201); \r",
+									"}); \r",
 									"\r",
-									"    pm.environment.set('tecnicoID', pm.response.json().data.userId);\r",
-									"\r",
-									"}else{\r",
-									"    pm.test(\"Tecnico ya registrado\",function(){\r",
-									"        pm.response.to.have.status(400); \r",
-									"    }); \r",
-									"    postman.setNextRequest(null); \r",
-									"    pm.environment.set('2da-iteración',false); \r",
-									"}\r",
-									"\r",
+									"pm.environment.set('tecnicoID', pm.response.json().data.userId);\r",
 									"\r",
 									""
 								],
@@ -1270,61 +1415,54 @@
 							"script": {
 								"exec": [
 									"var tecnicos = pm.response.json().data;\r",
-									"const iteracion = pm.environment.get('iteration'); \r",
-									"console.log(pm.environment.get('iteration') + ' carperta gonsultando ')\r",
 									"\r",
-									"    pm.test(\"Status code is 200\", function () {\r",
-									"        pm.response.to.have.status(200); \r",
-									"    }); \r",
+									"pm.test(\"Tecnicos obtenidos\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"}); \r",
 									"\r",
-									"    // buscamos el ID del tecnico\r",
-									"    pm.test(\"ID del técnico registrado correctamente\", function () {\r",
-									"        // Es buena práctica asegurarse de que el ID sea el tipo correcto (ej. número)\r",
-									"        const idEsperado = parseInt(pm.environment.get('tecnicoID')); \r",
+									"// buscamos el ID del tecnico\r",
+									"pm.test(\"ID del técnico registrado correctamente\", function () {\r",
+									"    // Es buena práctica asegurarse de que el ID sea el tipo correcto (ej. número)\r",
+									"    const idEsperado = parseInt(pm.environment.get('tecnicoID')); \r",
 									"\r",
-									"        // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
-									"        const idEncontrado = tecnicos.some(function (tecnico) {\r",
-									"            // Compara el ID de entorno con el ID del técnico actual\r",
-									"            return idEsperado === tecnico.Id; \r",
-									"        });\r",
+									"    // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
+									"    const idEncontrado = tecnicos.some(function (tecnico) {\r",
+									"        // Compara el ID de entorno con el ID del técnico actual\r",
+									"        return idEsperado === tecnico.Id; \r",
+									"    });\r",
 									"\r",
-									"        // Aserción final: Si idEncontrado es 'false', la prueba falla.\r",
-									"        pm.expect(idEncontrado, `ERROR: El ID '${idEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
-									"    }); \r",
+									"    // Aserción final: Si idEncontrado es 'false', la prueba falla.\r",
+									"    pm.expect(idEncontrado, `ERROR: El ID '${idEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
+									"}); \r",
 									"\r",
-									"    // buscamos el nombre del técnico del tecnico \r",
-									"    pm.test(\"Nombre del técnico registrado correctamente\", function () {\r",
-									"        const nombreEsperado = pm.environment.get('nombre');\r",
+									"// buscamos el nombre del técnico del tecnico \r",
+									"pm.test(\"Nombre del técnico registrado correctamente\", function () {\r",
+									"    const nombreEsperado = pm.environment.get('nombre');\r",
 									"\r",
-									"        // 1. Usa Array.some() para verificar si AL MENOS UN elemento cumple la condición\r",
-									"        const tecnicoEncontrado = tecnicos.some(function (tecnico) {\r",
-									"            // Devuelve true si la condición se cumple\r",
-									"            return nombreEsperado === tecnico.Nombre;\r",
-									"        });\r",
+									"    // 1. Usa Array.some() para verificar si AL MENOS UN elemento cumple la condición\r",
+									"    const tecnicoEncontrado = tecnicos.some(function (tecnico) {\r",
+									"        // Devuelve true si la condición se cumple\r",
+									"        return nombreEsperado === tecnico.Nombre;\r",
+									"    });\r",
 									"\r",
-									"        // 2. Aserción final: Valida que el resultado booleano sea 'true'\r",
-									"        pm.expect(tecnicoEncontrado, `ERROR: El técnico '${nombreEsperado}' no está en la lista.`).to.be.true;\r",
-									"    }); \r",
+									"    // 2. Aserción final: Valida que el resultado booleano sea 'true'\r",
+									"    pm.expect(tecnicoEncontrado, `ERROR: El técnico '${nombreEsperado}' no está en la lista.`).to.be.true;\r",
+									"}); \r",
 									"\r",
-									"    // buscamos el correo del tecnico\r",
-									"    pm.test(\"Correo del técnico registrado correctamente\", function () {\r",
-									"        const correoEsperado = pm.environment.get('correo'); \r",
+									"// buscamos el correo del tecnico\r",
+									"pm.test(\"Correo del técnico registrado correctamente\", function () {\r",
+									"    const correoEsperado = pm.environment.get('correo'); \r",
 									"\r",
-									"        // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
-									"        const correoEncontrado = tecnicos.some(function (tecnico) {\r",
-									"            // En JavaScript estándar, usa === para comparar strings\r",
-									"            return correoEsperado === tecnico.Correo; \r",
-									"        });\r",
+									"    // Usamos 'some()' para encontrar si existe alguna coincidencia\r",
+									"    const correoEncontrado = tecnicos.some(function (tecnico) {\r",
+									"        // En JavaScript estándar, usa === para comparar strings\r",
+									"        return correoEsperado === tecnico.Correo; \r",
+									"    });\r",
 									"\r",
-									"        // Aserción final: Si correoEncontrado es 'false', la prueba falla.\r",
-									"        pm.expect(correoEncontrado, `ERROR: El correo '${correoEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
-									"    }); \r",
+									"    // Aserción final: Si correoEncontrado es 'false', la prueba falla.\r",
+									"    pm.expect(correoEncontrado, `ERROR: El correo '${correoEsperado}' no se encontró en la lista de técnicos.`).to.be.true;\r",
+									"}); \r",
 									"\r",
-									"\r",
-									"//pasamos a la segunda iteración \r",
-									"console.log('entró parte 2')\r",
-									"pm.environment.set(\"2da-iteración\", true);\r",
-									"postman.setNextRequest('Nuevo tecnico'); \r",
 									"\r",
 									"\r",
 									"\r",
@@ -1355,6 +1493,62 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{url}}/tecnicos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tecnicos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registrar-nuevamente",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test de nuevo elemento\r",
+									" pm.test(\"Tecnico registrado nuevamente\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"}); \r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Nombre\": \"{{nombre}}\",\r\n  \"Correo\": \"{{correo}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{url}}/tecnicos",
 							"host": [
