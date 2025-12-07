@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { getAllChecklist, createChecklist, updateChecklist, deleteChecklistByID } from "../../services/checklist/checklist.service";    
+import { getAllChecklist, getCheclistByID, createChecklist, updateChecklist, deleteChecklistByID } from "../../services/checklist/checklist.service";    
 import { AuthRequest } from "../../types/types";
 
+//Get all Checklists
 export const getChecklistHandler = async (req: AuthRequest, res: Response) => {
     try {
         const checklists = await getAllChecklist();
@@ -11,7 +12,23 @@ export const getChecklistHandler = async (req: AuthRequest, res: Response) => {
     }
 }
 
-export const postChecklistHandler = async (req: AuthRequest, res: Response) => {
+//Get Checklist by ID
+export const getChecklistByIDHandler = async (req: AuthRequest, res: Response) => {
+    const id = parseInt(req.params.id, 10);
+    try {
+        const checklist = await getCheclistByID(id);
+
+        if (!checklist) {
+            res.status(404).json({ error: 'Checklist no encontrado' });
+            return;
+        }
+        res.status(200).json({ data: checklist });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener checklist' });
+    }
+}
+
+export const createChecklistHandler = async (req: AuthRequest, res: Response) => {
     try {
         const newChecklist = await createChecklist(req.body);
         res.status(201).json({ data: newChecklist });
@@ -19,16 +36,23 @@ export const postChecklistHandler = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ error: 'Error al crear checklist' });
     }
 }
+//patch Checklist
+export const updateChecklistHandler = async (req: AuthRequest, res: Response) => {
+     const id = parseInt(req.params.id, 10);
 
-export const putChecklistHandler = async (req: AuthRequest, res: Response) => {
+     if (Object.keys(req.body).length === 0){
+        res.status(400).json({ message: 'No se enviaron datos para actualizar'});
+        return;
+    }
+
     try {
-        const id = parseInt(req.params.id, 10);
-
         const updatedChecklist = await updateChecklist(id, req.body);
+
         if (!updatedChecklist) {
             res.status(404).json({ error: 'Checklist no encontrado' });
             return;
         }
+
         res.status(200).json({ data: updatedChecklist });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar checklist' });
@@ -36,14 +60,21 @@ export const putChecklistHandler = async (req: AuthRequest, res: Response) => {
 }
 
 export const deleteChecklistHandler = async(req: AuthRequest, res: Response) => {
-    try {
-        const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id, 10);
 
+    if (isNaN(id)) {
+        res.status(400).json({ message: 'ID inválido' });
+        return;
+    }
+    
+    try {
         const deletedChecklist = await deleteChecklistByID(id);
+
         if (!deletedChecklist) {
             res.status(404).json({ error: 'Checklist no encontrado' });
             return;
         }   
+        
         res.status(200).json({ message: 'Checklist eliminado correctamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar checklist' });
