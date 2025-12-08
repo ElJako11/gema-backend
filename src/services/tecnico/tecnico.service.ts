@@ -1,6 +1,4 @@
 import { db } from '../../config/db';
-// import { usuarios } from '../../tables/usuarios';
-// import { CreateTecnicoParams } from '../../types/types';
 import { eq } from 'drizzle-orm';
 import { CreateTecnicoParams } from '../../types/tecnico';
 import { tecnico } from '../../tables/tecnico';
@@ -20,10 +18,6 @@ export const getAllTecnicos = async () => {
 
 //Create tecnico
 export const createTecnico = async (params: CreateTecnicoParams) => {
-  // Validate input
-    if (!params.nombre || !params.direccion) {
-      throw new Error('Nombre y Direccion son campos obligatorios');
-    }
   try {
     const insertedTecnico = await db
       .insert(tecnico)
