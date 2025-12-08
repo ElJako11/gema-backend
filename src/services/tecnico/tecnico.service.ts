@@ -26,6 +26,7 @@ export const createTecnico = async (params: CreateTecnicoParams) => {
     return insertedTecnico[0] || null;
   } catch (error) {
     console.error('Error al crear tecnico:', error);
+    console.error('Error al crear tecnico:', error);
     throw new Error('Error al crear el tecnico');
   }
 }
@@ -63,4 +64,4 @@ export const deleteTecnico = async (id : number) => {
     console.error('Error al eliminar tecnico:', error);
     throw new Error('Error al eliminar el tecnico');
   }
-};
+}
