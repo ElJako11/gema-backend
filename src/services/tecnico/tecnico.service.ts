@@ -23,25 +23,26 @@ export const createTecnico = async (params: CreateTecnicoParams) => {
       .insert(tecnico)
       .values(params)
       .returning();
-    return insertedTecnico[0];
+    return insertedTecnico[0] || null;
   } catch (error) {
     console.error('Error al crear tecnico:', error);
     throw new Error('Error al crear el tecnico');
   }
 }
 
-//Put tecnico
-export const updateTecnico = async (id : number, params : CreateTecnicoParams) => {
-  if (isNaN(id)) {
-    throw new Error('ID inválido');
+//Paych tecnico
+export const updateTecnico = async (id : number, params : Partial<CreateTecnicoParams>) => {
+  if (Object.keys(params).length === 0) {
+    return null; // No hay campos para actualizar
   }
+
   try {
     const updatedTecnico = await db
       .update(tecnico)
       .set(params)
       .where(eq(tecnico.idTecnico, id))
       .returning();
-    return updatedTecnico[0];
+    return updatedTecnico[0] || null;
   } catch (error) {
     console.error('Error al actualizar tecnico:', error);
     throw new Error('Error al actualizar el tecnico');
@@ -50,64 +51,16 @@ export const updateTecnico = async (id : number, params : CreateTecnicoParams) =
 
 //Delete tecnico
 export const deleteTecnico = async (id : number) => {
-  if (isNaN(id)) throw new Error('ID inválido');
   try {
     const deleted = await db
       .delete(tecnico)
       .where(eq(tecnico.idTecnico, id))
       .returning();
 
-    return deleted[0];
+    return deleted[0] || null;
 
   } catch (error) {
     console.error('Error al eliminar tecnico:', error);
     throw new Error('Error al eliminar el tecnico');
   }
 };
-
-// export const createTecnico = async ({
-//   Nombre,
-//   Correo,
-// }: CreateTecnicoParams) => {
-//   try {
-//     // Validate input
-//     if (!Nombre || !Correo) {
-//       throw new Error('Nombre y Correo son campos obligatorios');
-//     }
-
-//     // Insert into usuarios table
-//     const insertedUser = await db
-//       .insert(usuarios)
-//       .values({
-//         Nombre,
-//         Correo,
-//         Tipo: 'SUPERVISOR',
-//       })
-//       .returning({ Id: usuarios.Id });
-
-//     if (insertedUser.length === 0) {
-//       throw new Error('Error al crear el usuario');
-//     }
-
-//     return {
-//       message: 'Usuario creado correctamente',
-//       userId: insertedUser[0].Id,
-//     };
-//   } catch (error) {
-//     console.error('Error creating tecnico:', error);
-//     throw new Error('Error al crear el tecnico');
-//   }
-// };
-
-// export const getAllTecnicos = async () => {
-//   const tecnicos = await db
-//     .select({
-//       Id: usuarios.Id,
-//       Nombre: usuarios.Nombre,
-//       Correo: usuarios.Correo,
-//     })
-//     .from(usuarios)
-//     .where(eq(usuarios.Tipo, 'SUPERVISOR'));
-
-//   return tecnicos;
-// };
