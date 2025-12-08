@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 // Configuración del CORS.
 app.use(
   cors({
-    origin: process.env.PRODUCTION_URL as string | 'http://localhost:5173',
+    origin: (process.env.PRODUCTION_URL as string) || 'http://localhost:5173',
     credentials: true,
   })
 );
