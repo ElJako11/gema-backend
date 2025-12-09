@@ -1,5 +1,4 @@
-import express from 'express';
-import cors from 'cors';
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';import cors from 'cors';
 import { db } from './config/db';
 import routes from './router';
 import swaggerUi from 'swagger-ui-express';
@@ -19,6 +18,18 @@ app.use(
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+const jsonErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    res.status(400).json({
+      status: 'error',
+      message: 'El JSON enviado tiene un formato inválido. Revisa las comas y comillas.'
+    });
+    return; // Retorna void explícitamente
+  }
+  next();
+};
+
+app.use(jsonErrorHandler);
 app.use(cookieParser());
 
 // Swagger UI

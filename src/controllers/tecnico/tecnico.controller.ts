@@ -16,7 +16,7 @@ export const createTecnicoHandler = async (
     return;
   } catch (error) {
     console.error('Error in createTecnicoHandler:', error);
-    res.status(500).json({
+    res.status(400).json({
       error: 'Error al crear el tecnico',
     });
     return; // Ensure all code paths return a value
@@ -26,7 +26,7 @@ export const createTecnicoHandler = async (
 export const getAllTecnicosHandler = async (req: Request, res: Response) => {
   try {
     const usuarios = await getAllTecnicos();
-    res.status(201).json({
+    res.status(200).json({
       data: usuarios,
     });
     return;

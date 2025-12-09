@@ -81,7 +81,7 @@ export const deleteTrabajaEnGrupoHandler = async (
       return;
     }
 
-    res.status(200).json({
+    res.status(204).json({
       message: result.message,
       data: result.trabajaEnGrupo,
     });

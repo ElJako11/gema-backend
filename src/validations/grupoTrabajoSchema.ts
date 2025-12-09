@@ -10,6 +10,7 @@ export const grupoTrabajoSchema = z.object({
     .min(1, "El nombre es requerido"), // asegura que no esté vacío
   supervisorId: z.coerce
     .number()
+    .min(1, "El supervisorId debe ser un número válido")
     .int()
     .refine((val) => val !== undefined && val !== null, {
       message: 'El supervisorId es requerido',
