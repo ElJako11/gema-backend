@@ -33,6 +33,7 @@ export const getTrabajoByIdHandler = async (req: Request, res: Response) => {
 //Post Trabajo
 export const createTrabajoHandler = async (req: AuthRequest, res: Response) => {
     try{
+        console.table(req.body)
         const newTrabajo = await createTrabajo(req.body);
         res.status(201).json(newTrabajo);
     }catch(error){

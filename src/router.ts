@@ -7,6 +7,7 @@ import { authenticate } from './middleware/auth.middleware'; // Importa el middl
 import { autorizationMiddleware } from './middleware/autorization.middleware';
 import trabajaEnGrupoRoutes from './routes/trabajaEnGrupo.routes';
 import checklistRoutes from './routes/checklist.routes';
+import trabajoRoutes from './routes/trabajo.routes';
 const router = Router();
 
 // Protege la ruta de tecnicos
@@ -41,5 +42,12 @@ router.use(
   autorizationMiddleware(),
   checklistRoutes
 );
+
+router.use(
+  '/trabajos',
+  authenticate,
+  autorizationMiddleware(),
+  trabajoRoutes
+)
 
 export default router;
