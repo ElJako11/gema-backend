@@ -33,16 +33,16 @@ export const getTrabajoByIdHandler = async (req: Request, res: Response) => {
 //Post Trabajo
 export const createTrabajoHandler = async (req: AuthRequest, res: Response) => {
     try{
-        console.table(req.body)
         const newTrabajo = await createTrabajo(req.body);
         res.status(201).json(newTrabajo);
     }catch(error){
         res.status(500).json({message: (error as Error).message});
     }
 }
+
 //Patch Trabajo
 export const updateTrabajoHandler = async (req: AuthRequest, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
 
     if (Object.keys(req.body).length === 0){
         res.status(400).json({ message: 'No se enviaron datos para actualizar'});
