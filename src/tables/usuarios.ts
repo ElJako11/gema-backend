@@ -1,6 +1,9 @@
 import { pgTable, varchar, serial, pgEnum, text } from 'drizzle-orm/pg-core';
 
-export const tipoUsuarioEnum = pgEnum('Tipo', ['SUPERVISOR', 'DIRECTOR']);
+export const tipoUsuarioEnum = pgEnum('tipoUsuario', [
+  'SUPERVISOR',
+  'DIRECTOR',
+]);
 
 export const usuarios = pgTable('Usuarios', {
   Id: serial('Id').primaryKey(),
