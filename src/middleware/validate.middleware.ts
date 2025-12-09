@@ -9,8 +9,9 @@ export const validateBody = (schema: ZodTypeAny): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
 
-      schema.parse(req.body);
-      
+      // Parse and coerce (if schema has preprocess/coercions) and replace request body
+      const parsedBody = schema.parse(req.body);
+      (req as any).body = parsedBody;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -36,7 +37,8 @@ export const validateBody = (schema: ZodTypeAny): RequestHandler =>
 export const validateParams = (schema: ZodTypeAny): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.params);
+      const parsedParams = schema.parse(req.params);
+      (req as any).params = parsedParams;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -61,7 +63,8 @@ export const validateParams = (schema: ZodTypeAny): RequestHandler =>
 export const validateQuery = (schema: ZodTypeAny): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.query);
+      const parsedQuery = schema.parse(req.query);
+      (req as any).query = parsedQuery;
       next();
     } catch (error) {
       if (error instanceof ZodError) {

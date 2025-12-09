@@ -8,9 +8,11 @@ import {
   primaryKey,
 } from 'drizzle-orm/pg-core';
 import { trabajo } from './trabajo';
-import { table } from 'console';
 
-export const tipoEnum = pgEnum('tipoMantenimiento', ['Periodico', 'Condicion']);
+export const tipoMantenimientoEnum = pgEnum('tipoMantenimiento', [
+  'Periodico',
+  'Condicion',
+]);
 
 export const mantenimiento = pgTable(
   'mantenimiento',
@@ -22,7 +24,7 @@ export const mantenimiento = pgTable(
     fechaLimite: date('fechaLimite').notNull(),
     prioridad: varchar('prioridad').notNull(),
     resumen: varchar('resumen', { length: 250 }),
-    tipo: tipoEnum('tipo').notNull(),
+    tipo: tipoMantenimientoEnum('tipoMantenimiento').notNull(),
     frecuencia: varchar('frecuencia'),
     instancia: varchar('instancia'),
     condicion: varchar('condicion', { length: 100 }),
