@@ -24,7 +24,7 @@ export const mantenimiento = pgTable(
     fechaLimite: date('fechaLimite').notNull(),
     prioridad: varchar('prioridad').notNull(),
     resumen: varchar('resumen', { length: 250 }),
-    tipo: tipoMantenimientoEnum('tipoMantenimiento').notNull(),
+    tipo: tipoMantenimientoEnum('tipo').notNull(),
     frecuencia: varchar('frecuencia'),
     instancia: varchar('instancia'),
     condicion: varchar('condicion', { length: 100 }),
