@@ -1,14 +1,20 @@
 import { z } from 'zod';
-import { positiveIntId } from './globalTypeSchema'; 
+import { positiveIntIdCoercion } from './globalTypeSchema'; // Asumo que tienes esto
 
-export const assignGrupoToTrabajoSchema = z.object({
-    idG: positiveIntId, // ID del Grupo
-    idT: positiveIntId  // ID del Trabajo
+// 1. Para validar cuando solo viene un ID en la URL (ej: /trabajos/:id/grupos)
+// IMPORTANTE: La clave debe llamarse 'id' porque en la ruta usas :id
+export const urlIdParamSchema = z.object({
+    id: positiveIntIdCoercion,
 });
 
-// Para el DELETE, como suele ir en la URL, quizás necesites params:
-// DELETE /trabajos/:idT/grupos/:idG
+// 2. Para el Body del POST (Solo enviamos el ID del grupo, el del trabajo ya está en la URL)
+export const assignGrupoBodySchema = z.object({
+    idG: positiveIntIdCoercion,
+});
+
+// 3. Para el DELETE (Aquí recibimos DOS IDs en la URL)
+// Ruta: /trabajos/:idT/grupos/:idG
 export const unassignParamsSchema = z.object({
-    idT: z.coerce.number().int().positive(),
-    idG: z.coerce.number().int().positive(),
+    idT: positiveIntIdCoercion,
+    idG: positiveIntIdCoercion,
 });
