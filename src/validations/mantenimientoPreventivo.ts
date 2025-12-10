@@ -20,9 +20,7 @@ const baseUpdate = createMantenimientoSchema.omit({
   idTrabajo: true,
 });
 
-export const updateMantenimientoSchema = baseUpdate.partial().extend({
-  idMantenimiento: positiveIntIdCoercion,
-});
+export const updateMantenimientoSchema = baseUpdate.partial();
 
 export const urlParamsSchema = z.object({
   id: positiveIntIdCoercion,

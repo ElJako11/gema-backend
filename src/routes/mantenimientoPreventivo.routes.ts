@@ -13,6 +13,9 @@ import {
   validateParams,
 } from '../middleware/validate.middleware';
 
+import { authenticate } from '../middleware/auth.middleware';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
+
 import {
   createMantenimientoSchema,
   updateMantenimientoSchema,
@@ -21,21 +24,33 @@ import {
 
 const router = Router();
 
-router.get('/', getAllMantenimientoPreventivoHandler);
+router.get(
+  '/',
+  authenticate,
+  autorizationMiddleware(),
+  getAllMantenimientoPreventivoHandler
+);
+
 router.get(
   '/:id',
+  authenticate,
+  autorizationMiddleware(),
   validateParams(urlParamsSchema),
   getResumenMantenimientoHandler
 );
 
 router.post(
   '/',
+  authenticate,
+  autorizationMiddleware(),
   validateBody(createMantenimientoSchema),
   postMantenimientoHandler
 );
 
 router.patch(
   '/:id',
+  authenticate,
+  autorizationMiddleware(),
   validateBody(updateMantenimientoSchema),
   validateParams(urlParamsSchema),
   patchMantenimientoHandler
@@ -43,6 +58,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  authenticate,
+  autorizationMiddleware(),
   validateParams(urlParamsSchema),
   deleteMantenimientoHandler
 );
