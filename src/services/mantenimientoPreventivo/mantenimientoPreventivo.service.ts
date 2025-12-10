@@ -67,7 +67,7 @@ export const getResumenMantenimiento = async (id: number) => {
     .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
     .where(eq(mantenimiento.idMantenimiento, id));
 
-  return result;
+  return result[0];
 };
 
 export const createMantenimientoPreventivo = async (
@@ -102,7 +102,7 @@ export const createMantenimientoPreventivo = async (
     throw new Error('El mantenimiento no se creo correctamente');
   }
 
-  return result;
+  return result[0];
 };
 
 export const updateMantenimientoPreventivo = async (
@@ -130,7 +130,7 @@ export const updateMantenimientoPreventivo = async (
     throw new Error('El mantenimiento no se actualizo correctamente');
   }
 
-  return result;
+  return result[0];
 };
 
 export const deleteMantenimientoPreventivo = async (
