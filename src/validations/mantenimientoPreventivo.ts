@@ -4,9 +4,10 @@ import { positiveIntId, positiveIntIdCoercion } from './globalTypeSchema';
 const prioridadEnum = z.enum(['BAJA', 'MEDIA', 'ALTA']);
 const tipoEnum = z.enum(['Periodico', 'Condicion']);
 
-export const createmantenimientoSchema = z.object({
+export const createMantenimientoSchema = z.object({
   idTrabajo: positiveIntId,
-  fechaLimite: z.date().min(new Date()),
+  // Accept strings (ISO) or Date objects by coercing to Date
+  fechaLimite: z.coerce.date().min(new Date()),
   prioridad: prioridadEnum,
   resumen: z.string().min(1).max(250),
   tipo: tipoEnum,
@@ -15,13 +16,11 @@ export const createmantenimientoSchema = z.object({
   condicion: z.string().min(1).max(100).optional(),
 });
 
-const baseUpdate = createmantenimientoSchema.omit({
+const baseUpdate = createMantenimientoSchema.omit({
   idTrabajo: true,
 });
 
-export const updateSchema = baseUpdate.partial().extend({
-  idMantenimiento: positiveIntIdCoercion,
-});
+export const updateMantenimientoSchema = baseUpdate.partial();
 
 export const urlParamsSchema = z.object({
   id: positiveIntIdCoercion,
