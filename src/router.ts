@@ -8,6 +8,7 @@ import { autorizationMiddleware } from './middleware/autorization.middleware';
 import trabajaEnGrupoRoutes from './routes/trabajaEnGrupo.routes';
 import checklistRoutes from './routes/checklist.routes';
 import trabajoRoutes from './routes/trabajo.routes';
+import grupoXtrabajoRoutes from './routes/grupoXtrabajo.routes';
 const router = Router();
 
 // Protege la ruta de tecnicos
@@ -50,4 +51,10 @@ router.use(
   trabajoRoutes
 )
 
+router.use(
+  '/grupoXtrabajo',
+  authenticate,
+  autorizationMiddleware(),
+  grupoXtrabajoRoutes
+)
 export default router;
