@@ -1,4 +1,4 @@
-export type createGrupoXTrabajoParams = {
+export type CreateGrupoXTrabajoParams = {
     idG: number;
     idT: number;
 }
