@@ -1,15 +1,41 @@
 import { db } from '../../config/db';
 
-import { eq } from 'drizzle-orm';
+import { eq, between, sql } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
+import { ubicacionTecnica } from '../../tables/ubicacionTecnica';
 
 import {
   createMantenimiento,
   updateMantenimiento,
 } from '../../types/mantenimiento';
-import { ubicacionTecnica } from '../../tables/ubicacionTecnica';
+
+import {
+  Add,
+  getEndofMonth,
+  getStartofMonth,
+  getStartOfWeek,
+} from '../../utils/dateHandler';
+
+const getMantenimientobyFechaQuery = async (
+  initialISO: string,
+  finalISO: string
+) => {
+  const result = await db
+    .select({
+      idMantenimiento: mantenimiento.idMantenimiento,
+      estado: trabajo.est,
+      ubicacion: ubicacionTecnica.descripcion,
+      fechaLimite: mantenimiento.fechaLimite,
+    })
+    .from(mantenimiento)
+    .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
+    .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+    .where(between(mantenimiento.fechaLimite, initialISO, finalISO));
+
+  return result;
+};
 
 export const getAllMantenimiento = async () => {
   const result = await db
@@ -68,6 +94,31 @@ export const getResumenMantenimiento = async (id: number) => {
     .where(eq(mantenimiento.idMantenimiento, id));
 
   return result[0];
+};
+
+export const getAllMantenimientosSemanales = async (date: string) => {
+  const initialDate: Date = getStartOfWeek(date);
+  const finalDate: Date = Add(initialDate);
+
+  //* Transformar fechas en formato ISO.
+  const initialISO = initialDate.toISOString().split('T')[0];
+  const finalISO = finalDate.toISOString().split('T')[0];
+
+  const result = getMantenimientobyFechaQuery(initialISO, finalISO);
+
+  return result;
+};
+
+export const getAllMantenimientosPorMes = async (date: string) => {
+  const initialDate = getStartofMonth(date);
+  const finalDate = getEndofMonth(date);
+
+  const initialISO = initialDate.toISOString().split('T')[0];
+  const finalISO = finalDate.toISOString().split('T')[0];
+
+  const result = await getMantenimientobyFechaQuery(initialISO, finalISO);
+
+  return result;
 };
 
 export const createMantenimientoPreventivo = async (

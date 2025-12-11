@@ -10,5 +10,6 @@
       "database": "gemadb",
       "username": "postgres"
     }
-  ]
+  ],
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
