@@ -1,3 +1,10 @@
+export type ResumenMantenimiento = {
+  idMantenimiento: number;
+  estado: string;
+  ubicacion: string;
+  fechaLimite: string;
+};
+
 export type createMantenimiento = {
   idTrabajo: number;
   fechaLimite: Date;
