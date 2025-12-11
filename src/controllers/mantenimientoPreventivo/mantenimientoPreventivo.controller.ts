@@ -6,7 +6,11 @@ import {
   getMantenimientobyID,
   getResumenMantenimiento,
   updateMantenimientoPreventivo,
+  getAllMantenimientosSemanales,
+  getAllMantenimientosPorMes,
 } from '../../services/mantenimientoPreventivo/mantenimientoPreventivo.service';
+
+import { ResumenMantenimiento } from '../../types/mantenimiento';
 
 export const getAllMantenimientoPreventivoHandler = async (
   _req: Request,
@@ -64,7 +68,7 @@ export const getResumenMantenimientoHandler = async (
   try {
     const result = await getResumenMantenimiento(id);
 
-    if (result.length === 0) {
+    if (!result) {
       res
         .status(404)
         .json({ error: 'No se encontro un mantenimiento asociado a ese ID' });
@@ -77,6 +81,39 @@ export const getResumenMantenimientoHandler = async (
       res.status(404).json({ error: error.message });
       return;
     }
+    res.status(500).json({ error: 'Error interno del servidor' });
+    return;
+  }
+};
+
+export const getAllMantenimientoByFechaHandler = async (
+  req: Request,
+  res: Response
+) => {
+  const { date, filter } = req.query;
+
+  if (!date) {
+    res.status(400).json({ error: '' });
+    return;
+  }
+
+  if (!filter || filter.length === 0) {
+    res.status(400).json({ error: 'El filtro recibido es invalido' });
+    return;
+  }
+
+  let result: ResumenMantenimiento[];
+
+  try {
+    if (filter === 'mensual') {
+      result = await getAllMantenimientosPorMes(date as string);
+    } else {
+      result = await getAllMantenimientosSemanales(date as string);
+    }
+
+    res.status(200).json(result);
+    return;
+  } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
     return;
   }
