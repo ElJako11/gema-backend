@@ -6,6 +6,7 @@ import {
   postMantenimientoHandler,
   patchMantenimientoHandler,
   deleteMantenimientoHandler,
+  getAllMantenimientoByFechaHandler,
 } from '../controllers/mantenimientoPreventivo/mantenimientoPreventivo.controller';
 
 import {
@@ -29,6 +30,13 @@ router.get(
   authenticate,
   autorizationMiddleware(),
   getAllMantenimientoPreventivoHandler
+);
+
+router.get(
+  '/filtros',
+  authenticate,
+  autorizationMiddleware(),
+  getAllMantenimientoByFechaHandler
 );
 
 router.get(
