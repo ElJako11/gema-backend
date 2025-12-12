@@ -1,5 +1,4 @@
-import { pgTable } from 'drizzle-orm/pg-core';
-import { integer, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, integer, primaryKey } from 'drizzle-orm/pg-core';
 import { grupoDeTrabajo } from './grupoDeTrabajo';
 import { trabajo } from './trabajo';
 
