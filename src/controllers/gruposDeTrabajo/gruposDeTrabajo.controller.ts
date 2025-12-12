@@ -21,12 +21,18 @@ export const createGrupoDeTrabajoHandler = async (
 
     return;
   } catch (error) {
-    console.error('Error in createGrupoDeTrabajoHandler: ', error);
-    res.status(500).json({
+    if (error instanceof Error && error.message == 'El código del grupo de trabajo ya existe') {
+      res.status(409).json({ error: error.message });
+      return;
+    }
+    else{
+      console.error('Error in createGrupoDeTrabajoHandler: ', error);
+      res.status(500).json({
       error: 'Error al crear el grupo de trabajo',
     });
     return;
   }
+}
 };
 
 export const getGruposDeTrabajoHandler = async (

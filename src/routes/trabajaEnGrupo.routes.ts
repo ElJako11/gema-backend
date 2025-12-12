@@ -41,6 +41,8 @@ const router = Router();
  *         description: Trabajador asignado correctamente al grupo
  *       400:
  *         description: Datos inválidos
+ *       404:
+ *         description: Tecnico o grupo de trabajo no encontrado
  *       500:
  *         description: Error al asignar trabajador al grupo
  */

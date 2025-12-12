@@ -6,6 +6,16 @@ import { createGrupoDeTrabajoParams } from '../../types/gruposDeTrabajo';
 export const createGrupoDeTrabajo = async (
   params: createGrupoDeTrabajoParams
 ) => {
+  const existingGrupo = await db
+    .select({ id: grupoDeTrabajo.id })
+    .from(grupoDeTrabajo)
+    .where(eq(grupoDeTrabajo.codigo, params.codigo))
+    .limit(1);
+
+  if (existingGrupo.length > 0) {
+    throw new Error('El código del grupo de trabajo ya existe');
+  }
+
   try {
     const inserted = await db
       .insert(grupoDeTrabajo)
@@ -26,8 +36,8 @@ export const createGrupoDeTrabajo = async (
       grupo: inserted[0],
     };
   } catch (error) {
-    console.error('Error creating grupo de trabajo');
-    throw new Error('Error al crear el grupo de trabajo' + error);
+    console.error('Error al crear el grupo de trabajo:', error);
+    throw error;
   }
 };
 
@@ -57,6 +67,9 @@ export const getGrupoDeTrabajoById = async (id: number) => {
       .from(grupoDeTrabajo)
       .where(eq(grupoDeTrabajo.id, id))
       .limit(1);
+    if(result.length === 0) {
+      return null;
+    }
     return result
   } catch (error) {
     console.error(`Error al obtener el grupo de trabajo con ID ${id}:`, error);
@@ -86,7 +99,7 @@ export const updateGrupoDeTrabajo = async (
       .where(eq(grupoDeTrabajo.id, id))
       .returning();
     if (!updated.length) {
-      throw new Error('Error al actualizar grupo de trabajo');
+      return null;
     }
 
     return {
@@ -115,7 +128,7 @@ export const deleteGrupoDeTrabajo = async (id: number) => {
       .returning();
 
     if (!deleted.length) {
-      throw new Error('No se encontró al grupo');
+      return null;
     }
 
     return {
