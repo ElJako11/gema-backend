@@ -149,19 +149,6 @@ router.get('/:id', validateParams(idParamSchema), getUbicacionTecnicaByIdHandler
  *                 type: string
  *                 description: Código de identificación de la ubicación técnica 
  *                 example: "COD123"
- *               padres:
- *                 type: array
- *                 description: Lista de padres de la ubicación técnica
- *                 items:
- *                   type: object
- *                   properties:
- *                     idPadre:
- *                       type: integer
- *                       example: 1
- *                     esUbicacionFisica:
- *                       type: boolean
- *                       example: true
- *                   description: Lista de padres de la ubicación técnica
  *     responses:
  *       201:
  *         description: Ubicación técnica creada correctamente
