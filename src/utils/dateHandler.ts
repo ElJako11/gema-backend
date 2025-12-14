@@ -19,7 +19,7 @@ export const getStartOfWeek = (date: string): Date => {
 };
 
 export const Add = (date: Date) => {
-  return addDays(date, 5);
+  return addDays(date, 4);
 };
 
 export const getStartofMonth = (datestr: string) => {
@@ -32,4 +32,8 @@ export const getEndofMonth = (datestr: string) => {
   const date = new Date(datestr);
 
   return endOfMonth(date);
+};
+
+export const convertToISOStr = (date: Date) => {
+  return date.toISOString().split('T')[0];
 };
