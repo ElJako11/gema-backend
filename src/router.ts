@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import tecnicoRoutes from './routes/tecnico.routes';
+import tecnicoRoutes from './routes/tecnic.routes';
 import grupoDeTrabajoRoutes from './routes/gruposDeTrabajo.routes';
 import authRoutes from './routes/auth.routes';
 import ubicacionesTecnicasRoutes from './routes/ubicacionesTecnicas.routes';
