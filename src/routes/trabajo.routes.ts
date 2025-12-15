@@ -1,23 +1,36 @@
 import { Router } from 'express';
-import * as controllers from '../controllers/trabajo/trabajo.controller';
-import * as middleware from '../middleware/validate.middleware'
-import * as validators from '../validations/trabajoSchema';
+import {
+    createTrabajoHandler,
+    deleteTrabajoHandler,
+    getTrabajoByIdHandler,
+    getTrabajosHandler,
+    updateTrabajoHandler
+} from '../controllers/trabajo/trabajo.controller';
+import {
+    validateBody,
+    validateParams
+} from '../middleware/validate.middleware'
+import {
+    urlParamsSchema,
+    createTrabajoSchema,
+    updateTrabajoSchema
+} from '../validations/trabajoSchema';
 
 const router = Router();
 
 //Get all Trabajos
-router.get('/', controllers.getTrabajosHandler);
+router.get('/', getTrabajosHandler);
 
 //Get Trabajo by ID
-router.get('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);
+router.get('/:id', validateParams(urlParamsSchema), getTrabajoByIdHandler);
 
 //Post Trabajo
-router.post('/', middleware.validateBody(validators.createTrabajoSchema), controllers.createTrabajoHandler);
+router.post('/', validateBody(createTrabajoSchema), createTrabajoHandler);
 
 //Patch Trabajo
-router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), middleware.validateBody(validators.updateTrabajoSchema), controllers.updateTrabajoHandler);
+router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateTrabajoSchema), updateTrabajoHandler);
 
 //Delete Trabajo
-router.delete('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
+router.delete('/:id', validateParams(urlParamsSchema), deleteTrabajoHandler);
 
 export default router; 
