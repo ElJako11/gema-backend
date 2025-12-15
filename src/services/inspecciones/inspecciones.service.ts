@@ -10,7 +10,6 @@ import { usuarios } from '../../tables/usuarios';
 import { itemChecklist } from '../../tables/item-checklist';
 
 import {
-  estadoEnum,
   insertInspeccion,
   putInspeccion,
   ResumenInspeccion,
@@ -150,10 +149,17 @@ export const createInspeccion = async (inspeccionData: insertInspeccion) => {
   return result[0];
 };
 
-export const updateInspeccion = async (inspeccionData: putInspeccion) => {
+export const updateInspeccion = async (
+  inspeccionData: putInspeccion,
+  id: number
+) => {
   const valuesToUpdate = cleanObject(inspeccionData);
 
-  const result = await db.update(inspeccion).set(valuesToUpdate).returning();
+  const result = await db
+    .update(inspeccion)
+    .set(valuesToUpdate)
+    .where(eq(inspeccion.id, id))
+    .returning();
 
   if (result.length === 0) {
     throw new Error('La inspeccion no se actualizo correctamente');
