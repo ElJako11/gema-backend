@@ -108,15 +108,20 @@ export const updateGrupoDeTrabajo = async (
  * @author AndresChacon00
  */
 export const deleteGrupoDeTrabajo = async (id: number) => {
+  const existe = await db
+      .select()
+      .from(grupoDeTrabajo)
+      .where(eq(grupoDeTrabajo.id, id))
+      .limit(1);
+    if (!existe.length) {
+      throw new Error('No se encontró al grupo');
+    }
   try {
+    
     const deleted = await db
       .delete(grupoDeTrabajo)
       .where(eq(grupoDeTrabajo.id, id))
       .returning();
-
-    if (!deleted.length) {
-      throw new Error('No se encontró al grupo');
-    }
 
     return {
       message: 'Grupo de trabajo eliminado correctamente',

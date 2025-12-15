@@ -16,7 +16,7 @@ export const createTecnicoHandler = async (
     return;
   } catch (error) {
     console.error('Error in createTecnicoHandler:', error);
-    res.status(400).json({
+    res.status(500).json({
       error: 'Error al crear el tecnico',
     });
     return; // Ensure all code paths return a value

@@ -10,7 +10,7 @@ import {
 import { trabajo } from './trabajo';
 import { table } from 'console';
 
-export const tipoMantenimientoEnum = pgEnum('tipo', ['Periodico', 'Condicion']);
+export const tipoMantenimientoEnum = pgEnum('tipoMantenimiento', ['Periodico', 'Condicion']);
 
 export const mantenimiento = pgTable(
   'mantenimiento',

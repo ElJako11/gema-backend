@@ -9,7 +9,7 @@ import {
 import { checklist } from './checklist';
 import { ubicacionTecnica } from './ubicacionTecnica';
 
-const tipoTrabajoEnum = pgEnum('tipo', ['Mantenimiento', 'Inspeccion']);
+const tipoTrabajoEnum = pgEnum('tipoTrabajo', ['Mantenimiento', 'Inspeccion']);
 
 export const trabajo = pgTable('trabajo', {
   idTrabajo: serial('idTrabajo').primaryKey().notNull(),

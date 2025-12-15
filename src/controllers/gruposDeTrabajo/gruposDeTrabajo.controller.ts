@@ -133,17 +133,14 @@ export const deleteGrupoDeTrabajoHandler = async (
 
     const result = await deleteGrupoDeTrabajo(id);
 
-    if (result === null) {
+    res.status(204).json({});
+  } catch (error) {
+    if (error instanceof Error && error.message === 'No se encontró al grupo') {
       res.status(404).json({ error: 'Grupo de trabajo no encontrado' });
       return;
-    }
-
-    res.status(204).json({
-      message: result.message,
-      data: result.grupo,
-    });
-  } catch (error) {
+    }else{
     console.error('Error in deleteGrupoDeTrabajoHandler: ', error);
     res.status(500).json({ error: 'Error al eliminar grupo de trabajo' });
+    }
   }
 };
