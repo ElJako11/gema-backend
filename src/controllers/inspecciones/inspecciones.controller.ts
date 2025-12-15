@@ -96,8 +96,10 @@ export const createInspeccionHandler = async (req: Request, res: Response) => {
 };
 
 export const updateInspeccionHandler = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+
   try {
-    const result = await updateInspeccion(req.body);
+    const result = await updateInspeccion(req.body, id);
 
     res.status(200).json(result);
     return;
