@@ -1,3 +1,11 @@
 /node_modules
 .env
 .vscode
+# Postman
+.postman/
+.postmanrc
+*.postman_collection.json.backup
+
+# Test reports
+tests/api/reports/*
+!tests/api/reports/.gitkeep

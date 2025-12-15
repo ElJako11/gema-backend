@@ -40,19 +40,20 @@ export const createChecklist = async (params: CreateChecklistParams) => {
     }
 }
 
-//Patch Checklist
-export const updateChecklist = async (id: number, params: Partial<CreateChecklistParams>) => {
-    if (Object.keys(params).length === 0) {
-        return null; // No hay campos para actualizar
-    }
-
+//Put Checklist
+export const updateChecklist = async (id: number, params: CreateChecklistParams) => {
+    //Validacion de ID
+    if (isNaN(id)) throw new Error('ID inválido');
+    const existe = await db.select().from(checklist).where(eq(checklist.idChecklist, id));
+    if (existe.length === 0) throw new Error ('Checklist no encontrado');
+    
     try{
         const updated = await db.update(checklist)
         .set(params)
         .where(eq(checklist.idChecklist, id))
         .returning()
 
-        return updated[0] || null;
+        return updated[0]
 
     }catch(error){
         console.error(
@@ -65,13 +66,19 @@ export const updateChecklist = async (id: number, params: Partial<CreateChecklis
 
 //Delete Checklist
 export const deleteChecklistByID = async(id: number) =>{
+    //Validacion de ID
+    if (isNaN(id)) throw new Error('ID inválido');
+
+    const existe = await db.select().from(checklist).where(eq(checklist.idChecklist, id));
+    if (existe.length === 0) throw new Error ('Checklist no encontrado');
+    
     try{
         const deleted = await db
         .delete(checklist)
         .where(eq(checklist.idChecklist, id))
-        .returning()
+        .returning();
 
-        return deleted[0] || null;
+        return deleted[0]
 
     }catch(error){
         console.error(

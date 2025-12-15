@@ -10,7 +10,10 @@
     "prepushdb": "ts-node src/scripts/prepushdb.ts",
     "postpushdb": "ts-node src/scripts/postpushdb.ts",
     "pushdb": "npx drizzle-kit push --config src/config/drizzle.config.ts && npm run postpushdb",
-    "initDB": "ts-node src/scripts/initDB.ts"
+    "initDB": "ts-node src/scripts/initDB.ts",
+    "test:GrupoDeTrabajo": "npx newman run ./postman/collections/GEMA-UCAB.postman_collection.json --folder GrupoDeTrabajo -e ./postman/environments/GEMA-CRUD-Grupos-trabajo.postman_environment.json -n 3 --reporters cli,htmlextra",
+    "test:Tecnicos": "npx newman run ./postman/collections/GEMA-UCAB.postman_collection.json --folder Técnicos -e ./postman/environments/GEMA-CRUD-Técnicos.postman_environment.json -n 3 --reporters cli,htmlextra",
+    "test:AsignarTecnicos": "npx newman run ./postman/collections/GEMA-UCAB.postman_collection.json --folder \"Trabaja en Grupo\" -e ./postman/environments/GEMA-CRUD-Asignar-grupo.postman_environment.json -n 3 --reporters cli,htmlextra"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +24,7 @@
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.2",
     "exceljs": "^4.4.0",
@@ -43,6 +47,8 @@
     "@types/swagger-ui-express": "^4.1.8",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.1",
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

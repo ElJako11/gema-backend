@@ -40,11 +40,16 @@ const router = Router();
  *               supervisorId:
  *                 type: integer
  *                 example: 1
+ *               area:
+ *                 type: string
+ *                 example: MN-130
  *     responses:
  *       201:
  *         description: Grupo de trabajo creado correctamente
  *       400:
  *         description: Datos inválidos
+ *       409:
+ *        description: Codigo de grupo de trabajo ya existe
  *       500:
  *         description: Error al crear el grupo de trabajo
  */
@@ -113,10 +118,13 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *             properties:
  *               codigo:
  *                 type: string
+ *                 example: "1"
  *               nombre:
  *                 type: string
- *               supervisorId:
- *                 type: integer
+ *                 example: "Grupo de Mantenimiento Actualizado"
+ *               area:
+ *                 type: string
+ *                 example: "MN-150"
  *     responses:
  *       200:
  *         description: Grupo de trabajo actualizado correctamente

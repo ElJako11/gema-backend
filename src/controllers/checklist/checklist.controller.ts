@@ -47,14 +47,13 @@ export const updateChecklistHandler = async (req: AuthRequest, res: Response) =>
 
     try {
         const updatedChecklist = await updateChecklist(id, req.body);
-
-        if (!updatedChecklist) {
+        res.status(200).json({ data: updatedChecklist });
+    res.status(200).json({ data: updatedChecklist });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Checklist no encontrado') {
             res.status(404).json({ error: 'Checklist no encontrado' });
             return;
         }
-
-        res.status(200).json({ data: updatedChecklist });
-    } catch (error) {
         res.status(500).json({ error: 'Error al actualizar checklist' });
     }
 }
@@ -69,14 +68,13 @@ export const deleteChecklistHandler = async(req: AuthRequest, res: Response) => 
     
     try {
         const deletedChecklist = await deleteChecklistByID(id);
-
-        if (!deletedChecklist) {
+        res.status(200).json({ message: 'Checklist eliminado correctamente' });
+      res.status(200).json({ message: 'Checklist eliminado correctamente' });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Checklist no encontrado') {
             res.status(404).json({ error: 'Checklist no encontrado' });
             return;
-        }   
-        
-        res.status(200).json({ message: 'Checklist eliminado correctamente' });
-    } catch (error) {
+        }
         res.status(500).json({ error: 'Error al eliminar checklist' });
     }
 }
