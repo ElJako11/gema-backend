@@ -59,17 +59,11 @@ export const updateChecklistHandler = async (req: AuthRequest, res: Response) =>
 }
 
 export const deleteChecklistHandler = async(req: AuthRequest, res: Response) => {
-    const id = parseInt(req.params.id, 10);
-
-    if (isNaN(id)) {
-        res.status(400).json({ message: 'ID inválido' });
-        return;
-    }
-    
     try {
+        const id = parseInt(req.params.id, 10);
+
         const deletedChecklist = await deleteChecklistByID(id);
         res.status(200).json({ message: 'Checklist eliminado correctamente' });
-      res.status(200).json({ message: 'Checklist eliminado correctamente' });
     } catch (error) {
         if (error instanceof Error && error.message === 'Checklist no encontrado') {
             res.status(404).json({ error: 'Checklist no encontrado' });

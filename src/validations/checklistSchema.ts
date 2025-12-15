@@ -12,5 +12,5 @@ export const updateChecklistSchema = updateChecklistBase.partial().extend({
 });
 
 export const urlParamsSchema = z.object({
-  id: positiveIntId,
+  id: positiveIntIdCoercion,
 });
