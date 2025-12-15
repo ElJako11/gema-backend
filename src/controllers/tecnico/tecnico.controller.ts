@@ -61,10 +61,6 @@ export const updateTecnicoHandler = async ( req: AuthRequest, res: Response ) =>
 export const deleteTecnicoHandler = async ( req: AuthRequest, res: Response ) => {
   const id = parseInt(req.params.id);
 
-  if(isNaN(id)){
-    res.status(400).json({ message: 'ID invalido'});
-    return;
-  }
   try {
     const tecnico = await deleteTecnico(id);
 

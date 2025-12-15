@@ -8,9 +8,7 @@ export const createTecnicoSchema = z.object({
 
 const updateTecnicoBase = createTecnicoSchema.omit({});
 
-export const updateTecnicoSchema = updateTecnicoBase.partial().extend({
-    idTecnico: positiveIntIdCoercion,
-});
+export const updateTecnicoSchema = updateTecnicoBase.partial()
 
 export const urlParamsTecnicoSchema = z.object({
   id: positiveIntIdCoercion,
