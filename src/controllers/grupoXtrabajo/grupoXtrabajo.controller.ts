@@ -6,22 +6,10 @@ import {
 } from '../../services/grupoXtrabajo/grupoXtrabajo.service';
 import { AuthRequest } from '../../types/types';
 
-/**
- * 1. ASIGNAR (POST)
- * Ruta esperada: POST /trabajos/:id/grupos
- * Body esperado: { "idG": 5 }
- */
+// 1. ASIGNAR (POST)
 export const assignGrupoHandler = async (req: AuthRequest, res: Response) => {
-    // 1. Obtenemos el ID del trabajo desde la URL
-    const idT = parseInt(req.params.id, 10);
+    const { idT, idG } = req.body;
     
-    // 2. Obtenemos el ID del grupo desde el Body (validado previamente por Zod)
-    const { idG } = req.body;
-
-    if (isNaN(idT)) {
-        return res.status(400).json({ message: 'ID de trabajo inválido' });
-    }
-
     try {
         // Llamamos al servicio
         const nuevaAsignacion = await asignarGrupo({ idT, idG });
@@ -39,11 +27,7 @@ export const assignGrupoHandler = async (req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * 2. OBTENER (GET)
- * Ruta esperada: GET /trabajos/:id/grupos
- * Devuelve: Objeto con nombre del trabajo y lista de grupos
- */
+// 2. OBTENER (GET)
 export const getGruposByTrabajoHandler = async (req: Request, res: Response) => {
     const idT = parseInt(req.params.id, 10);
 
@@ -83,11 +67,7 @@ export const getGruposByTrabajoHandler = async (req: Request, res: Response) => 
     }
 };
 
-/**
- * 3. DESVINCULAR (DELETE)
- * Ruta esperada: DELETE /trabajos/:idT/grupos/:idG
- * Nota: Aquí recibimos AMBOS IDs por la URL
- */
+// 3. DESASIGNAR (DELETE)
 export const deleteGrupoHandler = async (req: AuthRequest, res: Response) => {
     const idT = parseInt(req.params.idT, 10);
     const idG = parseInt(req.params.idG, 10);
