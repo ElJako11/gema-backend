@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 import { db } from '../../config/db';
 import { usuarios } from '../../tables/usuarios';
 import { CreateUserParams } from '../../types/userType';
@@ -22,6 +22,24 @@ export const getUsuarioById = async (id: number) => {
     }catch (error) {
         console.error('Error al obtener el Usuario por ID', error);
         throw new Error('No se pudo obtener el Usuario por ID');
+    }
+}
+
+//Get Usuario (nombre, correo, tipo)
+export const getUsuarioCredentials = async () => {
+    try {
+        const listaUsuarios = await db.select({
+            id: usuarios.Id,
+            nombre: usuarios.Nombre,
+            correo: usuarios.Correo,
+            tipo: usuarios.Tipo
+        }).from(usuarios)
+        .orderBy(asc(usuarios.Id));
+
+        return listaUsuarios;
+    }catch (error) {
+        console.error('Error al obtener credenciales de los Usuarios', error);
+        throw new Error('No se pudo obtener credenciales de los Usuarios');
     }
 }
 
