@@ -26,7 +26,7 @@ router.get('/', getUsuariosHandler);
 router.get('/:id', validateParams(urlParamsSchema), getUsuarioByIdHandler);
 
 //Get Usuario Credentials
-router.get('/credentials/list', getUsuarioCredentialsHandler);
+router.get('/list', getUsuarioCredentialsHandler);
 
 //Post Usuario
 router.post('/', validateBody(createUserSchema), createUsuarioHandler);
