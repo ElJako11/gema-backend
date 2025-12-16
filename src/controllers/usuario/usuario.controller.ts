@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getAllUsuarios,
         getUsuarioById,
+        getUsuarioCredentials,
         createUsuario,
         updateUsuario,
         deleteUsuario
@@ -27,6 +28,16 @@ export const getUsuarioByIdHandler = async (req: Request, res: Response) => {
             return;
         }
         res.status(200).json(usuario);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+//Get Usuario Credentials
+export const getUsuarioCredentialsHandler = async (req: Request, res: Response) => {
+    try {
+        const listaUsuarios = await getUsuarioCredentials();
+        res.status(200).json(listaUsuarios);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
