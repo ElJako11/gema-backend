@@ -33,7 +33,7 @@ const router = Router();
  *     security:
  *        - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     responses:
  *       200:
  *         description: Lista de mantenimientos preventivos obtenida correctamente.
@@ -56,7 +56,7 @@ router.get(
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     parameters:
  *       - in: query
  *         name: date
@@ -94,7 +94,7 @@ router.get(
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     parameters:
  *       - in: path
  *         name: id
@@ -127,7 +127,7 @@ router.get(
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     requestBody:
  *       required: true
  *       content:
@@ -204,7 +204,7 @@ router.post(
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     parameters:
  *       - in: path
  *         name: id
@@ -271,7 +271,7 @@ router.patch(
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - MantenimientoPreventivo
+ *       - Mantenimiento Preventivo
  *     parameters:
  *       - in: path
  *         name: id

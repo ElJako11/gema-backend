@@ -19,7 +19,7 @@ const router = Router();
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     requestBody:
  *       required: true
  *       content:
@@ -62,7 +62,7 @@ router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     responses:
  *       200:
  *         description: Lista de grupos de trabajo
@@ -77,7 +77,7 @@ router.get('/', getGruposDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id
@@ -101,7 +101,7 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id
@@ -145,7 +145,7 @@ router.put('/:id', updateGrupoDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id
