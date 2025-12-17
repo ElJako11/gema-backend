@@ -3,7 +3,6 @@ import {
   createMantenimientoPreventivo,
   deleteMantenimientoPreventivo,
   getAllMantenimiento,
-  getMantenimientobyID,
   getResumenMantenimiento,
   updateMantenimientoPreventivo,
   getAllMantenimientosSemanales,
@@ -28,30 +27,6 @@ export const getAllMantenimientoPreventivoHandler = async (
     }
 
     res.status(200).json(mantenimientos);
-    return;
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-    return;
-  }
-};
-
-export const getMantenimientobyIDHandler = async (
-  req: Request,
-  res: Response
-) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const result = await getMantenimientobyID(id);
-
-    if (result.length === 0) {
-      res.status(404).json({
-        message: 'No se encontro ningun mantenimiento asociado a ese ID',
-      });
-      return;
-    }
-
-    res.status(200).json(result);
     return;
   } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
