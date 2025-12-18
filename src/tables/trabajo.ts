@@ -17,7 +17,6 @@ export const tipoTrabajoEnum = pgEnum('tipoTrabajo', [
 export const trabajo = pgTable('trabajo', {
   idTrabajo: serial('idTrabajo').primaryKey().notNull(),
   idC: integer('idChecklist')
-    .notNull()
     .references(() => checklist.idChecklist, {}),
   idU: integer('idUbicacionTecnica')
     .notNull()
