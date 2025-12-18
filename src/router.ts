@@ -13,6 +13,7 @@ import calendarioRoutes from './routes/calendario.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
+import itemChecklistRoutes from './routes/itemChecklist.routes';
 
 const router = Router();
 
@@ -72,4 +73,10 @@ router.use(
   calendarioRoutes
 );
 
+router.use(
+  '/item-checklist',
+  authenticate,
+  autorizationMiddleware(),
+  itemChecklistRoutes
+);
 export default router;
