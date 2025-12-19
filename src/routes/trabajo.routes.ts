@@ -3,7 +3,8 @@ import * as controllers from '../controllers/trabajo/trabajo.controller';
 import * as middleware from '../middleware/validate.middleware'
 import * as validators from '../validations/trabajoSchema';
 import {
-    getCantidadMantenimientosReabiertosHandler
+    getCantidadMantenimientosReabiertosHandler,
+    getMantenimientosReabiertosPorAreaHandler
 } from '../controllers/trabajo/trabajo.controller';
 
 const router = Router();
@@ -12,6 +13,8 @@ const router = Router();
 router.get('/', controllers.getTrabajosHandler);
 
 router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
+
+router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
 
 //Get Trabajo by ID
 router.get('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);

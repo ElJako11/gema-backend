@@ -2,6 +2,7 @@ import {eq, and, between, sql} from 'drizzle-orm';
 import {db} from '../../config/db';
 import {trabajo} from '../../tables/trabajo';
 import {CreateTrabajoParams} from '../../types/trabajo';
+import {ubicacionTecnica} from '../../tables/ubicacionTecnica';
 import {
   convertToISOStr,
   getEndofMonth,
@@ -114,4 +115,28 @@ export const getCantidadMantenimientosReabiertos = async (): Promise<number> => 
     console.log('Resultado de la consulta:', result);
     console.log('Cantidad de mantenimientos reabiertos:', result[0].count);
   return result[0].count;
+};
+
+export const getMantenimientosReabiertosPorArea = async () => {
+  const ESTADO_REABIERTO = 'Reabierto';
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    const result = await db
+      .select({
+        grupo: ubicacionTecnica.descripcion, // Asumimos que 'nombre' es el campo del área en ubicacionTecnica
+        total: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+      .where(
+        and(eq(trabajo.est, ESTADO_REABIERTO), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+      )
+      .groupBy(ubicacionTecnica.descripcion);
+
+    return result;
+  } catch (error) {
+    console.error('Error al obtener mantenimientos por área', error);
+    throw new Error('No se pudo obtener el reporte por área');
+  }
 };
