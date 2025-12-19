@@ -243,11 +243,11 @@ export const trabajoData = [
 ];
 
 export const itemChecklistData = [
-  { idCheck: 1, descripcion: 'Verificar luces' },
-  { idCheck: 1, descripcion: 'Verificar puertas' },
-  { idCheck: 2, descripcion: 'Medir temperatura' },
-  { idCheck: 3, descripcion: 'Revisar niveles de aceite' },
-  { idCheck: 4, descripcion: 'Comprobar conexiones' },
+  { idCheck: 1, titulo: 'Luces', descripcion: 'Verificar luces' },
+  { idCheck: 1, titulo: 'Puertas', descripcion: 'Verificar puertas' },
+  { idCheck: 2, titulo: 'Temperatura', descripcion: 'Medir temperatura' },
+  { idCheck: 3, titulo: 'Aceite', descripcion: 'Revisar niveles de aceite' },
+  { idCheck: 4, titulo: 'Conexiones', descripcion: 'Comprobar conexiones' },
 ];
 
 export const grupoXtrabajoData = [
