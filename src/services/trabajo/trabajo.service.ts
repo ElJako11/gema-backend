@@ -1,7 +1,12 @@
-import {eq} from 'drizzle-orm';
+import {eq, and, between, sql} from 'drizzle-orm';
 import {db} from '../../config/db';
 import {trabajo} from '../../tables/trabajo';
 import {CreateTrabajoParams} from '../../types/trabajo';
+import {
+  convertToISOStr,
+  getEndofMonth,
+  getStartofMonth,
+} from '../../utils/dateHandler';
 
 //Get Trabajos
 export const getAllTrabajos = async () => {
@@ -78,3 +83,35 @@ export const deleteTrabajo = async (id: number) => {
         throw new Error('Error al eliminar Trabajo');
     }   
 }
+
+export const getCantidadMantenimientosReabiertos = async (): Promise<number> => {
+  // Obtenemos la fecha actual para calcular el rango del mes
+  const now = new Date().toISOString();
+  const initialDate = getStartofMonth(now);
+  const finalDate = getEndofMonth(now);
+
+  const initialISO = convertToISOStr(initialDate);
+  const finalISO = convertToISOStr(finalDate);
+
+  // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
+  const ESTADO_REABIERTO = 'Reabierto';
+
+  // TODO: Asumo que existe una columna 'tipo' para diferenciar mantenimientos. Verifica el nombre y el valor.
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  const result = await db
+    .select({
+      count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+    })
+    .from(trabajo)
+    .where(
+      and(
+        between(trabajo.fecha, initialISO, finalISO),
+        eq(trabajo.est, ESTADO_REABIERTO),
+        eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+      )
+    );
+    console.log('Resultado de la consulta:', result);
+    console.log('Cantidad de mantenimientos reabiertos:', result[0].count);
+  return result[0].count;
+};

@@ -2,11 +2,16 @@ import { Router } from 'express';
 import * as controllers from '../controllers/trabajo/trabajo.controller';
 import * as middleware from '../middleware/validate.middleware'
 import * as validators from '../validations/trabajoSchema';
+import {
+    getCantidadMantenimientosReabiertosHandler
+} from '../controllers/trabajo/trabajo.controller';
 
 const router = Router();
 
 //Get all Trabajos
 router.get('/', controllers.getTrabajosHandler);
+
+router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
 
 //Get Trabajo by ID
 router.get('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);
@@ -19,5 +24,7 @@ router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), midd
 
 //Delete Trabajo
 router.delete('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
+
+
 
 export default router; 
