@@ -45,9 +45,17 @@ export const getUsuarioCredentials = async () => {
 
 //Create new usuario
 export const createUsuario = async (userData: CreateUserParams) => {
+    console.log("2. DATOS LLEGANDO AL SERVICIO:", userData);
+    console.log("Nombre:", userData?.Nombre); // Verifica si es minúscula
+    console.log("Nombre (Mayus):", userData?.Nombre); // Verifica si es mayúscula
     try {
         const newUsuario = await db.insert(usuarios)
-        .values(userData)
+        .values({
+            Nombre: userData.Nombre,
+            Correo: userData.Correo,
+            Tipo: userData.Tipo,      
+            Contraseña: userData.Contraseña
+        })
         .returning();
         return newUsuario[0] || null;
     }catch (error) {
