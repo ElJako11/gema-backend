@@ -22,11 +22,11 @@ const router = Router();
 //Get all Usuarios
 router.get('/', getUsuariosHandler);
 
-//Get Usuario by ID
-router.get('/:id', validateParams(urlParamsSchema), getUsuarioByIdHandler);
-
 //Get Usuario Credentials
 router.get('/list', getUsuarioCredentialsHandler);
+
+//Get Usuario by ID
+router.get('/:id', validateParams(urlParamsSchema), getUsuarioByIdHandler);
 
 //Post Usuario
 router.post('/', validateBody(createUserSchema), createUsuarioHandler);
