@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     getMantenimientosXInspeccion,
     getMantenimientoXInspeccion,
+    getMantXInspResumenHandler,
     createMantenimientoXInspeccionHandler,
     updateMantenimientoXInspeccionHandler,
     deleteMantenimientoXInspeccionHandler
@@ -24,6 +25,9 @@ router.get('/', getMantenimientosXInspeccion);
 //Get MantenimientoXInspeccion by ID
 router.get('/:id', validateParams(urlParamsSchema), getMantenimientoXInspeccion);
 
+//Get MantXInsp Resumen
+router.get('/resumen', validateParams(urlParamsSchema), getMantXInspResumenHandler);
+
 //Post MantenimientoXInspeccion
 router.post('/', validateBody(createMantenimientoXInspeccionSchema), createMantenimientoXInspeccionHandler);
 
@@ -32,3 +36,5 @@ router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateManteni
 
 //Delete MantenimientoXInspeccion
 router.delete('/:id', validateParams(urlParamsSchema), deleteMantenimientoXInspeccionHandler);
+
+export default router;
