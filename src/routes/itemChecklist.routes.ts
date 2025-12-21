@@ -158,7 +158,7 @@ router.patch(
  *        description: Error interno del servidor
  */
 router.delete(
-  '/',
+  '/:id',
   authenticate,
   autorizationMiddleware(),
   validateParams(idParamSchema),
