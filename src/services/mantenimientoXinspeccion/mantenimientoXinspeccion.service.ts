@@ -2,6 +2,9 @@ import { eq } from "drizzle-orm";
 import { db } from "../../config/db";
 import { mantenimiento_inspeccion } from "../../tables/mantenimiento-inspeccion";
 import { createMantenimientoXInspeccionParams } from "../../types/mantenimientoXinspeccion";
+import { inspeccion } from "../../tables/inspeccion";
+import { ubicacionTecnica } from "../../tables/ubicacionTecnica";
+import { trabajo } from "../../tables/trabajo";
 
 //Get MantenimientosXInspeccion
 export const getAllMantenimientosXInspeccion = async () => {
@@ -27,6 +30,31 @@ export const getMantenimientoXInspeccionById = async (id: number) => {
         throw new Error('No se pudo obtener el MantenimientoXInspeccion por ID');
     }
 }
+
+//get mantXinsp para resumen
+export const getMantXInspResumen = async ( id: number) => {
+    try{
+        const mantXInspResumen = await db.select({
+            idMantenimiento: mantenimiento_inspeccion.idMantenimiento,
+            nombre: mantenimiento_inspeccion.nombre,
+            uTabreviacion: ubicacionTecnica.abreviacion,
+            uTDescripcion: ubicacionTecnica.descripcion,
+            trabajo: trabajo.nombre,
+            inspeccionObservacion: inspeccion.observacion
+        })
+        .from (mantenimiento_inspeccion)
+        .where(eq(mantenimiento_inspeccion.idMantenimiento, id))
+        .innerJoin(inspeccion, eq(mantenimiento_inspeccion.idInspeccion, inspeccion.id))
+        .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
+        .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion));
+        return mantXInspResumen || null;
+        
+    } catch (error) {
+        console.error('Error al obtener el MantenimientoXInspeccion para resumen', error);
+        throw new Error('No se pudo obtener el MantenimientoXInspeccion para resumen');
+    }
+}
+
 //Post MantenimientoXInspeccion
 export const createMantenimientoXInspeccion = async (params: createMantenimientoXInspeccionParams) => {
     try {
