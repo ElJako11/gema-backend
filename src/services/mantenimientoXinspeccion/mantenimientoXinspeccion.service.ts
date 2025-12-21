@@ -2,9 +2,12 @@ import { eq } from "drizzle-orm";
 import { db } from "../../config/db";
 import { mantenimiento_inspeccion } from "../../tables/mantenimiento-inspeccion";
 import { createMantenimientoXInspeccionParams } from "../../types/mantenimientoXinspeccion";
+<<<<<<< HEAD
 import { inspeccion } from "../../tables/inspeccion";
 import { ubicacionTecnica } from "../../tables/ubicacionTecnica";
 import { trabajo } from "../../tables/trabajo";
+=======
+>>>>>>> bd8e363d2867eecc2f350b1dd9183aa8a9887c33
 
 //Get MantenimientosXInspeccion
 export const getAllMantenimientosXInspeccion = async () => {
