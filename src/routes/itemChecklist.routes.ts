@@ -1,10 +1,14 @@
-import { Router } from 'express';
+import { RequestHandler, Router } from 'express';
 import {
   getAllItemsHandler,
   postItemHandler,
   patchItemHandler,
   deleteItemHandler,
+  getItemsChecklistHandler,
 } from '../controllers/checklistItems/checklistItem.controller';
+
+import { authenticate } from '../middleware/auth.middleware';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -22,7 +26,9 @@ const router = Router();
  *          description: Error interno del servidor
  */
 
-router.get('/', getAllItemsHandler);
+router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
+
+router.get('/:id', authenticate, autorizationMiddleware(), getItemsChecklistHandler);
 
 /**
  * @openapi
