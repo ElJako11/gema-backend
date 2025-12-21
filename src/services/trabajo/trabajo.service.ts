@@ -140,3 +140,58 @@ export const getMantenimientosReabiertosPorArea = async () => {
     throw new Error('No se pudo obtener el reporte por área');
   }
 };
+
+export const getResumenMantenimientosMes = async () => {
+  const now = new Date().toISOString();
+  const initialDate = getStartofMonth(now);
+  const finalDate = getEndofMonth(now);
+
+  const initialISO = convertToISOStr(initialDate);
+  const finalISO = convertToISOStr(finalDate);
+
+  // TODO: Verifica si 'Finalizado' es el valor exacto en tu DB.
+  const ESTADO_FINALIZADO = 'Completado';
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    // 1. Obtener total de mantenimientos del mes
+    const totalResult = await db
+      .select({
+        count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .where(
+        and(
+          between(trabajo.fecha, initialISO, finalISO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+        )
+      );
+
+    // 2. Obtener mantenimientos finalizados del mes
+    const finalizadosResult = await db
+      .select({
+        count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .where(
+        and(
+          between(trabajo.fecha, initialISO, finalISO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO),
+          eq(trabajo.est, ESTADO_FINALIZADO)
+        )
+      );
+
+    const total = totalResult[0].count;
+    const finalizados = finalizadosResult[0].count;
+    const porcentaje = total > 0 ? (finalizados / total) * 100 : 0;
+
+    return {
+      totalMantenimientos: total,
+      completados: finalizados,
+      porcentajeCompletados: Number(porcentaje.toFixed(2)),
+    };
+  } catch (error) {
+    console.error('Error al obtener resumen de mantenimientos', error);
+    throw new Error('No se pudo obtener el resumen del mes');
+  }
+};

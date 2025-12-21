@@ -4,7 +4,8 @@ import * as middleware from '../middleware/validate.middleware'
 import * as validators from '../validations/trabajoSchema';
 import {
     getCantidadMantenimientosReabiertosHandler,
-    getMantenimientosReabiertosPorAreaHandler
+    getMantenimientosReabiertosPorAreaHandler,
+    getResumenMantenimientosMesHandler
 } from '../controllers/trabajo/trabajo.controller';
 
 const router = Router();
@@ -15,6 +16,8 @@ router.get('/', controllers.getTrabajosHandler);
 router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
 
 router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
+
+router.get('/resumen/mes-actual', getResumenMantenimientosMesHandler);
 
 //Get Trabajo by ID
 router.get('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);
