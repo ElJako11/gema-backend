@@ -12,6 +12,7 @@ import {
 import {
   validateBody,
   validateParams,
+  validateQuery,
 } from '../middleware/validate.middleware';
 
 import { authenticate } from '../middleware/auth.middleware';
@@ -22,6 +23,7 @@ import {
   updateMantenimientoSchema,
   urlParamsSchema,
 } from '../validations/mantenimientoPreventivo';
+import { QuerySchema } from '../validations/globalTypeSchema';
 
 const router = Router();
 
@@ -36,6 +38,7 @@ router.get(
   '/filtros',
   authenticate,
   autorizationMiddleware(),
+  validateQuery(QuerySchema),
   getAllMantenimientoByFechaHandler
 );
 
