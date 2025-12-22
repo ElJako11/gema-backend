@@ -13,6 +13,7 @@ import { tecnico } from '../tables/tecnico';
 import { trabajaEnGrupo } from '../tables/trabajaEnGrupo';
 import { trabajo } from '../tables/trabajo';
 import { ubicacionTecnica } from '../tables/ubicacionTecnica';
+import { estadoItemChecklist } from '../tables/estadoItemChecklist';
 
 export const usuariosData = [
   {
@@ -360,6 +361,14 @@ export const mantenimientoInspeccionData = [
   { idInspeccion: 5, nombre: 'Punto Control E' },
 ];
 
+export const estadoItemChecklistData = [
+  { idTrabajo: 1, idChecklist: 1, idItemChecklist: 1, estado: 'COMPLETADA' },
+  { idTrabajo: 1, idChecklist: 1, idItemChecklist: 2, estado: 'PENDIENTE' },
+  { idTrabajo: 6, idChecklist: 1, idItemChecklist: 1, estado: 'COMPLETADA' },
+  { idTrabajo: 6, idChecklist: 1, idItemChecklist: 2, estado: 'COMPLETADA' },
+  { idTrabajo: 2, idChecklist: 2, idItemChecklist: 3, estado: 'PENDIENTE' },
+];
+
 //* Inserciones en las tablas.
 const fillDB = async () => {
   try {
@@ -378,6 +387,7 @@ const fillDB = async () => {
     await db
       .insert(mantenimiento_inspeccion)
       .values(mantenimientoInspeccionData);
+    await db.insert(estadoItemChecklist).values(estadoItemChecklistData as any);
 
     process.exit(0);
   } catch (error) {
