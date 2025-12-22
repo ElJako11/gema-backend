@@ -7,6 +7,7 @@ import {
   getInspeccionesByFecha,
   getResumenInspeccionHandler,
   updateInspeccionHandler,
+  getTareasChecklistHandler,
 } from '../controllers/inspecciones/inspecciones.controller';
 
 import { authenticate } from '../middleware/auth.middleware';
@@ -42,7 +43,21 @@ router.get(
   validateQuery(QuerySchema),
   getInspeccionesByFecha
 );
-router.get('/resumen/:id', getResumenInspeccionHandler);
+router.get(
+  '/resumen/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(inspeccionIdParamSchema),
+  getResumenInspeccionHandler
+);
+
+router.get(
+  '/:id/checklist',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(inspeccionIdParamSchema),
+  getTareasChecklistHandler
+);
 
 router.post(
   '/',
