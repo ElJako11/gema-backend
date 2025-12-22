@@ -1,12 +1,13 @@
 import { Router } from 'express';
 
 import {
-  getAllMantenimientoPreventivoHandler,
   getResumenMantenimientoHandler,
   postMantenimientoHandler,
   patchMantenimientoHandler,
   deleteMantenimientoHandler,
   getAllMantenimientoByFechaHandler,
+  getChecklistByMantenimientoHandler,
+  getMantenimientobyIDHandler,
 } from '../controllers/mantenimientoPreventivo/mantenimientoPreventivo.controller';
 
 import {
@@ -28,11 +29,12 @@ import { QuerySchema } from '../validations/globalTypeSchema';
 const router = Router();
 
 router.get(
-  '/',
+  '/:id',
   authenticate,
   autorizationMiddleware(),
-  getAllMantenimientoPreventivoHandler
-);
+  validateParams(urlParamsSchema),
+  getMantenimientobyIDHandler
+)
 
 router.get(
   '/filtros',
@@ -48,6 +50,14 @@ router.get(
   autorizationMiddleware(),
   validateParams(urlParamsSchema),
   getResumenMantenimientoHandler
+);
+
+router.get(
+  '/:id/checklist',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(urlParamsSchema),
+  getChecklistByMantenimientoHandler
 );
 
 router.post(

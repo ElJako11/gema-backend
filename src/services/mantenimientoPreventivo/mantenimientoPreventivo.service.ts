@@ -1,6 +1,6 @@
 import { db } from '../../config/db';
 
-import { eq, between, sql } from 'drizzle-orm';
+import { eq, between, and } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
@@ -19,8 +19,10 @@ import {
   getStartOfWeek,
 } from '../../utils/dateHandler';
 import { cleanObject } from '../../utils/cleanUpdateData';
-import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
-import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
+
+import { checklist } from '../../tables/checklist';
+import { itemChecklist } from '../../tables/item-checklist';
+import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 
 const getResumenMantenimientoQuery = () => {
   const result = db
@@ -36,29 +38,9 @@ const getResumenMantenimientoQuery = () => {
   return result;
 };
 
-export const getAllMantenimiento = async () => {
-  const result = await db
-    .select({
-      idMantenimiento: mantenimiento.idMantenimiento,
-      fechaCreacion: trabajo.fecha,
-      fechaLimite: mantenimiento.fechaLimite,
-      ubicacion: ubicacionTecnica.descripcion,
-      estado: trabajo.est,
-      tipo: mantenimiento.tipo,
-      resumen: mantenimiento.resumen,
-      prioridad: mantenimiento.prioridad,
-      areaEncargada: grupoDeTrabajo.area,
-    })
-    .from(mantenimiento)
-    .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
-    .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
-    .innerJoin(grupoXtrabajo, eq(grupoXtrabajo.idT, trabajo.idTrabajo))
-    .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG));
 
-  return result;
-};
 
-/*
+
 export const getMantenimientobyID = async (id: number) => {
   const result = await db
     .select({
@@ -70,10 +52,12 @@ export const getMantenimientobyID = async (id: number) => {
       tipo: mantenimiento.tipo,
       resumen: mantenimiento.resumen,
       prioridad: mantenimiento.prioridad,
+      tituloChecklist: checklist.nombre,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
     .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
     .where(eq(mantenimiento.idMantenimiento, id));
 
   if (result.length === 0) {
@@ -81,7 +65,53 @@ export const getMantenimientobyID = async (id: number) => {
   }
 
   return result;
-};*/
+};
+
+export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
+  const checklistInfo = await db
+    .select({
+      id: checklist.idChecklist,
+      titulo: checklist.nombre,
+      ubicacion: ubicacionTecnica.descripcion,
+      idTrabajo: trabajo.idTrabajo,
+    })
+    .from(mantenimiento)
+    .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
+    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
+    .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+    .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+
+  if (checklistInfo.length === 0) {
+    return null;
+  }
+
+  const info = checklistInfo[0];
+
+  // Ahora obtenemos los items con su estado usando el idTrabajo obtenido
+  const items = await db
+    .select({
+      id: itemChecklist.idItemCheck,
+      nombre: itemChecklist.titulo,
+      descripcion: itemChecklist.descripcion,
+      estado: estadoItemChecklist.estado,
+    })
+    .from(estadoItemChecklist)
+    .innerJoin(
+      itemChecklist,
+      and(
+        eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck),
+        eq(estadoItemChecklist.idChecklist, itemChecklist.idCheck)
+      )
+    )
+    .where(eq(estadoItemChecklist.idTrabajo, info.idTrabajo));
+
+  return {
+    id: info.id,
+    titulo: info.titulo,
+    ubicacion: info.ubicacion,
+    tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
+  };
+};
 
 export const getResumenMantenimiento = async (id: number) => {
   const baseQuery = getResumenMantenimientoQuery();
