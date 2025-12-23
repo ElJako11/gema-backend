@@ -1,8 +1,10 @@
-import {eq, and, between, sql} from 'drizzle-orm';
+import {eq, and, between, sql, inArray} from 'drizzle-orm';
 import {db} from '../../config/db';
 import {trabajo} from '../../tables/trabajo';
 import {CreateTrabajoParams} from '../../types/trabajo';
 import {ubicacionTecnica} from '../../tables/ubicacionTecnica';
+import {grupoDeTrabajo} from '../../tables/grupoDeTrabajo';
+import {grupoXtrabajo} from '../../tables/grupoXtrabajo';
 import {
   convertToISOStr,
   getEndofMonth,
@@ -193,5 +195,29 @@ export const getResumenMantenimientosMes = async () => {
   } catch (error) {
     console.error('Error al obtener resumen de mantenimientos', error);
     throw new Error('No se pudo obtener el resumen del mes');
+  }
+};
+
+export const getMantenimientosActivosPorArea = async () => {
+  const ESTADOS_ACTIVOS = ['Reabierto', 'En Proceso', 'Asignado'];
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    const result = await db
+      .select({
+        grupo: grupoDeTrabajo.nombre,
+        total: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
+      .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
+      .where(
+        and(inArray(trabajo.est, ESTADOS_ACTIVOS), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+      )
+      .groupBy(grupoDeTrabajo.nombre);
+    return result;
+  } catch (error) {
+    console.error('Error al obtener mantenimientos activos por área', error);
+    throw new Error('No se pudo obtener el reporte de activos por área');
   }
 };

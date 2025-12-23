@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {getAllTrabajos, getTrabajoById, createTrabajo, updateTrabajo, deleteTrabajo, getCantidadMantenimientosReabiertos, getMantenimientosReabiertosPorArea, getResumenMantenimientosMes} from '../../services/trabajo/trabajo.service';
+import {getAllTrabajos, getTrabajoById, createTrabajo, updateTrabajo, deleteTrabajo, getCantidadMantenimientosReabiertos, getMantenimientosReabiertosPorArea, getResumenMantenimientosMes, getMantenimientosActivosPorArea} from '../../services/trabajo/trabajo.service';
 import { AuthRequest } from '../../types/types';
 
 //Get Trabajos
@@ -34,6 +34,15 @@ export const getResumenMantenimientosMesHandler = async (req: Request, res: Resp
     try {
         const resumen = await getResumenMantenimientosMes();
         res.status(200).json(resumen);
+    } catch (error) {
+        res.status(500).json({message: (error as Error).message});
+    }
+}
+
+export const getMantenimientosActivosPorAreaHandler = async (req: Request, res: Response) => {
+    try {
+        const reporte = await getMantenimientosActivosPorArea();
+        res.status(200).json(reporte);
     } catch (error) {
         res.status(500).json({message: (error as Error).message});
     }
