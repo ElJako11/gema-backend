@@ -37,13 +37,9 @@ export const getMantenimientoXInspeccion = async (req: AuthRequest, res: Respons
 
 //Get MantXInsp Resumen
 export const getMantXInspResumenHandler = async (req: AuthRequest, res: Response) => {
-    const id = parseInt(req.params.id, 10);
     try {
-        const mantXInspResumen = await getMantXInspResumen(id);
-        if (!mantXInspResumen) {
-            res.status(404).json({ message: "MantenimientoXInspeccion para resumen no encontrado" });
-            return;
-        }
+        const mantXInspResumen = await getMantXInspResumen();
+
         res.status(200).json(mantXInspResumen);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
