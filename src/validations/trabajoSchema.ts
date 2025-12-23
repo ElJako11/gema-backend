@@ -17,9 +17,7 @@ const updateTrabajoBase = createTrabajoSchema.omit({
     idU: true,
 })
 
-export const updateTrabajoSchema = updateTrabajoBase.partial().extend({
-    idTrabajo: positiveIntIdCoercion,
-});
+export const updateTrabajoSchema = updateTrabajoBase.partial();
 
 export const urlParamsSchema = z.object({
   id: positiveIntIdCoercion,

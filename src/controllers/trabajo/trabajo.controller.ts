@@ -39,9 +39,10 @@ export const createTrabajoHandler = async (req: AuthRequest, res: Response) => {
         res.status(500).json({message: (error as Error).message});
     }
 }
+
 //Patch Trabajo
 export const updateTrabajoHandler = async (req: AuthRequest, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
 
     if (Object.keys(req.body).length === 0){
         res.status(400).json({ message: 'No se enviaron datos para actualizar'});
