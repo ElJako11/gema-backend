@@ -45,8 +45,6 @@ export const getUsuarioCredentialsHandler = async (req: Request, res: Response) 
 
 //Post Usuario
 export const createUsuarioHandler = async (req: AuthRequest, res: Response) => {
-    console.log("1. BODY RECIBIDO EN CONTROLLER:", req.body); 
-    console.log("Typeof body:", typeof req.body);
     try {
         const newUsuario = await createUsuario(req.body);
         res.status(201).json(newUsuario);
