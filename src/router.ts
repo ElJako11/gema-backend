@@ -56,4 +56,11 @@ router.use(
   trabajoRoutes
 )
 
+router.use(
+  '/tecnicos',
+  authenticate,
+  autorizationMiddleware(),
+  tecnicoRoutes
+);
+
 export default router;
