@@ -32,7 +32,7 @@ export const getMantenimientoXInspeccionById = async (id: number) => {
 }
 
 //get mantXinsp para resumen
-export const getMantXInspResumen = async ( id: number) => {
+export const getMantXInspResumen = async ( ) => {
     try{
         const mantXInspResumen = await db.select({
             idMantenimiento: mantenimiento_inspeccion.idMantenimiento,
@@ -43,11 +43,10 @@ export const getMantXInspResumen = async ( id: number) => {
             inspeccionObservacion: inspeccion.observacion
         })
         .from (mantenimiento_inspeccion)
-        .where(eq(mantenimiento_inspeccion.idMantenimiento, id))
         .innerJoin(inspeccion, eq(mantenimiento_inspeccion.idInspeccion, inspeccion.id))
         .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
         .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion));
-        return mantXInspResumen || null;
+        return mantXInspResumen;
         
     } catch (error) {
         console.error('Error al obtener el MantenimientoXInspeccion para resumen', error);
