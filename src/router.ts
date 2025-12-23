@@ -14,6 +14,8 @@ import calendarioRoutes from './routes/calendario.routes';
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
 import itemChecklistRoutes from './routes/itemChecklist.routes';
+import plantillaRoutes from './routes/plantilla.routes';
+import itemPlantillaRoutes from './routes/itemPlantilla.routes';
 
 const router = Router();
 
@@ -79,4 +81,19 @@ router.use(
   autorizationMiddleware(),
   itemChecklistRoutes
 );
+
+router.use(
+  '/plantillas',
+  authenticate,
+  autorizationMiddleware(),
+  plantillaRoutes
+);
+
+router.use(
+  '/item-plantilla',
+  authenticate,
+  autorizationMiddleware(),
+  itemPlantillaRoutes
+);
+
 export default router;
