@@ -10,6 +10,7 @@ import trabajoRoutes from './routes/trabajo.routes';
 import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
 import inspeccionRoutes from './routes/inspeccion.routes';
 import calendarioRoutes from './routes/calendario.routes';
+import mantenimientoXinspeccionRoutes from './routes/mantenimientoXinspeccion.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
@@ -94,6 +95,13 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   itemPlantillaRoutes
+);
+
+router.use(
+  '/mantenimientosXinspeccion',
+  authenticate,
+  autorizationMiddleware(),
+  mantenimientoXinspeccionRoutes
 );
 
 export default router;
