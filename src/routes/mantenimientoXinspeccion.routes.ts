@@ -22,11 +22,11 @@ const router = Router();
 //Get all MantenimientosXInspeccion
 router.get('/', getMantenimientosXInspeccion);
 
+//Get MantXInsp Resumen
+router.get('/resumen', getMantXInspResumenHandler);
+
 //Get MantenimientoXInspeccion by ID
 router.get('/:id', validateParams(urlParamsSchema), getMantenimientoXInspeccion);
-
-//Get MantXInsp Resumen
-router.get('/resumen', validateParams(urlParamsSchema), getMantXInspResumenHandler);
 
 //Post MantenimientoXInspeccion
 router.post('/', validateBody(createMantenimientoXInspeccionSchema), createMantenimientoXInspeccionHandler);
