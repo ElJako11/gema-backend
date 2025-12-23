@@ -30,6 +30,8 @@ const router = Router();
  */
 router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
 
+router.get('/:id', authenticate, autorizationMiddleware(), getChecklistByIDHandler);
+
 /**
  * @openapi
  * /checklists: 
