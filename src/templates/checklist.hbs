@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            padding: 40px;
+            background-color: #fff;
+        }
+
+        /* Encabezado limpio */
+        .header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin: 0;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Lista de Items */
+        .task-list {
+            margin-top: 20px;
+        }
+
+        .task-card {
+            border: 1px solid #ddd;
+            /* Borde gris suave */
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            /* Evita cortar la tarjeta a mitad de página */
+            page-break-inside: avoid;
+        }
+
+        /* El cuadro para marcar a mano */
+        .checkbox-empty {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            background-color: white;
+            border-radius: 4px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            /* Evita que se aplaste si el texto es largo */
+        }
+
+        .task-text {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Pie de página para firmas (opcional en mantenimientos) */
+        .footer {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+        }
+
+        .signature-box {
+            border-top: 1px solid #333;
+            width: 40%;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>{{nombre}}</h1>
+        <p>ID Checklist: #{{idChecklist}}</p>
+    </div>
+
+    <div class="task-list">
+        {{#each items}}
+        <div class="task-card">
+            <div class="checkbox-empty"></div>
+            <div class="task-text">{{descripcion}}</div>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="footer">
+        <div class="signature-box">Firma del Técnico</div>
+        <div class="signature-box">Firma del Supervisor</div>
+    </div>
+
+</body>
+
+</html>
