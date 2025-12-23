@@ -2,6 +2,7 @@ import { Request, Response} from 'express';
 import {
   createTecnico,
   getAllTecnicos,
+  getListaTecnicos,
   updateTecnico,
   deleteTecnico
 } from '../../services/tecnico/tecnico.service';
@@ -17,6 +18,19 @@ export const getAllTecnicosHandler = async (req: Request, res: Response) => {
     return;
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los tecnicos'});
+  }
+}
+
+//Get lista de Tecnicos
+export const getListaTecnicosHandler = async (req: Request, res: Response) => {
+  try {
+    const listaTecnicos = await getListaTecnicos();
+    res.status(201).json({
+      data: listaTecnicos,
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener la lista de tecnicos'});
   }
 }
 
