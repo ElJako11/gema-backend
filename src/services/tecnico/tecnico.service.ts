@@ -2,6 +2,7 @@ import { db } from '../../config/db';
 import { eq } from 'drizzle-orm';
 import { CreateTecnicoParams } from '../../types/tecnico';
 import { tecnico } from '../../tables/tecnico';
+import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
 
 //Get all tecnicos
 export const getAllTecnicos = async () => {
@@ -13,6 +14,26 @@ export const getAllTecnicos = async () => {
   } catch (error) {
     console.error('Error al obtener tecnicos:', error);
     throw new Error('Error al obtener los tecnicos');
+  }
+};
+
+//Get lista de tecnicos 
+export const getListaTecnicos = async () => {
+  try {
+    const listaTecnicos = await db
+      .select({
+        idTecnico: tecnico.idTecnico,
+        nombre: tecnico.nombre,
+        correo: tecnico.correo,
+        area: grupoDeTrabajo.area
+      })
+      .from(tecnico)
+      .innerJoin(grupoDeTrabajo, eq(tecnico.idGT, grupoDeTrabajo.id));
+
+    return listaTecnicos;
+  } catch (error) {
+    console.error('Error al obtener la lista de tecnicos:', error);
+    throw new Error('Error al obtener la lista de tecnicos');
   }
 };
 
