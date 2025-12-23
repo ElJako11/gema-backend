@@ -1,6 +1,5 @@
 import { Router } from 'express';
-
-import tecnicoRoutes from './routes/tecnico.routes';
+import tecnicoRoutes from './routes/tecnic.routes';
 import usuarioRoutes from './routes/usuario.routes';
 import grupoDeTrabajoRoutes from './routes/gruposDeTrabajo.routes';
 import authRoutes from './routes/auth.routes';
@@ -108,6 +107,13 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   mantenimientoXinspeccionRoutes
+);
+
+router.use(
+  '/tecnicos',
+  authenticate,
+  autorizationMiddleware(),
+  tecnicoRoutes
 );
 
 export default router;
