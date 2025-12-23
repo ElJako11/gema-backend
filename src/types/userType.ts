@@ -1,6 +1,6 @@
 export type CreateUserParams = {
-    Nombre: string;
-    Correo: string;
-    Tipo: 'SUPERVISOR' | 'COORDINADOR' | 'DIRECTOR';
-    Contraseña: string;
+    nombre: string;
+    correo: string;
+    tipo: 'SUPERVISOR' | 'COORDINADOR' | 'DIRECTOR';
+    contraseña: string;
 }
