@@ -1,4 +1,5 @@
 export type CreateTecnicoParams = {
+    idGT: number;
     nombre: string;
-    direccion: string;
+    correo: string;
 };
