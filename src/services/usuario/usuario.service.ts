@@ -45,16 +45,13 @@ export const getUsuarioCredentials = async () => {
 
 //Create new usuario
 export const createUsuario = async (userData: CreateUserParams) => {
-    console.log("2. DATOS LLEGANDO AL SERVICIO:", userData);
-    console.log("Nombre:", userData?.Nombre); // Verifica si es minúscula
-    console.log("Nombre (Mayus):", userData?.Nombre); // Verifica si es mayúscula
     try {
         const newUsuario = await db.insert(usuarios)
         .values({
-            Nombre: userData.Nombre,
-            Correo: userData.Correo,
-            Tipo: userData.Tipo,      
-            Contraseña: userData.Contraseña
+            Nombre: userData.nombre,
+            Correo: userData.correo,
+            Tipo: userData.tipo,      
+            Contraseña: userData.contraseña
         })
         .returning();
         return newUsuario[0] || null;
@@ -72,7 +69,12 @@ export const updateUsuario = async (id: number, userData: Partial<CreateUserPara
 
     try {
         const updatedUsuario = await db.update(usuarios)
-        .set(userData)
+        .set({
+            Nombre: userData.nombre,
+            Correo: userData.correo,
+            Tipo: userData.tipo,
+            Contraseña: userData.contraseña,
+        })
         .where(eq(usuarios.Id, id))
         .returning();
         
