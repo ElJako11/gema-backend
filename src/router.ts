@@ -9,6 +9,7 @@ import checklistRoutes from './routes/checklist.routes';
 import trabajoRoutes from './routes/trabajo.routes';
 import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
 import pdfchecklist from './routes/pdfChecklist.routes';
+import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
@@ -62,6 +63,13 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   pdfchecklist
+);
+
+router.use(
+  '/pdf-mantenimientos',
+  authenticate,
+  autorizationMiddleware(),
+  pdfResumenMantenimientosRoutes
 );
 
 export default router;
