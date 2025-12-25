@@ -59,6 +59,7 @@ export const existeTecnico = async (correo: string) => {
   return tecnico.length > 0 ? true : false;
 };
 
+<<<<<<< HEAD
 export const getTecnicoById = async (tecnicoId: number) => {
   const tecnico = await db
     .select()
@@ -67,3 +68,12 @@ export const getTecnicoById = async (tecnicoId: number) => {
     .limit(1);
   return tecnico.length > 0 ? tecnico[0] : null;
 };
+=======
+    return deleted[0] || null;
+
+  } catch (error) {
+    console.error('Error al eliminar tecnico:', error);
+    throw new Error('Error al eliminar el tecnico');
+  }
+}
+>>>>>>> parent of 4cd98ed (Merge branch 'Modulo-Estadisticas' into develop)

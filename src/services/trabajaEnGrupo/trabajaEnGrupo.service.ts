@@ -4,23 +4,10 @@ import { createTrabajaEnGrupoParams } from '../../types/trabajaEnGrupo';
 import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
 import { and, eq } from 'drizzle-orm';
 import { usuarios } from '../../tables/usuarios';
-import { getGrupoDeTrabajoById } from '../gruposDeTrabajos/gruposDeTrabajo.service';
-import { getTecnicoById } from '../tecnico/tecnico.service';
-
-
 
 export const createTrabajaEnGrupo = async (
   params: createTrabajaEnGrupoParams
 ) => {
-  const existe = await getTecnicoById(params.tecnicoId);
-  if(!existe) {
-    throw new Error('El técnico no existe');
-  }
-  const grupodetrabajoexiste = await getGrupoDeTrabajoById(params.grupoDeTrabajoId);
-  if(!grupodetrabajoexiste) {
-    throw new Error('El grupo de trabajo no existe');
-  }
-  
   try {
     const inserted = await db
       .insert(trabajaEnGrupo)
@@ -45,13 +32,7 @@ export const createTrabajaEnGrupo = async (
 };
 
 export const getAllWorkersInGroup = async (grupoDeTrabajoId: number) => {
-  const existegrupo = await getGrupoDeTrabajoById(grupoDeTrabajoId);
-  if(!existegrupo) {
-    throw new Error('El grupo de trabajo no existe');
-  }
-
   try {
-
     // Importa la tabla usuarios arriba: import { usuarios } from '../../tables/usuarios';
     const usuariosResult = (
       await db
@@ -115,24 +96,6 @@ export const deleteTrabajaEnGrupo = async (
   grupoDeTrabajoId: number
 ) => {
   try {
-    // 1. Verificar si la asignación específica existe antes de intentar borrar.
-    const asignacionExistente = await db
-      .select({ tecnicoId: trabajaEnGrupo.tecnicoId }) // seleccionamos un campo para verificar existencia
-      .from(trabajaEnGrupo)
-      .where(
-        and(
-          eq(trabajaEnGrupo.tecnicoId, tecnicoId),
-          eq(trabajaEnGrupo.grupoDeTrabajoId, grupoDeTrabajoId)
-        )
-      )
-      .limit(1);
-
-    // 2. Si no se encuentra ningún registro, devolvemos null.
-    if (asignacionExistente.length === 0) {
-      return null; // El controlador interpretará esto como un 404 Not Found.
-    }
-
-    // 3. Si la asignación existe, procedemos a eliminarla.
     const deleted = await db
       .delete(trabajaEnGrupo)
       .where(
@@ -143,12 +106,21 @@ export const deleteTrabajaEnGrupo = async (
       )
       .returning();
 
+    if (!deleted.length) {
+      throw new Error('Error al eliminar la relacion trabajaEnGrupo');
+    }
+
     return {
       message: 'Trabajador eliminado del grupo de trabajo',
       trabajaEnGrupo: deleted[0],
     };
   } catch (error) {
-    console.error('Error al eliminar la asignación del trabajador:', error);
-    throw new Error('Error al eliminar la asignación del trabajador al grupo de trabajo');
+    console.error(
+      `Error eliminando asignación para tecnicoId ${tecnicoId} y grupoDeTrabajoId ${grupoDeTrabajoId}:`,
+      error
+    );
+    throw new Error(
+      'Error al eliminar la asignación del trabajador al grupo de trabajo'
+    );
   }
 };

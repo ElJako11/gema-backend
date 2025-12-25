@@ -19,7 +19,7 @@ const router = Router();
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Trabaja En Grupo
+ *       - TrabajaEnGrupo
  *     requestBody:
  *       required: true
  *       content:
@@ -41,8 +41,6 @@ const router = Router();
  *         description: Trabajador asignado correctamente al grupo
  *       400:
  *         description: Datos inválidos
- *       404:
- *         description: Tecnico o grupo de trabajo no encontrado
  *       500:
  *         description: Error al asignar trabajador al grupo
  */
@@ -56,7 +54,7 @@ router.post('/', validateBody(createTrabajaEnGrupoSchema), createTrabajaEnGrupoH
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Trabaja En Grupo
+ *       - TrabajaEnGrupo
  *     responses:
  *       200:
  *         description: Lista de grupos con sus trabajadores
@@ -71,7 +69,7 @@ router.get('/', getAllTrabajaEnTodosLosGruposHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Trabaja En Grupo
+ *       - TrabajaEnGrupo
  *     parameters:
  *       - in: path
  *         name: grupoDeTrabajoId
@@ -95,7 +93,7 @@ router.get('/:grupoDeTrabajoId', validateParams(paramsTrabajaEnGrupoSchema), get
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Trabaja En Grupo
+ *       - TrabajaEnGrupo
  *     parameters:
  *       - in: path
  *         name: tecnicoId

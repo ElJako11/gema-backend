@@ -50,8 +50,6 @@ const router = Router();
  *                       type: integer
  *       400:
  *         description: Datos inválidos
- *       409:
- *         description: El técnico con ese correo ya existe
  *       500:
  *         description: Error al crear el técnico
  */

@@ -138,24 +138,19 @@ router.get('/:id', validateParams(idParamSchema), getUbicacionTecnicaByIdHandler
  *           schema:
  *             type: object
  *             properties:
+ *               nombre:
+ *                 type: string
  *               descripcion:
  *                 type: string
- *                 example: "Descripción de la ubicación A"
- *               abreviacion:
- *                 type: string
- *                 description: Abreviación única de la ubicación técnica
- *                 example: "UB1"
- *               codigo_Identificacion:
- *                 type: string
- *                 description: Código de identificación de la ubicación técnica 
- *                 example: "COD123"
+ *               nivel:
+ *                 type: integer
+ *               padreId:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Ubicación técnica creada correctamente
  *       400:
- *        description: Datos inválidos
- *       409:
- *         description: Ya existe una ubicación técnica con esta abreviación
+ *         description: Datos inválidos
  *       500:
  *         description: Error al crear la ubicación técnica
  */
@@ -186,22 +181,12 @@ router.post('/', validateBody(createUbicacionSchema), createUbicacionTecnicaHand
  *             properties:
  *               nombre:
  *                 type: string
- *                 example: "Nueva descripción de la ubicación A"
- *               abreviacion:
+ *               descripcion:
  *                 type: string
- *                 example: "NV1"
- *               padres:
- *                 type: array
- *                 description: Lista de padres de la ubicación técnica
- *                 items:
- *                   type: object
- *                   properties:
- *                     idPadre:
- *                       type: integer
- *                       example: 1
- *                     esUbicacionFisica:
- *                       type: boolean
- *                       example: false
+ *               nivel:
+ *                 type: integer
+ *               padreId:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Ubicación técnica actualizada correctamente
@@ -226,7 +211,6 @@ router.put('/:id', validateParams(idParamSchema), validateBody(updateUbicacionSc
  *     parameters:
  *       - in: path
  *         name: id
- *         example: 4
  *         required: true
  *         schema:
  *           type: integer

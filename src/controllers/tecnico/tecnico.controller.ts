@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import {
   createTecnico,
-  existeTecnico,
   getAllTecnicos,
 } from '../../services/tecnico/tecnico.service';
 
@@ -10,13 +9,7 @@ export const createTecnicoHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    if(await existeTecnico(req.body.Correo)) {
-      res.status(409).json({
-        error: 'El técnico con ese correo ya existe',
-      });
-      return;
-    }
-    const user = await createTecnico(req.body);
+    const tecnicos = await getAllTecnicos();
     res.status(201).json({
       data: user,
     });
