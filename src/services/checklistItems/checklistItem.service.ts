@@ -20,18 +20,6 @@ export const getAllItems = async () => {
   }
 };
 
-export const getItemsChecklist = async (id: number) => {
-  const result = await db
-    .select({
-      titulo: itemChecklist.titulo,
-      descripcion: itemChecklist.descripcion,
-    })
-    .from(itemChecklist)
-    .where(eq(itemChecklist.idCheck, id));
-
-  return result;
-};
-
 export const insertItem = async (insertdata: InsertItem) => {
   const { idChecklist, descripcion, titulo } = insertdata;
 

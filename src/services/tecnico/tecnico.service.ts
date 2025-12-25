@@ -1,88 +1,69 @@
 import { db } from '../../config/db';
+import { usuarios } from '../../tables/usuarios';
+import { CreateTecnicoParams } from '../../types/types';
 import { eq } from 'drizzle-orm';
-import { CreateTecnicoParams } from '../../types/tecnico';
-import { tecnico } from '../../tables/tecnico';
-import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
 
-//Get all tecnicos
-export const getAllTecnicos = async () => {
+export const createTecnico = async ({
+  Nombre,
+  Correo,
+}: CreateTecnicoParams) => {
   try {
-    const tecnicosList = await db
-      .select()
-      .from(tecnico);
-    return tecnicosList;
-  } catch (error) {
-    console.error('Error al obtener tecnicos:', error);
-    throw new Error('Error al obtener los tecnicos');
-  }
-};
+    // Validate input
+    if (!Nombre || !Correo) {
+      throw new Error('Nombre y Correo son campos obligatorios');
+    }
 
-//Get lista de tecnicos 
-export const getListaTecnicos = async () => {
-  try {
-    const listaTecnicos = await db
-      .select({
-        idTecnico: tecnico.idTecnico,
-        nombre: tecnico.nombre,
-        correo: tecnico.correo,
-        area: grupoDeTrabajo.area
+    // Insert into usuarios table
+    const insertedUser = await db
+      .insert(usuarios)
+      .values({
+        Nombre,
+        Correo,
+        Tipo: 'SUPERVISOR',
       })
-      .from(tecnico)
-      .innerJoin(grupoDeTrabajo, eq(tecnico.idGT, grupoDeTrabajo.id));
+      .returning({ Id: usuarios.Id });
 
-    return listaTecnicos;
-  } catch (error) {
-    console.error('Error al obtener la lista de tecnicos:', error);
-    throw new Error('Error al obtener la lista de tecnicos');
-  }
-};
+    if (insertedUser.length === 0) {
+      throw new Error('Error al crear el usuario');
+    }
 
-//Create tecnico
-export const createTecnico = async (params: CreateTecnicoParams) => {
-  try {
-    const insertedTecnico = await db
-      .insert(tecnico)
-      .values(params)
-      .returning();
-    return insertedTecnico[0] || null;
+    return {
+      message: 'Usuario creado correctamente',
+      userId: insertedUser[0].Id,
+    };
   } catch (error) {
-    console.error('Error al crear tecnico:', error);
-    console.error('Error al crear tecnico:', error);
+    console.error('Error creating tecnico:', error);
     throw new Error('Error al crear el tecnico');
   }
-}
+};
 
-//Paych tecnico
-export const updateTecnico = async (id : number, params : Partial<CreateTecnicoParams>) => {
-  if (Object.keys(params).length === 0) {
-    return null; // No hay campos para actualizar
-  }
+export const getAllTecnicos = async () => {
+  const tecnicos = await db
+    .select({
+      Id: usuarios.Id,
+      Nombre: usuarios.Nombre,
+      Correo: usuarios.Correo,
+    })
+    .from(usuarios)
+    .where(eq(usuarios.Tipo, 'SUPERVISOR'));
 
-  try {
-    const updatedTecnico = await db
-      .update(tecnico)
-      .set(params)
-      .where(eq(tecnico.idTecnico, id))
-      .returning();
-    return updatedTecnico[0] || null;
-  } catch (error) {
-    console.error('Error al actualizar tecnico:', error);
-    throw new Error('Error al actualizar el tecnico');
-  }
-}
+  return tecnicos;
+};
 
-//Delete tecnico
-export const deleteTecnico = async (id : number) => {
-  try {
-    const deleted = await db
-      .delete(tecnico)
-      .where(eq(tecnico.idTecnico, id))
-      .returning();
+export const existeTecnico = async (correo: string) => {
+  const tecnico = await db
+    .select()
+    .from(usuarios)
+    .where(eq(usuarios.Correo, correo))
+    .limit(1);
+  return tecnico.length > 0 ? true : false;
+};
 
-    return deleted[0] || null;
-
-  } catch (error) {
-    console.error('Error al eliminar tecnico:', error);
-    throw new Error('Error al eliminar el tecnico');
-  }
-}
+export const getTecnicoById = async (tecnicoId: number) => {
+  const tecnico = await db
+    .select()
+    .from(usuarios)
+    .where(eq(usuarios.Id, tecnicoId))
+    .limit(1);
+  return tecnico.length > 0 ? tecnico[0] : null;
+};

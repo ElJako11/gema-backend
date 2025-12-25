@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import {
   deleteItem,
   getAllItems,
-  getItemsChecklist,
   insertItem,
   updateItem,
 } from '../../services/checklistItems/checklistItem.service';
@@ -15,25 +14,6 @@ export const getAllItemsHandler = async (_req: Request, res: Response) => {
     return;
   } catch (error) {
     res.status(500).json({ error: error });
-    return;
-  }
-};
-
-export const getItemsChecklistHandler = async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const items = await getItemsChecklist(id);
-
-    if (items.length === 0) {
-      res.status(200).json([]);
-      return;
-    }
-
-    res.status(200).json(items);
-    return;
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
     return;
   }
 };

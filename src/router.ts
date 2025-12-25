@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import tecnicoRoutes from './routes/tecnic.routes';
-import usuarioRoutes from './routes/usuario.routes';
+
+import tecnicoRoutes from './routes/tecnico.routes';
 import grupoDeTrabajoRoutes from './routes/gruposDeTrabajo.routes';
 import authRoutes from './routes/auth.routes';
 import ubicacionesTecnicasRoutes from './routes/ubicacionesTecnicas.routes';
@@ -10,23 +10,15 @@ import trabajoRoutes from './routes/trabajo.routes';
 import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
 import inspeccionRoutes from './routes/inspeccion.routes';
 import calendarioRoutes from './routes/calendario.routes';
-import mantenimientoXinspeccionRoutes from './routes/mantenimientoXinspeccion.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
 import itemChecklistRoutes from './routes/itemChecklist.routes';
-import plantillaRoutes from './routes/plantilla.routes';
-import itemPlantillaRoutes from './routes/itemPlantilla.routes';
 
 const router = Router();
 
-// Protege la ruta de usuarios
-router.use(
-  '/usuarios', 
-  authenticate, 
-  autorizationMiddleware(), 
-  usuarioRoutes
-);
+// Protege la ruta de tecnicos
+router.use('/tecnicos', authenticate, autorizationMiddleware(), tecnicoRoutes);
 
 router.use(
   '/grupos',
@@ -87,33 +79,4 @@ router.use(
   autorizationMiddleware(),
   itemChecklistRoutes
 );
-
-router.use(
-  '/plantillas',
-  authenticate,
-  autorizationMiddleware(),
-  plantillaRoutes
-);
-
-router.use(
-  '/item-plantilla',
-  authenticate,
-  autorizationMiddleware(),
-  itemPlantillaRoutes
-);
-
-router.use(
-  '/mantenimientosXinspeccion',
-  authenticate,
-  autorizationMiddleware(),
-  mantenimientoXinspeccionRoutes
-);
-
-router.use(
-  '/tecnicos',
-  authenticate,
-  autorizationMiddleware(),
-  tecnicoRoutes
-);
-
 export default router;

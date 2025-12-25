@@ -1,21 +1,10 @@
-import { RequestHandler, Router } from 'express';
+import { Router } from 'express';
 import {
   getAllItemsHandler,
   postItemHandler,
   patchItemHandler,
   deleteItemHandler,
-  getItemsChecklistHandler,
 } from '../controllers/checklistItems/checklistItem.controller';
-
-import { authenticate } from '../middleware/auth.middleware';
-import { autorizationMiddleware } from '../middleware/autorization.middleware';
-import {
-  validateBody,
-  validateParams,
-} from '../middleware/validate.middleware';
-
-import { createItemSchema } from '../validations/checklistItem.schema';
-import { idParamSchema } from '../validations/ubicacionesTecnicasSchema';
 
 const router = Router();
 
@@ -33,15 +22,7 @@ const router = Router();
  *          description: Error interno del servidor
  */
 
-router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
-
-router.get(
-  '/:id',
-  authenticate,
-  autorizationMiddleware(),
-  validateParams(idParamSchema),
-  getItemsChecklistHandler
-);
+router.get('/', getAllItemsHandler);
 
 /**
  * @openapi
@@ -78,13 +59,7 @@ router.get(
  *      500:
  *       description: Error interno del servidor
  */
-router.post(
-  '/',
-  authenticate,
-  autorizationMiddleware(),
-  validateBody(createItemSchema),
-  postItemHandler
-);
+router.post('/', postItemHandler);
 
 /**
  * @openapi
@@ -127,13 +102,7 @@ router.post(
  *      500:
  *        description: Error interno del servidor
  */
-router.patch(
-  '/:idchecklist/:iditem',
-  authenticate,
-  autorizationMiddleware(),
-  validateParams(idParamSchema),
-  patchItemHandler
-);
+router.patch('/:idchecklist/:iditem', patchItemHandler);
 
 /**
  * @openapi
@@ -157,12 +126,6 @@ router.patch(
  *      500:
  *        description: Error interno del servidor
  */
-router.delete(
-  '/:id',
-  authenticate,
-  autorizationMiddleware(),
-  validateParams(idParamSchema),
-  deleteItemHandler
-);
+router.delete('/', deleteItemHandler);
 
 export default router;

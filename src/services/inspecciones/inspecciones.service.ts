@@ -8,14 +8,11 @@ import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
 import { ubicacionTecnica } from '../../tables/ubicacionTecnica';
 import { usuarios } from '../../tables/usuarios';
 import { itemChecklist } from '../../tables/item-checklist';
-import { checklist } from '../../tables/checklist';
-import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 
 import {
   insertInspeccion,
   putInspeccion,
   ResumenInspeccion,
-  Checklist,
 } from '../../types/inspeccion';
 
 import { cleanObject } from '../../utils/cleanUpdateData';
@@ -58,7 +55,7 @@ export const getDetalleInspeccion = async (id: number) => {
       observacion: inspeccion.observacion,
       frecuencia: inspeccion.frecuencia,
       areaEncargada: grupoDeTrabajo.area,
-      checklist: checklist.nombre,
+      itemChecklist: itemChecklist.descripcion,
     })
     .from(inspeccion)
     .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
@@ -66,10 +63,29 @@ export const getDetalleInspeccion = async (id: number) => {
     .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
     .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG))
     .innerJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id))
-    .innerJoin(checklist, eq(checklist.idChecklist, trabajo.idC))
+    .innerJoin(itemChecklist, eq(itemChecklist.idCheck, trabajo.idC))
     .where(eq(inspeccion.id, id));
 
-  return result[0];
+  const cleanArray = result.reduce((acc, row) => {
+    const item = row.itemChecklist;
+
+    if (!acc) {
+      const { itemChecklist, ...datosGenerales } = row;
+
+      acc = {
+        ...datosGenerales,
+        itemsChecklist: [],
+      };
+    }
+
+    if (item) {
+      acc.itemsChecklist.push(item);
+    }
+
+    return acc;
+  }, null as any);
+
+  return cleanArray;
 };
 
 export const getResumenInspeccion = async (id: number) => {
@@ -112,55 +128,6 @@ export const getInspeccionesSemanales = async (date: string) => {
   );
 
   return result;
-};
-
-export const getTareasChecklist = async (idInspeccion: number) => {
-  const infoChecklist = await db
-    .select({
-      idChecklist: checklist.idChecklist,
-      titulo: checklist.nombre,
-      ubicacion: ubicacionTecnica.descripcion,
-      idTrabajo: trabajo.idTrabajo,
-    })
-    .from(inspeccion)
-    .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-    .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
-    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
-    .where(eq(inspeccion.id, idInspeccion));
-
-  if (infoChecklist.length === 0) {
-    throw new Error('No se encontro una inspeccion asociada a ese ID');
-  }
-
-  const { idChecklist, titulo, ubicacion, idTrabajo } = infoChecklist[0];
-
-  const tasks = await db
-    .select({
-      id: itemChecklist.idItemCheck,
-      nombre: itemChecklist.titulo,
-      descripcion: itemChecklist.descripcion,
-      estado: estadoItemChecklist.estado,
-    })
-    .from(estadoItemChecklist)
-    .innerJoin(
-      itemChecklist,
-      eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck)
-    )
-    .where(eq(estadoItemChecklist.idTrabajo, idTrabajo));
-
-  const response: Checklist = {
-    id: idChecklist,
-    titulo: titulo,
-    ubicacion: ubicacion,
-    tareas: tasks.map((task) => ({
-      id: task.id,
-      nombre: task.nombre,
-      descripcion: task.descripcion,
-      estado: task.estado as 'COMPLETADA' | 'PENDIENTE',
-    })),
-  };
-
-  return response;
 };
 
 export const createInspeccion = async (inspeccionData: insertInspeccion) => {

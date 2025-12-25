@@ -2,16 +2,37 @@ import { Request, Response } from 'express';
 import {
   createMantenimientoPreventivo,
   deleteMantenimientoPreventivo,
+  getAllMantenimiento,
   getResumenMantenimiento,
   updateMantenimientoPreventivo,
   getAllMantenimientosSemanales,
   getAllMantenimientosPorMes,
-  getChecklistByMantenimiento,
-  getMantenimientobyID,
 } from '../../services/mantenimientoPreventivo/mantenimientoPreventivo.service';
 
 import { ResumenMantenimiento } from '../../types/mantenimiento';
 
+export const getAllMantenimientoPreventivoHandler = async (
+  _req: Request,
+  res: Response
+) => {
+  try {
+    const mantenimientos = await getAllMantenimiento();
+
+    if (mantenimientos.length === 0) {
+      res.status(200).json({
+        message: 'No se encontro ningun mantenimiento asociado a ese ID',
+        data: [],
+      });
+      return;
+    }
+
+    res.status(200).json(mantenimientos);
+    return;
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+    return;
+  }
+};
 
 export const getResumenMantenimientoHandler = async (
   req: Request,
@@ -35,54 +56,6 @@ export const getResumenMantenimientoHandler = async (
       res.status(404).json({ error: error.message });
       return;
     }
-    res.status(500).json({ error: 'Error interno del servidor' });
-    return;
-  }
-};
-
-export const getMantenimientobyIDHandler = async (
-  req: Request,
-  res: Response
-) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const result = await getMantenimientobyID(id);
-
-    if (result.length === 0) {
-      res
-        .status(404)
-        .json({ error: 'No se encontro un mantenimiento asociado a ese ID' });
-      return;
-    }
-
-    res.status(200).json(result[0]);
-    return;
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-    return;
-  }
-};
-
-export const getChecklistByMantenimientoHandler = async (
-  req: Request,
-  res: Response
-) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const result = await getChecklistByMantenimiento(id);
-
-    if (!result) {
-      res.status(404).json({
-        error: 'No se encontro checklist o mantenimiento para el ID dado',
-      });
-      return;
-    }
-
-    res.status(200).json(result);
-    return;
-  } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
     return;
   }

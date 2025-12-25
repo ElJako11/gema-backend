@@ -8,7 +8,6 @@ import {
   createInspeccion,
   updateInspeccion,
   deleteInspeccion,
-  getTareasChecklist,
 } from '../../services/inspecciones/inspecciones.service';
 
 export const getDetalleInspeccionHandler = async (
@@ -20,7 +19,7 @@ export const getDetalleInspeccionHandler = async (
   try {
     const result = await getDetalleInspeccion(id);
 
-    if (!result) {
+    if (result.length === 0) {
       res
         .status(404)
         .json({ error: 'No se encontro una inspeccion asociada a ese ID' });
@@ -54,35 +53,6 @@ export const getResumenInspeccionHandler = async (
     res.status(200).json(result);
     return;
   } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-    return;
-  }
-};
-
-export const getTareasChecklistHandler = async (
-  req: Request,
-  res: Response
-) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const result = await getTareasChecklist(id);
-
-    if (!result) {
-      res.status(404).json({
-        error: 'No se encontraron tareas de checklist para esta inspeccion',
-      });
-      return;
-    }
-
-    res.status(200).json(result);
-    return;
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(404).json({ error: error.message });
-      return;
-    }
-
     res.status(500).json({ error: 'Error interno del servidor' });
     return;
   }
