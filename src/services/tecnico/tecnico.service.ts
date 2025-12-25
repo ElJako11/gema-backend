@@ -49,3 +49,21 @@ export const getAllTecnicos = async () => {
 
   return tecnicos;
 };
+
+export const existeTecnico = async (correo: string) => {
+  const tecnico = await db
+    .select()
+    .from(usuarios)
+    .where(eq(usuarios.Correo, correo))
+    .limit(1);
+  return tecnico.length > 0 ? true : false;
+};
+
+export const getTecnicoById = async (tecnicoId: number) => {
+  const tecnico = await db
+    .select()
+    .from(usuarios)
+    .where(eq(usuarios.Id, tecnicoId))
+    .limit(1);
+  return tecnico.length > 0 ? tecnico[0] : null;
+};
