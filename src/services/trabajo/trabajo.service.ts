@@ -114,8 +114,6 @@ export const getCantidadMantenimientosReabiertos = async (): Promise<number> => 
         eq(trabajo.tipo, TIPO_MANTENIMIENTO)
       )
     );
-    console.log('Resultado de la consulta:', result);
-    console.log('Cantidad de mantenimientos reabiertos:', result[0].count);
   return result[0].count;
 };
 
@@ -126,15 +124,16 @@ export const getMantenimientosReabiertosPorArea = async () => {
   try {
     const result = await db
       .select({
-        grupo: ubicacionTecnica.descripcion, // Asumimos que 'nombre' es el campo del área en ubicacionTecnica
+        Grupo: grupoDeTrabajo.nombre,
         total: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
       })
       .from(trabajo)
-      .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+      .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
+      .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
       .where(
         and(eq(trabajo.est, ESTADO_REABIERTO), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
       )
-      .groupBy(ubicacionTecnica.descripcion);
+      .groupBy(grupoDeTrabajo.nombre);
 
     return result;
   } catch (error) {
