@@ -1,10 +1,21 @@
-import { Router } from 'express';
+import { RequestHandler, Router } from 'express';
 import {
   getAllItemsHandler,
   postItemHandler,
   patchItemHandler,
   deleteItemHandler,
+  getItemsChecklistHandler,
 } from '../controllers/checklistItems/checklistItem.controller';
+
+import { authenticate } from '../middleware/auth.middleware';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
+import {
+  validateBody,
+  validateParams,
+} from '../middleware/validate.middleware';
+
+import { createItemSchema } from '../validations/checklistItem.schema';
+import { idParamSchema } from '../validations/ubicacionesTecnicasSchema';
 
 const router = Router();
 
@@ -22,7 +33,15 @@ const router = Router();
  *          description: Error interno del servidor
  */
 
-router.get('/', getAllItemsHandler);
+router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
+
+router.get(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(idParamSchema),
+  getItemsChecklistHandler
+);
 
 /**
  * @openapi
@@ -59,7 +78,13 @@ router.get('/', getAllItemsHandler);
  *      500:
  *       description: Error interno del servidor
  */
-router.post('/', postItemHandler);
+router.post(
+  '/',
+  authenticate,
+  autorizationMiddleware(),
+  validateBody(createItemSchema),
+  postItemHandler
+);
 
 /**
  * @openapi
@@ -102,7 +127,13 @@ router.post('/', postItemHandler);
  *      500:
  *        description: Error interno del servidor
  */
-router.patch('/:idchecklist/:iditem', patchItemHandler);
+router.patch(
+  '/:idchecklist/:iditem',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(idParamSchema),
+  patchItemHandler
+);
 
 /**
  * @openapi
@@ -126,6 +157,12 @@ router.patch('/:idchecklist/:iditem', patchItemHandler);
  *      500:
  *        description: Error interno del servidor
  */
-router.delete('/', deleteItemHandler);
+router.delete(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(idParamSchema),
+  deleteItemHandler
+);
 
 export default router;

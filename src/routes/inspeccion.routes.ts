@@ -7,7 +7,25 @@ import {
   getInspeccionesByFecha,
   getResumenInspeccionHandler,
   updateInspeccionHandler,
+  getTareasChecklistHandler,
 } from '../controllers/inspecciones/inspecciones.controller';
+
+import { authenticate } from '../middleware/auth.middleware';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
+
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from '../middleware/validate.middleware';
+
+import {
+  inspeccionIdParamSchema,
+  createInspeccionSchema,
+  updateInspeccionSchema,
+} from '../validations/inspeccionSchema';
+
+import { QuerySchema } from '../validations/globalTypeSchema';
 
 const router = Router();
 
