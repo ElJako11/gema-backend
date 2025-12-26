@@ -1,27 +1,5 @@
 import { Request, Response } from "express";
-import { getItemsByPlantilla, createItem, updateItem, deleteItem } from "../../services/itemPlantilla/itemPlantilla.service";
-
-export const getItemsByPlantillaHandler = async (req: Request, res: Response) => {
-    try {
-        const idPlantilla = parseInt(req.params.idPlantilla, 10);
-        const items = await getItemsByPlantilla(idPlantilla);
-
-        if(!items){
-            res.status(404).json({ error: 'Plantilla no encontrada' });
-            return;
-        }
-
-        res.status(200).json(items);
-        return;
-    } catch (error: any) {
-        if (error.message === 'La plantilla no existe') {
-            res.status(404).json({ error: 'La plantilla no existe' });
-            return;
-        }
-        res.status(500).json({ error: 'Error al obtener items de la plantilla' });
-        return;
-    }
-}
+import { createItem, updateItem, deleteItem } from "../../services/itemPlantilla/itemPlantilla.service";
 
 export const postItemHandler = async (req: Request, res: Response) => {
     try {

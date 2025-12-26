@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../config/db';
+import { itemPlantilla } from '../../tables/itemPlantilla';
 import { plantilla } from '../../tables/plantilla';
 import { CreatePlantillaParams, UpdatePlantillaParams } from '../../types/plantilla';
 
@@ -10,6 +11,30 @@ export const getAllPlantillas = async () => {
     }catch(error){
         console.error('Error al obtener las Plantillas', error);
         throw new Error('No se pudieron obtener las Plantillas');
+    }
+}
+
+export const getPlantillaWithItems = async (id: number) => {
+    try {
+        const rows = await db
+            .select()
+            .from(plantilla)
+            .leftJoin(itemPlantilla, eq(plantilla.idPlantilla, itemPlantilla.idPlantilla))
+            .where(eq(plantilla.idPlantilla, id));
+
+        if (rows.length === 0) {
+            throw new Error('La plantilla no existe');
+        }
+
+        const result = {
+            ...rows[0].plantilla,
+            items: rows.map(r => r.itemPlantilla).filter(item => item !== null)
+        };
+
+        return result;
+    } catch (error) {
+        console.error(`Error al obtener plantilla ${id} con items`, error);
+        throw error;
     }
 }
 

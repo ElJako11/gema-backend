@@ -1,5 +1,21 @@
 import { Request, Response } from "express";
-import { getAllPlantillas, createPlantilla, updatePlantilla, deletePlantillaByID } from "../../services/plantilla/plantilla.service";    
+import { getAllPlantillas, createPlantilla, updatePlantilla, deletePlantillaByID, getPlantillaWithItems } from "../../services/plantilla/plantilla.service";
+
+export const getPlantillaWithItemsHandler = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const plantillaWithItems = await getPlantillaWithItems(id);
+        res.status(200).json(plantillaWithItems);
+        return;
+    } catch (error: any) {
+        if (error.message === 'La plantilla no existe') {
+            res.status(404).json({ error: 'La plantilla no existe' });
+            return;
+        }
+        res.status(500).json({ error: 'Error al obtener plantilla con items' });
+        return;
+    }
+}    
 
 export const getPlantillaHandler = async (req: Request, res: Response) => {
     try {

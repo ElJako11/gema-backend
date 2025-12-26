@@ -11,12 +11,14 @@ import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
 import inspeccionRoutes from './routes/inspeccion.routes';
 import calendarioRoutes from './routes/calendario.routes';
 import mantenimientoXinspeccionRoutes from './routes/mantenimientoXinspeccion.routes';
-
-import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
-import { autorizationMiddleware } from './middleware/autorization.middleware';
+import trabajoFacadeRoutes from './routes/trabajoFacade.routes';
 import itemChecklistRoutes from './routes/itemChecklist.routes';
 import plantillaRoutes from './routes/plantilla.routes';
 import itemPlantillaRoutes from './routes/itemPlantilla.routes';
+
+import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
+import { autorizationMiddleware } from './middleware/autorization.middleware';
+
 
 const router = Router();
 
@@ -114,6 +116,13 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   tecnicoRoutes
+);
+
+router.use(
+  '/work-creation',
+  authenticate,
+  autorizationMiddleware(),
+  trabajoFacadeRoutes
 );
 
 export default router;

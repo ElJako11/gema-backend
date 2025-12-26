@@ -3,6 +3,7 @@ import { authenticate } from '../middleware/auth.middleware';
 import {
   deletePlantillaHandler,
   getPlantillaHandler,
+  getPlantillaWithItemsHandler,
   postPlantillaHandler,
   putPlantillaHandler,
 } from '../controllers/plantilla/plantilla.controller';
@@ -13,6 +14,14 @@ import { createPlantillaSchema, plantillaIdParamSchema, updatePlantillaSchema } 
 const router = Router();
 
 router.get('/', authenticate, autorizationMiddleware(), getPlantillaHandler);
+
+router.get(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(plantillaIdParamSchema),
+  getPlantillaWithItemsHandler
+);
 
 router.post(
   '/', 

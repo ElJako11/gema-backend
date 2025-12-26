@@ -1,30 +1,11 @@
 import { eq, and } from 'drizzle-orm';
 import { db } from '../../config/db';
+
 import { itemPlantilla } from '../../tables/itemPlantilla';
-import { plantilla } from '../../tables/plantilla';
+
 import { cleanObject } from '../../utils/cleanUpdateData';
+
 import { CreateItemPlantillaParams, UpdateItemPlantillaParams } from '../../types/itemPlantilla';
-
-export const getItemsByPlantilla = async (idPlantilla: number) => {
-    try {
-        const plantillaExists = await db
-            .select()
-            .from(plantilla)
-            .where(eq(plantilla.idPlantilla, idPlantilla));
-
-        if (plantillaExists.length === 0) {
-            throw new Error('La plantilla no existe');
-        }
-
-        const items = await db
-            .select()
-            .from(itemPlantilla)
-            .where(eq(itemPlantilla.idPlantilla, idPlantilla));
-        return items;
-    } catch (error) {
-        throw error;
-    }
-};
 
 export const createItem = async (params: CreateItemPlantillaParams) => {
     try {
