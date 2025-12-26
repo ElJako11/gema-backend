@@ -41,6 +41,12 @@ export const createUbicacionTecnicaHandler = async (
     });
     return;
   } catch (error) {
+    if (error instanceof Error && error.message.includes('Ya existe una ubicación técnica con esta abreviación')) {
+      res.status(409).json({
+        error: error.message,
+      });
+      return;
+    }
     console.error('Error in createUbicacionTecnicaHandler:', error);
     res.status(500).json({
       error: 'Error al crear la ubicación técnica',

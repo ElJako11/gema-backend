@@ -19,7 +19,7 @@ const router = Router();
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     requestBody:
  *       required: true
  *       content:
@@ -40,11 +40,16 @@ const router = Router();
  *               supervisorId:
  *                 type: integer
  *                 example: 1
+ *               area:
+ *                 type: string
+ *                 example: MN-130
  *     responses:
  *       201:
  *         description: Grupo de trabajo creado correctamente
  *       400:
  *         description: Datos inválidos
+ *       409:
+ *        description: Codigo de grupo de trabajo ya existe
  *       500:
  *         description: Error al crear el grupo de trabajo
  */
@@ -57,7 +62,7 @@ router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     responses:
  *       200:
  *         description: Lista de grupos de trabajo
@@ -72,7 +77,7 @@ router.get('/', getGruposDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id
@@ -96,7 +101,7 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id
@@ -113,10 +118,13 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *             properties:
  *               codigo:
  *                 type: string
+ *                 example: "1"
  *               nombre:
  *                 type: string
- *               supervisorId:
- *                 type: integer
+ *                 example: "Grupo de Mantenimiento Actualizado"
+ *               area:
+ *                 type: string
+ *                 example: "MN-150"
  *     responses:
  *       200:
  *         description: Grupo de trabajo actualizado correctamente
@@ -137,7 +145,7 @@ router.put('/:id', updateGrupoDeTrabajoHandler);
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - GruposDeTrabajo
+ *       - Grupos De Trabajo
  *     parameters:
  *       - in: path
  *         name: id

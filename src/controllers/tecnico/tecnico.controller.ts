@@ -1,6 +1,7 @@
 import { Request, Response} from 'express';
 import {
   createTecnico,
+  existeTecnico,
   getAllTecnicos,
   getListaTecnicos,
   updateTecnico,
@@ -11,7 +12,13 @@ import { AuthRequest } from '../../types/types';
 //Get all Tecnicos
 export const getAllTecnicosHandler = async (req: Request, res: Response) => {
   try {
-    const tecnicos = await getAllTecnicos();
+    if(await existeTecnico(req.body.Correo)) {
+      res.status(409).json({
+        error: 'El técnico con ese correo ya existe',
+      });
+      return;
+    }
+    const user = await createTecnico(req.body);
     res.status(201).json({
       data: tecnicos,
     });

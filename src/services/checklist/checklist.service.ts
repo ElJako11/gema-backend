@@ -67,9 +67,6 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
         .where(eq(checklist.idChecklist, id))
         .returning()
 
-        //Si el idChecklist no existe
-        if (!updated[0]) throw new Error('Checklist no encontrado');
-
         return updated[0]
 
     }catch(error){
@@ -86,10 +83,7 @@ export const deleteChecklistByID = async(id: number) =>{
         const deleted = await db
         .delete(checklist)
         .where(eq(checklist.idChecklist, id))
-        .returning()
-
-        //Si el idChecklist no existe
-        if (!deleted[0]) throw new Error('Checklist no encontrado');
+        .returning();
 
         return deleted[0]
 

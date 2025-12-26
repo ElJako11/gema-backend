@@ -28,6 +28,13 @@ import { eq, and, inArray } from 'drizzle-orm';
 export const createUbicacionTecnica = async (
   params: CreateUbicacionesTecnicasParams
 ) => {
+  const existe = await db
+    .select()
+    .from(ubicacionTecnica)
+    .where(eq(ubicacionTecnica.abreviacion, params.abreviacion));
+  if (existe.length) {
+    throw new Error('Ya existe una ubicación técnica con esta abreviación');
+  }
   try {
     if (!params.descripcion || !params.abreviacion) {
       throw new Error('Los campos descripcion y abreviacion son obligatorios');

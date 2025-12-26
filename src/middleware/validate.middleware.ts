@@ -11,7 +11,14 @@ export const validateBody = (schema: ZodTypeAny): RequestHandler =>
 
       // Parse and coerce (if schema has preprocess/coercions) and replace request body
       const parsedBody = schema.parse(req.body);
-      (req as any).body = parsedBody;
+
+      // --- CORRECCIÓN ---
+      // No reasignar req.body. En su lugar, limpiarlo y copiar las nuevas propiedades.
+      // Esto evita el error "Cannot set property which has only a getter".
+      Object.keys(req.body).forEach(key => delete req.body[key]);
+      Object.assign(req.body, parsedBody);
+      // --- FIN DE LA CORRECCIÓN ---
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -38,7 +45,13 @@ export const validateParams = (schema: ZodTypeAny): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsedParams = schema.parse(req.params);
-      (req as any).params = parsedParams;
+
+      // --- CORRECCIÓN ---
+      // Aplicamos la misma lógica que en validateBody para evitar errores.
+      Object.keys(req.params).forEach(key => delete (req.params as any)[key]);
+      Object.assign(req.params, parsedParams);
+      // --- FIN DE LA CORRECCIÓN ---
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -64,7 +77,13 @@ export const validateQuery = (schema: ZodTypeAny): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsedQuery = schema.parse(req.query);
-      (req as any).query = parsedQuery;
+
+      // --- CORRECCIÓN ---
+      // Esta es la corrección principal para el error que reportaste.
+      Object.keys(req.query).forEach(key => delete (req.query as any)[key]);
+      Object.assign(req.query, parsedQuery);
+      // --- FIN DE LA CORRECCIÓN ---
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {

@@ -5,8 +5,6 @@ import {
   getAllWorkersInAllGroups,
   getAllWorkersInGroup,
 } from '../../services/trabajaEnGrupo/trabajaEnGrupo.service';
-import { trabajaEnGrupo } from '../../tables/trabajaEnGrupo';
-import { error } from 'console';
 
 export const createTrabajaEnGrupoHandler = async (
   req: Request,
@@ -20,12 +18,21 @@ export const createTrabajaEnGrupoHandler = async (
 
     return;
   } catch (error) {
+    if (error instanceof Error && error.message == 'El técnico no existe') {
+      res.status(404).json({ error: error.message });
+      return;
+    }
+    else if (error instanceof Error && error.message == 'El grupo de trabajo no existe') {
+      res.status(404).json({ error: error.message });
+      return;
+    }
+    else {
     console.error('Error in trabajaEnGrupoHandler: ', error);
     res.status(500).json({
       error: 'Error al añadir trabajador a grupo de trabajo',
     });
     return;
-  }
+  }}
 };
 
 export const getAllTrabajaEnGrupoHandler = async (
@@ -40,7 +47,13 @@ export const getAllTrabajaEnGrupoHandler = async (
     res.status(200).json({
       data: trabajaEnGrupos,
     });
-  } catch (error) {}
+  } catch (error) {
+    if (error instanceof Error && error.message == 'El grupo de trabajo no existe') {
+      res.status(404).json({ error: error.message });
+      return;
+    }
+
+  }
 };
 
 export const getAllTrabajaEnTodosLosGruposHandler = async (
