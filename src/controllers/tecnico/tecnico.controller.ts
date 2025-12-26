@@ -1,28 +1,20 @@
-import { Request, Response} from 'express';
+import { Request, Response } from 'express';
 import {
   createTecnico,
-  existeTecnico,
   getAllTecnicos,
   getListaTecnicos,
   updateTecnico,
   deleteTecnico
-} from '../../services/tecnico/tecnico.service';
+} from '../../services/tecnico/tecnico.service'; 
 import { AuthRequest } from '../../types/types';
 
-//Get all Tecnicos
+
 export const getAllTecnicosHandler = async (req: Request, res: Response) => {
   try {
-    if(await existeTecnico(req.body.Correo)) {
-      res.status(409).json({
-        error: 'El técnico con ese correo ya existe',
-      });
-      return;
-    }
-    const user = await createTecnico(req.body);
-    res.status(201).json({
+    const tecnicos = await getAllTecnicos();
+    res.status(200).json({ 
       data: tecnicos,
     });
-    return;
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los tecnicos'});
   }
@@ -32,10 +24,9 @@ export const getAllTecnicosHandler = async (req: Request, res: Response) => {
 export const getListaTecnicosHandler = async (req: Request, res: Response) => {
   try {
     const listaTecnicos = await getListaTecnicos();
-    res.status(201).json({
+    res.status(200).json({
       data: listaTecnicos,
     });
-    return;
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener la lista de tecnicos'});
   }
@@ -48,7 +39,6 @@ export const createTecnicoHandler = async ( req: AuthRequest, res: Response ) =>
     res.status(201).json({
       tecnico
     });
-    return;
   } catch (error) {
     res.status(500).json({message: (error as Error).message});
   }
@@ -70,15 +60,16 @@ export const updateTecnicoHandler = async ( req: AuthRequest, res: Response ) =>
       return;
     }
 
-    res.status(201).json({
+    res.status(200).json({ 
       message: 'Tecnico actualizado correctamente',
     });
-  
+   
   } catch (error) {
     res.status(500).json({message: (error as Error).message});
   }
 }
 
+//Delete Tecnico
 export const deleteTecnicoHandler = async ( req: AuthRequest, res: Response ) => {
   const id = parseInt(req.params.id);
 
@@ -90,7 +81,7 @@ export const deleteTecnicoHandler = async ( req: AuthRequest, res: Response ) =>
       return;
     }
 
-    res.status(201).json({
+    res.status(200).json({
       message: 'Tecnico eliminado correctamente',
     });
   } catch (error) {
