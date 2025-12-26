@@ -17,6 +17,21 @@ export const getAllTecnicos = async () => {
   }
 };
 
+// Get Tecnico by ID
+export const getTecnicoById = async (id: number) => {
+  try {
+    const result = await db
+      .select()
+      .from(tecnico)
+      .where(eq(tecnico.idTecnico, id));
+    
+    return result[0] || null;
+  } catch (error) {
+    console.error('Error al obtener el tecnico por ID:', error);
+    throw new Error('Error al obtener el tecnico por ID');
+  }
+};
+
 //Get lista de tecnicos 
 export const getListaTecnicos = async () => {
   try {
