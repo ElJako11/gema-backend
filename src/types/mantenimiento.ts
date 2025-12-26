@@ -3,6 +3,7 @@ export type ResumenMantenimiento = {
   estado: string;
   ubicacion: string;
   fechaLimite: string;
+  titulo: string;
 };
 
 export type createMantenimiento = {
@@ -28,8 +29,7 @@ export type Actividad = {
 };
 
 export type Checklist = {
-  id: number;
-  titulo: string;
+  nombreMantenimiento: string;
   ubicacion: string;
   tareas: Actividad[];
 };

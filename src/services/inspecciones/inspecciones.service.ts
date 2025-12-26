@@ -17,6 +17,7 @@ import {
   ResumenInspeccion,
   Checklist,
 } from '../../types/inspeccion';
+import { Tx } from '../../types/transaction';
 
 import { cleanObject } from '../../utils/cleanUpdateData';
 import {
@@ -36,6 +37,7 @@ const getResumenQueryBase = () => {
       areaEncargada: grupoDeTrabajo.area,
       supervisor: usuarios.Nombre,
       frecuencia: inspeccion.frecuencia,
+      titulo: trabajo.nombre,
     })
     .from(inspeccion)
     .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
@@ -115,58 +117,62 @@ export const getInspeccionesSemanales = async (date: string) => {
 };
 
 export const getTareasChecklist = async (idInspeccion: number) => {
-  const infoChecklist = await db
-    .select({
-      idChecklist: checklist.idChecklist,
-      titulo: checklist.nombre,
-      ubicacion: ubicacionTecnica.descripcion,
-      idTrabajo: trabajo.idTrabajo,
-    })
-    .from(inspeccion)
-    .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-    .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
-    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
-    .where(eq(inspeccion.id, idInspeccion));
+  try {
+    const infoChecklist = await db
+      .select({
+        nombreInspeccion: trabajo.nombre,
+        ubicacion: ubicacionTecnica.descripcion,
+        idTarea: itemChecklist.idItemCheck,
+        nombreTarea: itemChecklist.titulo,
+        descripcionTarea: itemChecklist.descripcion,
+        estado: estadoItemChecklist.estado,
+      })
+      .from(inspeccion)
+      .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
+      .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+      .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
+      .leftJoin(estadoItemChecklist, eq(trabajo.idTrabajo, estadoItemChecklist.idTrabajo))
+      .leftJoin(itemChecklist, eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck))
+      .where(eq(inspeccion.id, idInspeccion));
 
-  if (infoChecklist.length === 0) {
-    throw new Error('No se encontro una inspeccion asociada a ese ID');
+    if (infoChecklist.length === 0) {
+      throw new Error('No se encontro una inspeccion asociada a ese ID');
+    }
+
+    // Grouping results
+    const firstRow = infoChecklist[0];
+    const tasks = infoChecklist
+        .filter(row => row.idTarea !== null)
+        .map((row) => ({
+            id: row.idTarea!,
+            nombre: row.nombreTarea!,
+            descripcion: row.descripcionTarea!,
+            estado: row.estado as 'COMPLETADA' | 'PENDIENTE',
+        }));
+
+    const response: Checklist = {
+      nombreInspeccion: firstRow.nombreInspeccion,
+      ubicacion: firstRow.ubicacion,
+      tareas: tasks,
+    };
+
+    return response;
+  } catch (error) {
+    console.error("Error en getTareasChecklist:", error);
+    throw error;
   }
-
-  const { idChecklist, titulo, ubicacion, idTrabajo } = infoChecklist[0];
-
-  const tasks = await db
-    .select({
-      id: itemChecklist.idItemCheck,
-      nombre: itemChecklist.titulo,
-      descripcion: itemChecklist.descripcion,
-      estado: estadoItemChecklist.estado,
-    })
-    .from(estadoItemChecklist)
-    .innerJoin(
-      itemChecklist,
-      eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck)
-    )
-    .where(eq(estadoItemChecklist.idTrabajo, idTrabajo));
-
-  const response: Checklist = {
-    id: idChecklist,
-    titulo: titulo,
-    ubicacion: ubicacion,
-    tareas: tasks.map((task) => ({
-      id: task.id,
-      nombre: task.nombre,
-      descripcion: task.descripcion,
-      estado: task.estado as 'COMPLETADA' | 'PENDIENTE',
-    })),
-  };
-
-  return response;
 };
 
-export const createInspeccion = async (inspeccionData: insertInspeccion) => {
+
+
+export const createInspeccion = async (
+  inspeccionData: insertInspeccion,
+  tx?: Tx
+) => {
+  const database = tx ?? db;
   const { idTrabajo, observaciones, frecuencia } = inspeccionData;
 
-  const result = await db
+  const result = await database
     .insert(inspeccion)
     .values({
       idT: idTrabajo,

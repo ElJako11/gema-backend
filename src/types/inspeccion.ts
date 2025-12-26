@@ -14,6 +14,7 @@ export type Inspeccion = {
   observaciones: string;
   frecuencia: string;
   areaEncargada: string;
+  titulo: string;
 };
 
 export type ResumenInspeccion = Pick<
@@ -24,6 +25,7 @@ export type ResumenInspeccion = Pick<
   | 'areaEncargada'
   | 'supervisor'
   | 'frecuencia'
+  | 'titulo' // Added
 >;
 
 export type insertInspeccion = {
@@ -42,8 +44,7 @@ export type Actividad = {
 };
 
 export type Checklist = {
-  id: number;
-  titulo: string;
+  nombreInspeccion: string;
   ubicacion: string;
   tareas: Actividad[];
 };
