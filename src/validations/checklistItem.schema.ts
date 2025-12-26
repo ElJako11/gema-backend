@@ -13,5 +13,16 @@ export const createItemSchema = z.object({
 });
 
 export const idParamSchema = z.object({
-  id: z.coerce.number().int().positive(),
+  idChecklist: z.coerce.number().int().positive(),
 });
+
+export const UpdateParamSchema = z.object({
+  idChecklist: z.coerce.number().int().positive(),
+  idItem: z.coerce.number().int().positive(),
+});
+
+const baseUpdate = createItemSchema.omit({
+  idChecklist: true
+})
+
+export const UpdateBodySchema = baseUpdate.partial();

@@ -1,11 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  deleteItem,
-  getAllItems,
-  getItemsChecklist,
-  insertItem,
-  updateItem,
-} from '../../services/checklistItems/checklistItem.service';
+import { insertItem, updateItem, deleteItem, getAllItems } from "../../services/checklistItems/checklistItem.service";
 
 export const getAllItemsHandler = async (_req: Request, res: Response) => {
   try {
@@ -15,25 +9,6 @@ export const getAllItemsHandler = async (_req: Request, res: Response) => {
     return;
   } catch (error) {
     res.status(500).json({ error: error });
-    return;
-  }
-};
-
-export const getItemsChecklistHandler = async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const items = await getItemsChecklist(id);
-
-    if (items.length === 0) {
-      res.status(200).json([]);
-      return;
-    }
-
-    res.status(200).json(items);
-    return;
-  } catch (error) {
-    res.status(500).json({ error: 'Error interno del servidor' });
     return;
   }
 };
@@ -57,19 +32,24 @@ export const postItemHandler = async (req: Request, res: Response) => {
 };
 
 export const patchItemHandler = async (req: Request, res: Response) => {
-  if (!req.body) {
-    res
-      .status(400)
-      .json({ message: 'No se recibieron los datos de la peticion' });
-    return;
-  }
+  const { idChecklist, idItem } = req.params;
+  const { body } = req;
 
   try {
-    const updatedItem = await updateItem(req.body);
+    const updatedItem = await updateItem(
+      Number(idChecklist),
+      Number(idItem),
+      body
+    );
 
     res.status(200).json({ data: updatedItem });
     return;
   } catch (error) {
+    if(error instanceof Error) {
+      res.status(500).json({ error: error.message });
+      return;
+    }
+
     res.status(500).json({ error: error });
     return;
   }
@@ -83,10 +63,10 @@ export const deleteItemHandler = async (req: Request, res: Response) => {
     return;
   }
 
-  const id = parseInt(req.params.id, 10);
+  const { idChecklist, idItem } = req.params;
 
   try {
-    const deletedItem = await deleteItem(id);
+    const deletedItem = await deleteItem(Number(idChecklist), Number(idItem));
 
     res.status(200).json({ data: deletedItem });
     return;

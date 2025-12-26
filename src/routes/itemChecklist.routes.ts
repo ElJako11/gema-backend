@@ -4,7 +4,6 @@ import {
   postItemHandler,
   patchItemHandler,
   deleteItemHandler,
-  getItemsChecklistHandler,
 } from '../controllers/checklistItems/checklistItem.controller';
 
 import { authenticate } from '../middleware/auth.middleware';
@@ -14,8 +13,7 @@ import {
   validateParams,
 } from '../middleware/validate.middleware';
 
-import { createItemSchema } from '../validations/checklistItem.schema';
-import { idParamSchema } from '../validations/ubicacionesTecnicasSchema';
+import { createItemSchema, idParamSchema, UpdateParamSchema, UpdateBodySchema } from '../validations/checklistItem.schema';
 
 const router = Router();
 
@@ -35,13 +33,9 @@ const router = Router();
 
 router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
 
-router.get(
-  '/:id',
-  authenticate,
-  autorizationMiddleware(),
-  validateParams(idParamSchema),
-  getItemsChecklistHandler
-);
+router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
+
+// Route moved to checklist.routes.ts
 
 /**
  * @openapi
@@ -128,21 +122,28 @@ router.post(
  *        description: Error interno del servidor
  */
 router.patch(
-  '/:idchecklist/:iditem',
+  '/:idChecklist/:idItem',
   authenticate,
   autorizationMiddleware(),
-  validateParams(idParamSchema),
+  validateParams(UpdateParamSchema),
+  validateBody(UpdateBodySchema),
   patchItemHandler
 );
 
 /**
  * @openapi
- * /item-checklist/{id}:
+ * /item-checklist/{idChecklist}/{idItem}:
  *  delete:
  *    summary: Elimina un item usando su ID
  *    tags:
  *      - Items Checklists
  *    parameters:
+ *      - in: path
+ *        name: idChecklist
+ *        required: true
+ *        schema:
+ *          type: integer
+ *        description: ID del checklist
  *      - in: path
  *        name: idItem
  *        required: true
@@ -158,10 +159,10 @@ router.patch(
  *        description: Error interno del servidor
  */
 router.delete(
-  '/:id',
+  '/:idChecklist/:idItem',
   authenticate,
   autorizationMiddleware(),
-  validateParams(idParamSchema),
+  validateParams(UpdateParamSchema),
   deleteItemHandler
 );
 

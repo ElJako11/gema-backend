@@ -1,9 +1,12 @@
 import { db } from '../../config/db';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { cleanObject } from '../../utils/cleanUpdateData';
 
 import { itemChecklist } from '../../tables/item-checklist';
+import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 
 import { InsertItem, UpdateItem } from '../../types/itemChecklist';
+import { Tx } from '../../types/transaction';
 
 export const getAllItems = async () => {
   try {
@@ -20,35 +23,14 @@ export const getAllItems = async () => {
   }
 };
 
-export const getItemsChecklist = async (id: number) => {
-  const result = await db
-    .select({
-      titulo: itemChecklist.titulo,
-      descripcion: itemChecklist.descripcion,
-    })
-    .from(itemChecklist)
-    .where(eq(itemChecklist.idCheck, id));
-
-  return result;
-};
-
-export const insertItem = async (insertdata: InsertItem) => {
+export const insertItem = async (
+  insertdata: InsertItem,
+  tx?: Tx
+) => {
+  const database = tx ?? db;
   const { idChecklist, descripcion, titulo } = insertdata;
-
-  if (idChecklist <= 0 || !idChecklist || isNaN(idChecklist)) {
-    throw new Error('El ID recibido no es valido');
-  }
-
-  if (descripcion.length === 0) {
-    throw new Error('La descripcion enviada no es valida');
-  }
-
-  if (titulo.length === 0) {
-    throw new Error('La descripcion enviada no es valida');
-  }
-
   try {
-    const result = await db
+    const result = await database
       .insert(itemChecklist)
       .values({ idCheck: idChecklist, descripcion, titulo })
       .returning();
@@ -64,33 +46,23 @@ export const insertItem = async (insertdata: InsertItem) => {
   }
 };
 
-export const updateItem = async (updateAttr: UpdateItem) => {
-  const { idChecklist, descripcion = '', titulo = '' } = updateAttr;
-
-  // ! Colocar validación isNaN.
-  if (!idChecklist || idChecklist <= 0) {
-    throw new Error('El ID del item no es valido');
-  }
-
-  const updatevalues: Record<string, string> = {};
-
-  if (descripcion.length !== 0) {
-    updatevalues.descripcion = descripcion;
-  }
-
-  if (titulo.length !== 0) {
-    updatevalues.titulo = titulo;
-  }
-
-  if (Object.keys(updatevalues).length === 0) {
-    throw new Error('No existen elementos a actualizar');
-  }
-
+export const updateItem = async (
+  idChecklist: number,
+  idItem: number,
+  updateAttr: UpdateItem
+) => {
+  const updatevalues = cleanObject(updateAttr);
+  
   try {
     const result = await db
       .update(itemChecklist)
       .set(updatevalues)
-      .where(eq(itemChecklist.idItemCheck, idChecklist))
+      .where(
+        and(
+          eq(itemChecklist.idCheck, idChecklist),
+          eq(itemChecklist.idItemCheck, idItem)
+        )
+      )
       .returning();
 
     if (result.length === 0) {
@@ -104,16 +76,27 @@ export const updateItem = async (updateAttr: UpdateItem) => {
   }
 };
 
-export const deleteItem = async (idCheck: number) => {
-  // ! Colocar validación isNaN.
-  if (!idCheck || idCheck <= 0) {
-    throw new Error('El ID del item no es valido');
-  }
-
+export const deleteItem = async (idCheck: number, idItemCheck: number) => {
   try {
+    // Primero eliminar de estadoItemChecklist debido a la restricción de clave foránea
+    await db
+      .delete(estadoItemChecklist)
+      .where(
+        and(
+          eq(estadoItemChecklist.idChecklist, idCheck),
+          eq(estadoItemChecklist.idItemChecklist, idItemCheck)
+        )
+      );
+
+    // Luego eliminar de itemChecklist
     const result = await db
       .delete(itemChecklist)
-      .where(eq(itemChecklist.idCheck, idCheck))
+      .where(
+        and(
+          eq(itemChecklist.idCheck, idCheck),
+          eq(itemChecklist.idItemCheck, idItemCheck)
+        )
+      )
       .returning({ deletedItem: itemChecklist.idCheck });
 
     if (result.length === 0) {
