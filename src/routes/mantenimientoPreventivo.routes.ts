@@ -45,7 +45,7 @@ router.get(
 );
 
 router.get(
-  '/:id',
+  '/:id/resumen',
   authenticate,
   autorizationMiddleware(),
   validateParams(urlParamsSchema),

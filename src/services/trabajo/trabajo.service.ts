@@ -2,6 +2,7 @@ import {eq} from 'drizzle-orm';
 import {db} from '../../config/db';
 import {trabajo} from '../../tables/trabajo';
 import {CreateTrabajoParams} from '../../types/trabajo';
+import { Tx } from '../../types/transaction';
 
 //Get Trabajos
 export const getAllTrabajos = async () => {
@@ -28,9 +29,14 @@ export const getTrabajoById = async (id: number) => {
 }
 
 //Post Trabajo
-export const createTrabajo = async (params: CreateTrabajoParams) => {
+export const createTrabajo = async (
+  params: CreateTrabajoParams,
+  tx?: Tx
+) => {
+  const database = tx ?? db;
+
     try {
-        const newTrabajo = await db.insert(trabajo)
+        const newTrabajo = await database.insert(trabajo)
         .values(params)
         .returning();
 

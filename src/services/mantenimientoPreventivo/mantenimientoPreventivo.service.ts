@@ -1,6 +1,6 @@
 import { db } from '../../config/db';
 
-import { eq, between, and } from 'drizzle-orm';
+import { eq, between, and, count, ne } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
@@ -10,6 +10,7 @@ import {
   createMantenimiento,
   updateMantenimiento,
 } from '../../types/mantenimiento';
+import { Tx } from '../../types/transaction';
 
 import {
   Add,
@@ -31,6 +32,7 @@ const getResumenMantenimientoQuery = () => {
       estado: trabajo.est,
       ubicacion: ubicacionTecnica.descripcion,
       fechaLimite: mantenimiento.fechaLimite,
+      titulo: trabajo.nombre,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
@@ -70,8 +72,7 @@ export const getMantenimientobyID = async (id: number) => {
 export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
   const checklistInfo = await db
     .select({
-      id: checklist.idChecklist,
-      titulo: checklist.nombre,
+      nombreMantenimiento: trabajo.nombre,
       ubicacion: ubicacionTecnica.descripcion,
       idTrabajo: trabajo.idTrabajo,
     })
@@ -106,8 +107,7 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
     .where(eq(estadoItemChecklist.idTrabajo, info.idTrabajo));
 
   return {
-    id: info.id,
-    titulo: info.titulo,
+    nombreMantenimiento: info.nombreMantenimiento,
     ubicacion: info.ubicacion,
     tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
   };
@@ -154,8 +154,10 @@ export const getAllMantenimientosPorMes = async (date: string) => {
 };
 
 export const createMantenimientoPreventivo = async (
-  mantenimientodata: createMantenimiento
+  mantenimientodata: createMantenimiento,
+  tx?: Tx
 ) => {
+  const database = tx ?? db;
   const {
     idTrabajo,
     fechaLimite,
@@ -167,7 +169,7 @@ export const createMantenimientoPreventivo = async (
     condicion = null,
   } = mantenimientodata;
 
-  const result = await db
+  const result = await database
     .insert(mantenimiento)
     .values({
       idTrabajo,
@@ -192,6 +194,59 @@ export const updateMantenimientoPreventivo = async (
   mantenimientodata: updateMantenimiento,
   idMantenimiento: number
 ) => {
+  // 1. Fetch existing maintenance and work ID
+  const existingMantenimiento = await db
+    .select({
+      fechaLimite: mantenimiento.fechaLimite,
+      idTrabajo: mantenimiento.idTrabajo,
+    })
+    .from(mantenimiento)
+    .where(eq(mantenimiento.idMantenimiento, idMantenimiento))
+    .limit(1);
+
+  if (existingMantenimiento.length === 0) {
+    throw new Error('Mantenimiento no encontrado');
+  }
+
+  const { idTrabajo, fechaLimite: currentFechaLimite } =
+    existingMantenimiento[0];
+
+  // 2. Determine Status Update Logic
+  let newStatus: string | null = null;
+  const newFechaLimite = mantenimientodata.fechaLimite
+    ? convertToISOStr(mantenimientodata.fechaLimite)
+    : null;
+
+  // Check for completed checklist items
+  const completedItems = await db
+    .select({ count: count() })
+    .from(estadoItemChecklist)
+    .where(
+      and(
+        eq(estadoItemChecklist.idTrabajo, idTrabajo),
+        eq(estadoItemChecklist.estado, 'COMPLETADA')
+      )
+    );
+
+  const hasProgress = completedItems[0].count > 0;
+
+  if (hasProgress) {
+    newStatus = 'En progreso';
+  } else if (
+    newFechaLimite &&
+    newFechaLimite !== currentFechaLimite
+  ) {
+    newStatus = 'Reprogramado';
+  }
+
+  // 3. Update Status if needed
+  if (newStatus) {
+    await db
+      .update(trabajo)
+      .set({ est: newStatus })
+      .where(eq(trabajo.idTrabajo, idTrabajo));
+  }
+
   const valuesToUpdate = cleanObject(mantenimientodata);
 
   const result = await db
