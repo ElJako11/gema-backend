@@ -30,30 +30,6 @@ const router = Router();
 
 /**
  * @openapi
- * /mantenimientos:
- *   get:
- *     summary: Obtiene la lista de mantenimientos preventivos.
- *     security:
- *        - bearerAuth: []
- *     tags:
- *       - Mantenimiento Preventivo
- *     responses:
- *       200:
- *         description: Lista de mantenimientos preventivos obtenida correctamente.
- *       500:
- *         description: Error al obtener mantenimientos preventivos.
- */
-
-router.get(
-  '/:id',
-  authenticate,
-  autorizationMiddleware(),
-  validateParams(urlParamsSchema),
-  getMantenimientobyIDHandler
-)
-
-/**
- * @openapi
  * /mantenimientos/filtros:
  *   get:
  *     summary: Obtiene la lista de mantenimientos preventivos filtrados por fecha.
@@ -90,6 +66,30 @@ router.get(
   validateQuery(QuerySchema),
   getAllMantenimientoByFechaHandler
 );
+
+/**
+ * @openapi
+ * /mantenimientos:
+ *   get:
+ *     summary: Obtiene la lista de mantenimientos preventivos.
+ *     security:
+ *        - bearerAuth: []
+ *     tags:
+ *       - Mantenimiento Preventivo
+ *     responses:
+ *       200:
+ *         description: Lista de mantenimientos preventivos obtenida correctamente.
+ *       500:
+ *         description: Error al obtener mantenimientos preventivos.
+ */
+
+router.get(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(urlParamsSchema),
+  getMantenimientobyIDHandler
+)
 
 /**
  * @openapi
