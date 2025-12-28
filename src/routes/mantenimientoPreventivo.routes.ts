@@ -126,6 +126,39 @@ router.get(
 
 /**
  * @openapi
+ * /mantenimientos/{id}/checklist:
+ *   get:
+ *     summary: Obtiene el checklist asociado a un mantenimiento preventivo.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Mantenimiento Preventivo
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: ID del mantenimiento preventivo.
+ *     responses:
+ *       200:
+ *         description: Checklist obtenido correctamente.
+ *       404:
+ *         description: Checklist no encontrado o mantenimiento incorrecto.
+ *       500:
+ *         description: Error al obtener el checklist.
+ */
+router.get(
+  '/:id/checklist',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(urlParamsSchema),
+  getChecklistByMantenimientoHandler
+);
+
+/**
+ * @openapi
  * /mantenimientos:
  *   post:
  *     summary: Crea un nuevo mantenimiento preventivo.
