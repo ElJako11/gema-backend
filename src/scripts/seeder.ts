@@ -37,6 +37,11 @@ export const checklistData = [
   { nombre: 'Checklist Diario' },
   { nombre: 'Checklist Semanal' },
   { nombre: 'Checklist Maquinaria' },
+  { nombre: 'Checklist Preventivo A' },
+  { nombre: 'Checklist Correctivo B' },
+  { nombre: 'Checklist Repuestos C' },
+  { nombre: 'Checklist Limpieza D' },
+  { nombre: 'Checklist Ajuste E' },
 ];
 
 export const plantillaData = [
@@ -98,11 +103,11 @@ export const trabajoData = [
   { idC: 4, idU: 4, nombre: 'Auditoria Oficina', fecha: '2025-01-13', est: 'Pendiente', tipo: 'Inspeccion' },
   { idC: 5, idU: 5, nombre: 'Verificacion Patio', fecha: '2025-01-14', est: 'Cancelado', tipo: 'Inspeccion' },
   // Mantenimientos (IDs 6-10)
-  { idC: 1, idU: 1, nombre: 'Mantenimiento Preventivo A', fecha: '2025-02-01', est: 'Asignado', tipo: 'Mantenimiento' },
-  { idC: 2, idU: 2, nombre: 'Mantenimiento Correctivo B', fecha: '2025-02-02', est: 'En Proceso', tipo: 'Mantenimiento' },
-  { idC: 3, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Completado', tipo: 'Mantenimiento' },
-  { idC: 4, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Asignado', tipo: 'Mantenimiento' },
-  { idC: 5, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'Pendiente', tipo: 'Mantenimiento' },
+  { idC: 6, idU: 1, nombre: 'Mantenimiento Preventivo A', fecha: '2025-02-01', est: 'Asignado', tipo: 'Mantenimiento' },
+  { idC: 7, idU: 2, nombre: 'Mantenimiento Correctivo B', fecha: '2025-02-02', est: 'En Proceso', tipo: 'Mantenimiento' },
+  { idC: 8, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Completado', tipo: 'Mantenimiento' },
+  { idC: 9, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Asignado', tipo: 'Mantenimiento' },
+  { idC: 10, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'Pendiente', tipo: 'Mantenimiento' },
 ];
 
 export const itemChecklistData = [
@@ -111,6 +116,12 @@ export const itemChecklistData = [
   { idCheck: 2, titulo: 'Temperatura', descripcion: 'Medir temperatura' },
   { idCheck: 3, titulo: 'Aceite', descripcion: 'Revisar niveles de aceite' },
   { idCheck: 4, titulo: 'Conexiones', descripcion: 'Comprobar conexiones' },
+  { idCheck: 5, titulo: 'Frenos', descripcion: 'Revisar frenos' },
+  { idCheck: 6, titulo: 'Filtros', descripcion: 'Cambiar filtros' },
+  { idCheck: 7, titulo: 'Fuga', descripcion: 'Revisar fugas' },
+  { idCheck: 8, titulo: 'Piezas', descripcion: 'Contar piezas' },
+  { idCheck: 9, titulo: 'Polvo', descripcion: 'Limpiar polvo' },
+  { idCheck: 10, titulo: 'Calibración', descripcion: 'Calibrar' },
 ];
 
 export const grupoXtrabajoData = [
@@ -156,8 +167,7 @@ export const mantenimientoInspeccionData = [
 export const estadoItemChecklistData = [
   { idTrabajo: 1, idChecklist: 1, idItemChecklist: 1, estado: 'COMPLETADA' },
   { idTrabajo: 1, idChecklist: 1, idItemChecklist: 2, estado: 'PENDIENTE' },
-  { idTrabajo: 6, idChecklist: 1, idItemChecklist: 1, estado: 'COMPLETADA' },
-  { idTrabajo: 6, idChecklist: 1, idItemChecklist: 2, estado: 'COMPLETADA' },
+  { idTrabajo: 6, idChecklist: 6, idItemChecklist: 7, estado: 'COMPLETADA' },
   { idTrabajo: 2, idChecklist: 2, idItemChecklist: 3, estado: 'PENDIENTE' },
 ];
 
