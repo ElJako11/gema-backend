@@ -4,9 +4,11 @@ import { cleanObject } from '../../utils/cleanUpdateData';
 
 import { itemChecklist } from '../../tables/item-checklist';
 import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
+import { checklist } from '../../tables/checklist';
 
 import { InsertItem, UpdateItem } from '../../types/itemChecklist';
 import { Tx } from '../../types/transaction';
+import { trabajo } from '../../tables/trabajo';
 
 export const getAllItems = async () => {
   try {
@@ -33,6 +35,17 @@ export const insertItem = async (
     const result = await database
       .insert(itemChecklist)
       .values({ idCheck: idChecklist, descripcion, titulo })
+      .returning({ idItemCheck: itemChecklist.idItemCheck });
+
+      const idTrabajo = await database
+      .select({ idTrabajo: trabajo.idTrabajo })
+      .from(trabajo)
+      .where(eq(trabajo.idC, idChecklist))
+      .limit(1);
+
+      await database
+      .insert(estadoItemChecklist)
+      .values({ idItemChecklist: result[0].idItemCheck, idChecklist, estado: 'PENDIENTE', idTrabajo: idTrabajo[0].idTrabajo})
       .returning();
 
     if (result.length === 0) {
