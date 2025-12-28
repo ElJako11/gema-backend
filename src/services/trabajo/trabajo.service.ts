@@ -1,7 +1,16 @@
-import {eq} from 'drizzle-orm';
+import {eq, and, between, sql, inArray} from 'drizzle-orm';
 import {db} from '../../config/db';
 import {trabajo} from '../../tables/trabajo';
 import {CreateTrabajoParams} from '../../types/trabajo';
+import { Tx } from '../../types/transaction';
+import {ubicacionTecnica} from '../../tables/ubicacionTecnica';
+import {grupoDeTrabajo} from '../../tables/grupoDeTrabajo';
+import {grupoXtrabajo} from '../../tables/grupoXtrabajo';
+import {
+  convertToISOStr,
+  getEndofMonth,
+  getStartofMonth,
+} from '../../utils/dateHandler';
 
 //Get Trabajos
 export const getAllTrabajos = async () => {
@@ -28,9 +37,14 @@ export const getTrabajoById = async (id: number) => {
 }
 
 //Post Trabajo
-export const createTrabajo = async (params: CreateTrabajoParams) => {
+export const createTrabajo = async (
+  params: CreateTrabajoParams,
+  tx?: Tx
+) => {
+  const database = tx ?? db;
+
     try {
-        const newTrabajo = await db.insert(trabajo)
+        const newTrabajo = await database.insert(trabajo)
         .values(params)
         .returning();
 
@@ -78,3 +92,137 @@ export const deleteTrabajo = async (id: number) => {
         throw new Error('Error al eliminar Trabajo');
     }   
 }
+
+export const getCantidadMantenimientosReabiertos = async (): Promise<number> => {
+  // Obtenemos la fecha actual para calcular el rango del mes
+  const now = new Date().toISOString();
+  const initialDate = getStartofMonth(now);
+  const finalDate = getEndofMonth(now);
+
+  const initialISO = convertToISOStr(initialDate);
+  const finalISO = convertToISOStr(finalDate);
+
+  // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
+  const ESTADO_REABIERTO = 'Reabierto';
+
+  // TODO: Asumo que existe una columna 'tipo' para diferenciar mantenimientos. Verifica el nombre y el valor.
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  const result = await db
+    .select({
+      count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+    })
+    .from(trabajo)
+    .where(
+      and(
+        between(trabajo.fecha, initialISO, finalISO),
+        eq(trabajo.est, ESTADO_REABIERTO),
+        eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+      )
+    );
+  return result[0].count;
+};
+
+export const getMantenimientosReabiertosPorArea = async () => {
+  const ESTADO_REABIERTO = 'Reabierto';
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    const result = await db
+      .select({
+        Grupo: grupoDeTrabajo.nombre,
+        total: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
+      .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
+      .where(
+        and(eq(trabajo.est, ESTADO_REABIERTO), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+      )
+      .groupBy(grupoDeTrabajo.nombre);
+
+    return result;
+  } catch (error) {
+    console.error('Error al obtener mantenimientos por área', error);
+    throw new Error('No se pudo obtener el reporte por área');
+  }
+};
+
+export const getResumenMantenimientosMes = async () => {
+  const now = new Date().toISOString();
+  const initialDate = getStartofMonth(now);
+  const finalDate = getEndofMonth(now);
+
+  const initialISO = convertToISOStr(initialDate);
+  const finalISO = convertToISOStr(finalDate);
+
+  // TODO: Verifica si 'Finalizado' es el valor exacto en tu DB.
+  const ESTADO_FINALIZADO = 'Completado';
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    // 1. Obtener total de mantenimientos del mes
+    const totalResult = await db
+      .select({
+        count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .where(
+        and(
+          between(trabajo.fecha, initialISO, finalISO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+        )
+      );
+
+    // 2. Obtener mantenimientos finalizados del mes
+    const finalizadosResult = await db
+      .select({
+        count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .where(
+        and(
+          between(trabajo.fecha, initialISO, finalISO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO),
+          eq(trabajo.est, ESTADO_FINALIZADO)
+        )
+      );
+
+    const total = totalResult[0].count;
+    const finalizados = finalizadosResult[0].count;
+    const porcentaje = total > 0 ? (finalizados / total) * 100 : 0;
+
+    return {
+      totalMantenimientos: total,
+      completados: finalizados,
+      porcentajeCompletados: Number(porcentaje.toFixed(2)),
+    };
+  } catch (error) {
+    console.error('Error al obtener resumen de mantenimientos', error);
+    throw new Error('No se pudo obtener el resumen del mes');
+  }
+};
+
+export const getMantenimientosActivosPorArea = async () => {
+  const ESTADOS_ACTIVOS = ['Reabierto', 'En Proceso', 'Asignado'];
+  const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+  try {
+    const result = await db
+      .select({
+        grupo: grupoDeTrabajo.nombre,
+        total: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
+      .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
+      .where(
+        and(inArray(trabajo.est, ESTADOS_ACTIVOS), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+      )
+      .groupBy(grupoDeTrabajo.nombre);
+    return result;
+  } catch (error) {
+    console.error('Error al obtener mantenimientos activos por área', error);
+    throw new Error('No se pudo obtener el reporte de activos por área');
+  }
+};

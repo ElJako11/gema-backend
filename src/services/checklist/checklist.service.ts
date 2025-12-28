@@ -1,9 +1,14 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../config/db';
-import { checklist } from '../../tables/checklist';
-import { CreateChecklistParams } from '../../types/checklist';
 
-//Get Checklist
+import { checklist } from '../../tables/checklist';
+import { itemChecklist } from '../../tables/item-checklist';
+
+import { CreateChecklistParams } from '../../types/checklist';
+import { Tx } from '../../types/transaction';
+
+
+
 export const getAllChecklist = async () => {
     try{
        const checklists = await db.select().from(checklist);
@@ -14,15 +19,37 @@ export const getAllChecklist = async () => {
     }
 }
 
-//Post Checklist
-export const createChecklist = async (params: CreateChecklistParams) => {
-    //Validacion de campo nombre Obligatorio
-    if (!params.nombre) {
-        throw new Error('El campo nombre es obligatorio');
-    }
-
+export const getChecklistWithItems = async (id: number) => {
     try {
-        const inserted = await db.insert(checklist)
+        const rows = await db
+            .select()
+            .from(checklist)
+            .leftJoin(itemChecklist, eq(checklist.idChecklist, itemChecklist.idCheck))
+            .where(eq(checklist.idChecklist, id));
+
+        if (rows.length === 0) {
+            throw new Error('Checklist no encontrado');
+        }
+
+        const result = {
+            ...rows[0].checklist,
+            items: rows.map(r => r.itemChecklist).filter(item => item !== null)
+        };
+
+        return result;
+    } catch (error) {
+        console.error(`Error al obtener checklist ${id} con items`, error);
+        throw error;
+    }
+}
+
+export const createChecklist = async (
+  params: CreateChecklistParams,
+  tx?: Tx
+) => {
+  const database = tx ?? db;
+    try {
+        const inserted = await database.insert(checklist)
         .values(params)
         .returning();
 
@@ -33,13 +60,7 @@ export const createChecklist = async (params: CreateChecklistParams) => {
     }
 }
 
-//Put Checklist
 export const updateChecklist = async (id: number, params: CreateChecklistParams) => {
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
-    const existe = await db.select().from(checklist).where(eq(checklist.idChecklist, id));
-    if (existe.length === 0) throw new Error ('Checklist no encontrado');
-    
     try{
         const updated = await db.update(checklist)
         .set(params)
@@ -57,15 +78,7 @@ export const updateChecklist = async (id: number, params: CreateChecklistParams)
     }
 }
 
-//Delete Checklist
-
 export const deleteChecklistByID = async(id: number) =>{
-    //Validacion de ID
-    if (isNaN(id)) throw new Error('ID inválido');
-
-    const existe = await db.select().from(checklist).where(eq(checklist.idChecklist, id));
-    if (existe.length === 0) throw new Error ('Checklist no encontrado');
-    
     try{
         const deleted = await db
         .delete(checklist)

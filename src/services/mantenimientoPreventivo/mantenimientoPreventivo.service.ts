@@ -1,6 +1,6 @@
 import { db } from '../../config/db';
 
-import { eq, between, sql } from 'drizzle-orm';
+import { eq, between, and, count, ne } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
@@ -10,6 +10,7 @@ import {
   createMantenimiento,
   updateMantenimiento,
 } from '../../types/mantenimiento';
+import { Tx } from '../../types/transaction';
 
 import {
   Add,
@@ -19,8 +20,10 @@ import {
   getStartOfWeek,
 } from '../../utils/dateHandler';
 import { cleanObject } from '../../utils/cleanUpdateData';
-import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
-import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
+
+import { checklist } from '../../tables/checklist';
+import { itemChecklist } from '../../tables/item-checklist';
+import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 
 const getResumenMantenimientoQuery = () => {
   const result = db
@@ -29,6 +32,7 @@ const getResumenMantenimientoQuery = () => {
       estado: trabajo.est,
       ubicacion: ubicacionTecnica.descripcion,
       fechaLimite: mantenimiento.fechaLimite,
+      titulo: trabajo.nombre,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
@@ -36,29 +40,9 @@ const getResumenMantenimientoQuery = () => {
   return result;
 };
 
-export const getAllMantenimiento = async () => {
-  const result = await db
-    .select({
-      idMantenimiento: mantenimiento.idMantenimiento,
-      fechaCreacion: trabajo.fecha,
-      fechaLimite: mantenimiento.fechaLimite,
-      ubicacion: ubicacionTecnica.descripcion,
-      estado: trabajo.est,
-      tipo: mantenimiento.tipo,
-      resumen: mantenimiento.resumen,
-      prioridad: mantenimiento.prioridad,
-      areaEncargada: grupoDeTrabajo.area,
-    })
-    .from(mantenimiento)
-    .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
-    .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
-    .innerJoin(grupoXtrabajo, eq(grupoXtrabajo.idT, trabajo.idTrabajo))
-    .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG));
 
-  return result;
-};
 
-/*
+
 export const getMantenimientobyID = async (id: number) => {
   const result = await db
     .select({
@@ -70,10 +54,12 @@ export const getMantenimientobyID = async (id: number) => {
       tipo: mantenimiento.tipo,
       resumen: mantenimiento.resumen,
       prioridad: mantenimiento.prioridad,
+      tituloChecklist: checklist.nombre,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
     .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
     .where(eq(mantenimiento.idMantenimiento, id));
 
   if (result.length === 0) {
@@ -81,7 +67,51 @@ export const getMantenimientobyID = async (id: number) => {
   }
 
   return result;
-};*/
+};
+
+export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
+  const checklistInfo = await db
+    .select({
+      nombreMantenimiento: trabajo.nombre,
+      ubicacion: ubicacionTecnica.descripcion,
+      idTrabajo: trabajo.idTrabajo,
+    })
+    .from(mantenimiento)
+    .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
+    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
+    .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+    .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+
+  if (checklistInfo.length === 0) {
+    return null;
+  }
+
+  const info = checklistInfo[0];
+
+  // Ahora obtenemos los items con su estado usando el idTrabajo obtenido
+  const items = await db
+    .select({
+      id: itemChecklist.idItemCheck,
+      nombre: itemChecklist.titulo,
+      descripcion: itemChecklist.descripcion,
+      estado: estadoItemChecklist.estado,
+    })
+    .from(estadoItemChecklist)
+    .innerJoin(
+      itemChecklist,
+      and(
+        eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck),
+        eq(estadoItemChecklist.idChecklist, itemChecklist.idCheck)
+      )
+    )
+    .where(eq(estadoItemChecklist.idTrabajo, info.idTrabajo));
+
+  return {
+    nombreMantenimiento: info.nombreMantenimiento,
+    ubicacion: info.ubicacion,
+    tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
+  };
+};
 
 export const getResumenMantenimiento = async (id: number) => {
   const baseQuery = getResumenMantenimientoQuery();
@@ -124,8 +154,10 @@ export const getAllMantenimientosPorMes = async (date: string) => {
 };
 
 export const createMantenimientoPreventivo = async (
-  mantenimientodata: createMantenimiento
+  mantenimientodata: createMantenimiento,
+  tx?: Tx
 ) => {
+  const database = tx ?? db;
   const {
     idTrabajo,
     fechaLimite,
@@ -137,7 +169,7 @@ export const createMantenimientoPreventivo = async (
     condicion = null,
   } = mantenimientodata;
 
-  const result = await db
+  const result = await database
     .insert(mantenimiento)
     .values({
       idTrabajo,
@@ -162,6 +194,59 @@ export const updateMantenimientoPreventivo = async (
   mantenimientodata: updateMantenimiento,
   idMantenimiento: number
 ) => {
+  // 1. Fetch existing maintenance and work ID
+  const existingMantenimiento = await db
+    .select({
+      fechaLimite: mantenimiento.fechaLimite,
+      idTrabajo: mantenimiento.idTrabajo,
+    })
+    .from(mantenimiento)
+    .where(eq(mantenimiento.idMantenimiento, idMantenimiento))
+    .limit(1);
+
+  if (existingMantenimiento.length === 0) {
+    throw new Error('Mantenimiento no encontrado');
+  }
+
+  const { idTrabajo, fechaLimite: currentFechaLimite } =
+    existingMantenimiento[0];
+
+  // 2. Determine Status Update Logic
+  let newStatus: string | null = null;
+  const newFechaLimite = mantenimientodata.fechaLimite
+    ? convertToISOStr(mantenimientodata.fechaLimite)
+    : null;
+
+  // Check for completed checklist items
+  const completedItems = await db
+    .select({ count: count() })
+    .from(estadoItemChecklist)
+    .where(
+      and(
+        eq(estadoItemChecklist.idTrabajo, idTrabajo),
+        eq(estadoItemChecklist.estado, 'COMPLETADA')
+      )
+    );
+
+  const hasProgress = completedItems[0].count > 0;
+
+  if (hasProgress) {
+    newStatus = 'En progreso';
+  } else if (
+    newFechaLimite &&
+    newFechaLimite !== currentFechaLimite
+  ) {
+    newStatus = 'Reprogramado';
+  }
+
+  // 3. Update Status if needed
+  if (newStatus) {
+    await db
+      .update(trabajo)
+      .set({ est: newStatus })
+      .where(eq(trabajo.idTrabajo, idTrabajo));
+  }
+
   const valuesToUpdate = cleanObject(mantenimientodata);
 
   const result = await db

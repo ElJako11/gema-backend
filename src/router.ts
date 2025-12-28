@@ -1,6 +1,6 @@
 import { Router } from 'express';
-
-import tecnicoRoutes from './routes/tecnico.routes';
+import tecnicoRoutes from './routes/tecnic.routes';
+import usuarioRoutes from './routes/usuario.routes';
 import grupoDeTrabajoRoutes from './routes/gruposDeTrabajo.routes';
 import authRoutes from './routes/auth.routes';
 import ubicacionesTecnicasRoutes from './routes/ubicacionesTecnicas.routes';
@@ -10,14 +10,27 @@ import trabajoRoutes from './routes/trabajo.routes';
 import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
 import inspeccionRoutes from './routes/inspeccion.routes';
 import calendarioRoutes from './routes/calendario.routes';
+import mantenimientoXinspeccionRoutes from './routes/mantenimientoXinspeccion.routes';
+import trabajoFacadeRoutes from './routes/trabajoFacade.routes';
+import itemChecklistRoutes from './routes/itemChecklist.routes';
+import plantillaRoutes from './routes/plantilla.routes';
+import itemPlantillaRoutes from './routes/itemPlantilla.routes';
+import pdfchecklist from './routes/pdfChecklist.routes';
+import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
 
+
 const router = Router();
 
-// Protege la ruta de tecnicos
-router.use('/tecnicos', authenticate, autorizationMiddleware(), tecnicoRoutes);
+// Protege la ruta de usuarios
+router.use(
+  '/usuarios', 
+  authenticate, 
+  autorizationMiddleware(), 
+  usuarioRoutes
+);
 
 router.use(
   '/grupos',
@@ -70,6 +83,62 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   calendarioRoutes
+);
+
+router.use(
+  '/item-checklist',
+  authenticate,
+  autorizationMiddleware(),
+  itemChecklistRoutes
+);
+
+router.use(
+  '/plantillas',
+  authenticate,
+  autorizationMiddleware(),
+  plantillaRoutes
+);
+
+router.use(
+  '/item-plantilla',
+  authenticate,
+  autorizationMiddleware(),
+  itemPlantillaRoutes
+);
+
+router.use(
+  '/mantenimientosXinspeccion',
+  authenticate,
+  autorizationMiddleware(),
+  mantenimientoXinspeccionRoutes
+);
+
+router.use(
+  '/tecnicos',
+  authenticate,
+  autorizationMiddleware(),
+  tecnicoRoutes
+);
+
+router.use(
+  '/work-creation',
+  authenticate,
+  autorizationMiddleware(),
+  trabajoFacadeRoutes
+);
+
+router.use(
+  '/pdf-checklists',
+  authenticate,
+  autorizationMiddleware(),
+  pdfchecklist
+);
+
+router.use(
+  '/pdf-mantenimientos',
+  authenticate,
+  autorizationMiddleware(),
+  pdfResumenMantenimientosRoutes
 );
 
 export default router;

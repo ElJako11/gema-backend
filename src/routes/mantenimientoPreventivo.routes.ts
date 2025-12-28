@@ -1,17 +1,19 @@
 import { Router } from 'express';
 
 import {
-  getAllMantenimientoPreventivoHandler,
   getResumenMantenimientoHandler,
   postMantenimientoHandler,
   patchMantenimientoHandler,
   deleteMantenimientoHandler,
   getAllMantenimientoByFechaHandler,
+  getChecklistByMantenimientoHandler,
+  getMantenimientobyIDHandler,
 } from '../controllers/mantenimientoPreventivo/mantenimientoPreventivo.controller';
 
 import {
   validateBody,
   validateParams,
+  validateQuery,
 } from '../middleware/validate.middleware';
 
 import { authenticate } from '../middleware/auth.middleware';
@@ -22,31 +24,9 @@ import {
   updateMantenimientoSchema,
   urlParamsSchema,
 } from '../validations/mantenimientoPreventivo';
+import { QuerySchema } from '../validations/globalTypeSchema';
 
 const router = Router();
-
-/**
- * @openapi
- * /mantenimientos:
- *   get:
- *     summary: Obtiene la lista de mantenimientos preventivos.
- *     security:
- *        - bearerAuth: []
- *     tags:
- *       - Mantenimiento Preventivo
- *     responses:
- *       200:
- *         description: Lista de mantenimientos preventivos obtenida correctamente.
- *       500:
- *         description: Error al obtener mantenimientos preventivos.
- */
-
-router.get(
-  '/',
-  authenticate,
-  autorizationMiddleware(),
-  getAllMantenimientoPreventivoHandler
-);
 
 /**
  * @openapi
@@ -83,8 +63,33 @@ router.get(
   '/filtros',
   authenticate,
   autorizationMiddleware(),
+  validateQuery(QuerySchema),
   getAllMantenimientoByFechaHandler
 );
+
+/**
+ * @openapi
+ * /mantenimientos:
+ *   get:
+ *     summary: Obtiene la lista de mantenimientos preventivos.
+ *     security:
+ *        - bearerAuth: []
+ *     tags:
+ *       - Mantenimiento Preventivo
+ *     responses:
+ *       200:
+ *         description: Lista de mantenimientos preventivos obtenida correctamente.
+ *       500:
+ *         description: Error al obtener mantenimientos preventivos.
+ */
+
+router.get(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(urlParamsSchema),
+  getMantenimientobyIDHandler
+)
 
 /**
  * @openapi
@@ -112,11 +117,44 @@ router.get(
  *         description: Error al obtener el mantenimiento preventivo.
  */
 router.get(
-  '/:id',
+  '/:id/resumen',
   authenticate,
   autorizationMiddleware(),
   validateParams(urlParamsSchema),
   getResumenMantenimientoHandler
+);
+
+/**
+ * @openapi
+ * /mantenimientos/{id}/checklist:
+ *   get:
+ *     summary: Obtiene el checklist asociado a un mantenimiento preventivo.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Mantenimiento Preventivo
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: ID del mantenimiento preventivo.
+ *     responses:
+ *       200:
+ *         description: Checklist obtenido correctamente.
+ *       404:
+ *         description: Checklist no encontrado o mantenimiento incorrecto.
+ *       500:
+ *         description: Error al obtener el checklist.
+ */
+router.get(
+  '/:id/checklist',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(urlParamsSchema),
+  getChecklistByMantenimientoHandler
 );
 
 /**

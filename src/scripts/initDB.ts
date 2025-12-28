@@ -1,4 +1,5 @@
 import { db } from '../config/db';
+import { sql } from 'drizzle-orm';
 import { usuarios } from '../tables/usuarios';
 import { ubicacionTecnica } from '../tables/ubicacionTecnica';
 import { incluyen } from '../tables/incluyen';
@@ -12,7 +13,8 @@ const initDB = async () => {
   console.log('Starting database initialization...');
 
   // Clean usuarios table
-  await db.delete(usuarios);
+  // await db.delete(usuarios);
+  await db.execute(sql`TRUNCATE TABLE "Usuarios" RESTART IDENTITY CASCADE;`);
 
   const plainPassword = '123456';
   const nombre = 'Coordinador Principal';

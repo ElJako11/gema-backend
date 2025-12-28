@@ -3,10 +3,13 @@ import { authenticate } from '../middleware/auth.middleware';
 import {
   deleteChecklistHandler,
   getChecklistHandler,
+  getChecklistWithItemsHandler,
   postChecklistHandler,
   putChecklistHandler,
 } from '../controllers/checklist/checklist.controller';
 import { autorizationMiddleware } from '../middleware/autorization.middleware';
+import { validateBody, validateParams } from '../middleware/validate.middleware';
+import { checklistIdParamSchema, createChecklistSchema, updateChecklistSchema } from '../validations/checklist.schema';
 
 const router = Router();
 
@@ -71,7 +74,8 @@ router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
  * 
  * 
 */
-router.post('/', authenticate, autorizationMiddleware(), postChecklistHandler);
+router.get('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), getChecklistWithItemsHandler);
+router.post('/', authenticate, autorizationMiddleware(), validateBody(createChecklistSchema), postChecklistHandler);
 
 /**
  * @openapi
@@ -110,7 +114,7 @@ router.post('/', authenticate, autorizationMiddleware(), postChecklistHandler);
  *         description: Error al actualizar el checklist.
  */
 
-router.put('/:id', authenticate, autorizationMiddleware(), putChecklistHandler);
+router.put('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), validateBody(updateChecklistSchema), putChecklistHandler);
 
 /**
  * @openapi
@@ -140,6 +144,7 @@ router.delete(
   '/:id',
   authenticate,
   autorizationMiddleware(),
+  validateParams(checklistIdParamSchema),
   deleteChecklistHandler
 );
 

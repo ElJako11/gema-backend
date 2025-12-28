@@ -1,69 +1,140 @@
 import { db } from '../../config/db';
-import { usuarios } from '../../tables/usuarios';
-import { CreateTecnicoParams } from '../../types/types';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm'; 
+import { CreateTecnicoParams } from '../../types/tecnico';
+import { tecnico } from '../../tables/tecnico';
+import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
 
-export const createTecnico = async ({
-  Nombre,
-  Correo,
-}: CreateTecnicoParams) => {
+// Get all tecnicos
+export const getAllTecnicos = async () => {
   try {
-    // Validate input
-    if (!Nombre || !Correo) {
-      throw new Error('Nombre y Correo son campos obligatorios');
-    }
-
-    // Insert into usuarios table
-    const insertedUser = await db
-      .insert(usuarios)
-      .values({
-        Nombre,
-        Correo,
-        Tipo: 'SUPERVISOR',
-      })
-      .returning({ Id: usuarios.Id });
-
-    if (insertedUser.length === 0) {
-      throw new Error('Error al crear el usuario');
-    }
-
-    return {
-      message: 'Usuario creado correctamente',
-      userId: insertedUser[0].Id,
-    };
+    const tecnicosList = await db
+      .select()
+      .from(tecnico);
+    return tecnicosList;
   } catch (error) {
-    console.error('Error creating tecnico:', error);
-    throw new Error('Error al crear el tecnico');
+    console.error('Error al obtener tecnicos:', error);
+    throw new Error('Error al obtener los tecnicos');
   }
 };
 
-export const getAllTecnicos = async () => {
-  const tecnicos = await db
-    .select({
-      Id: usuarios.Id,
-      Nombre: usuarios.Nombre,
-      Correo: usuarios.Correo,
-    })
-    .from(usuarios)
-    .where(eq(usuarios.Tipo, 'SUPERVISOR'));
-
-  return tecnicos;
+// Get Tecnico by ID
+export const getTecnicoById = async (id: number) => {
+  try {
+    const result = await db
+      .select()
+      .from(tecnico)
+      .where(eq(tecnico.idTecnico, id));
+    
+    return result[0] || null;
+  } catch (error) {
+    console.error('Error al obtener el tecnico por ID:', error);
+    throw new Error('Error al obtener el tecnico por ID');
+  }
 };
 
-export const existeTecnico = async (correo: string) => {
-  const tecnico = await db
-    .select()
-    .from(usuarios)
-    .where(eq(usuarios.Correo, correo))
-    .limit(1);
-  return tecnico.length > 0 ? true : false;
+// Get lista de tecnicos 
+export const getListaTecnicos = async () => {
+  try {
+    const listaTecnicos = await db
+      .select({
+        idTecnico: tecnico.idTecnico,
+        nombre: tecnico.nombre,
+        correo: tecnico.correo,
+        area: grupoDeTrabajo.area
+      })
+      .from(tecnico)
+      .innerJoin(grupoDeTrabajo, eq(tecnico.idGT, grupoDeTrabajo.id));
+
+    return listaTecnicos;
+  } catch (error) {
+    console.error('Error al obtener la lista de tecnicos:', error);
+    throw new Error('Error al obtener la lista de tecnicos');
+  }
 };
 
-export const getTecnicoById = async (tecnicoId: number) => {
-  const tecnico = await db
-    .select()
-    .from(usuarios)
-    .where(eq(usuarios.Id, tecnicoId))
-    .limit(1);
-  return tecnico.length > 0 ? tecnico[0] : null;
-};
+// Create tecnico
+export const createTecnico = async (params: CreateTecnicoParams) => {
+  try {
+    // --- NUEVA VALIDACIÓN ---
+    // Verificar que no exista otro técnico con el mismo correo
+    const existeTecnico = await db
+      .select()
+      .from(tecnico)
+      .where(eq(tecnico.correo, params.correo));
+
+    if (existeTecnico.length > 0) {
+      throw new Error('Ya existe un técnico registrado con este correo.');
+    }
+
+    const insertedTecnico = await db
+      .insert(tecnico)
+      .values(params)
+      .returning();
+    return insertedTecnico[0] || null;
+
+  } catch (error) {
+    // Permitir que el error de validación suba
+    if (error instanceof Error && error.message.includes('registrado')) {
+        throw error;
+    }
+    console.error('Error al crear tecnico:', error);
+    throw new Error('Error al crear el tecnico');
+  }
+}
+
+// Patch tecnico
+export const updateTecnico = async (id : number, params : Partial<CreateTecnicoParams>) => {
+  if (Object.keys(params).length === 0) {
+    return null; // No hay campos para actualizar
+  }
+
+  try {
+    // --- NUEVA VALIDACIÓN ---
+    if (params.correo) {
+        const existeOtro = await db
+          .select()
+          .from(tecnico)
+          .where(
+            and(
+              eq(tecnico.correo, params.correo),
+              ne(tecnico.idTecnico, id) // No es este mismo técnico
+            )
+          );
+    
+        if (existeOtro.length > 0) {
+          throw new Error('El correo ya está siendo usado por otro técnico.');
+        }
+    }
+
+    const updatedTecnico = await db
+      .update(tecnico)
+      .set(params)
+      .where(eq(tecnico.idTecnico, id))
+      .returning();
+    return updatedTecnico[0] || null;
+
+  } catch (error) {
+    // Permitir que el error de validación suba
+    if (error instanceof Error && (error.message.includes('usado') || error.message.includes('técnico'))) {
+        throw error;
+    }
+    console.error('Error al actualizar tecnico:', error);
+    throw new Error('Error al actualizar el tecnico');
+  }
+}
+
+// Delete tecnico
+export const deleteTecnico = async (id : number) => {
+  try {
+    const deleted = await db
+      .delete(tecnico)
+      .where(eq(tecnico.idTecnico, id))
+      .returning();
+
+    return deleted[0] || null;
+
+  } catch (error) {
+    console.error('Error al eliminar tecnico:', error);
+    throw new Error('Error al eliminar el tecnico');
+  }
+}

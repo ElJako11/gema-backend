@@ -2,6 +2,12 @@ import { Router } from 'express';
 import * as controllers from '../controllers/trabajo/trabajo.controller';
 import * as middleware from '../middleware/validate.middleware'
 import * as validators from '../validations/trabajoSchema';
+import {
+    getCantidadMantenimientosReabiertosHandler,
+    getMantenimientosReabiertosPorAreaHandler,
+    getResumenMantenimientosMesHandler,
+    getMantenimientosActivosPorAreaHandler
+} from '../controllers/trabajo/trabajo.controller';
 
 const router = Router();
 
@@ -24,6 +30,111 @@ const router = Router();
  */
 
 router.get('/', controllers.getTrabajosHandler);
+
+/**
+ * @openapi
+ * /trabajos/reabiertos:
+ *   get:
+ *     summary: Obtiene la cantidad de mantenimientos reabiertos en el mes actual
+ *     tags:
+ *       - Trabajos
+ *     responses:
+ *       200:
+ *         description: Cantidad de mantenimientos reabiertos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: number
+ *               example: 10
+ *       500:
+ *         description: Error al obtener la cantidad de mantenimientos
+ */
+router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
+
+/**
+ * @openapi
+ * /trabajos/reabiertos/por-area:
+ *   get:
+ *     summary: Obtiene la cantidad de mantenimientos reabiertos agrupados por grupo de trabajo
+ *     tags:
+ *       - Trabajos
+ *     responses:
+ *       200:
+ *         description: Lista de mantenimientos reabiertos por grupo de trabajo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   Grupo:
+ *                     type: string
+ *                     example: "Grupo de Mantenimiento A"
+ *                   total:
+ *                     type: number
+ *                     example: 5
+ *       500:
+ *         description: Error al obtener el reporte por área
+ */
+router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
+
+/**
+ * @openapi
+ * /trabajos/resumen/mes-actual:
+ *   get:
+ *     summary: Obtiene un resumen de los mantenimientos del mes actual
+ *     tags:
+ *       - Trabajos
+ *     responses:
+ *       200:
+ *         description: Resumen de mantenimientos del mes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalMantenimientos:
+ *                   type: number
+ *                   example: 20
+ *                 completados:
+ *                   type: number
+ *                   example: 15
+ *                 porcentajeCompletados:
+ *                   type: number
+ *                   example: 75
+ *       500:
+ *         description: Error al obtener el resumen del mes
+ */
+router.get('/resumen/mes-actual', getResumenMantenimientosMesHandler);
+
+/**
+ * @openapi
+ * /trabajos/activos/por-area:
+ *   get:
+ *     summary: Obtiene la cantidad de mantenimientos activos agrupados por grupo de trabajo
+ *     tags:
+ *       - Trabajos
+ *     responses:
+ *       200:
+ *         description: Lista de mantenimientos activos por grupo de trabajo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   grupo:
+ *                     type: string
+ *                     example: "Grupo de Mantenimiento B"
+ *                   total:
+ *                     type: number
+ *                     example: 8
+ *       500:
+ *         description: Error al obtener el reporte de activos por área
+ */
+router.get('/activos/por-area', getMantenimientosActivosPorAreaHandler);
 
 //Get Trabajo by ID
 
@@ -196,5 +307,7 @@ router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), midd
  */
 
 router.delete('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
+
+
 
 export default router; 

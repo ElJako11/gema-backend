@@ -3,6 +3,7 @@ export type ResumenMantenimiento = {
   estado: string;
   ubicacion: string;
   fechaLimite: string;
+  titulo: string;
 };
 
 export type createMantenimiento = {
@@ -19,3 +20,16 @@ export type createMantenimiento = {
 export type updateMantenimiento = Partial<
   Omit<createMantenimiento, 'idTrabajo'>
 >;
+
+export type Actividad = {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  estado: 'COMPLETADA' | 'PENDIENTE';
+};
+
+export type Checklist = {
+  nombreMantenimiento: string;
+  ubicacion: string;
+  tareas: Actividad[];
+};
