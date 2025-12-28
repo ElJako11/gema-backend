@@ -107,7 +107,7 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
     .where(eq(estadoItemChecklist.idTrabajo, info.idTrabajo));
 
   return {
-    nombreMantenimiento: info.nombreMantenimiento,
+    titulo: info.nombreMantenimiento,
     ubicacion: info.ubicacion,
     tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
   };

@@ -151,7 +151,7 @@ export const getTareasChecklist = async (idInspeccion: number) => {
         }));
 
     const response: Checklist = {
-      nombreInspeccion: firstRow.nombreInspeccion,
+      titulo: firstRow.nombreInspeccion,
       ubicacion: firstRow.ubicacion,
       tareas: tasks,
     };

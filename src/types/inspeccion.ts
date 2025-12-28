@@ -44,7 +44,7 @@ export type Actividad = {
 };
 
 export type Checklist = {
-  nombreInspeccion: string;
+  titulo: string;
   ubicacion: string;
   tareas: Actividad[];
 };

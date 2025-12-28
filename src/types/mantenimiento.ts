@@ -29,7 +29,7 @@ export type Actividad = {
 };
 
 export type Checklist = {
-  nombreMantenimiento: string;
+  titulo: string;
   ubicacion: string;
   tareas: Actividad[];
 };
