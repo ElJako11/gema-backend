@@ -126,6 +126,34 @@ router.get('/resumen/:id', getResumenInspeccionHandler);
 
 /**
  * @openapi
+ * /inspecciones/{id}/checklist:
+ *   get:
+ *     summary: Obtener tareas de checklist por inspección
+ *     security:
+ *      - bearerAuth: []
+ *     tags:
+ *      - Inspeccion
+ *     description: Obtiene la lista de tareas del checklist asociadas a una inspección.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de la inspección.
+ *
+ *     responses:
+ *       '200':
+ *         description: Lista de tareas obtenida exitosamente.
+ *       '404':
+ *         description: No se encontraron tareas para esta inspección.
+ *       '500':
+ *         description: Error interno del servidor.
+ */
+router.get('/:id/checklist', getTareasChecklistHandler);
+
+/**
+ * @openapi
  * /inspecciones:
  *   post:
  *     summary: Crear una nueva inspección
