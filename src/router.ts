@@ -17,6 +17,7 @@ import plantillaRoutes from './routes/plantilla.routes';
 import itemPlantillaRoutes from './routes/itemPlantilla.routes';
 import pdfchecklist from './routes/pdfChecklist.routes';
 import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
+import estadoItemChecklist  from './routes/estadoItemChecklist.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
@@ -139,6 +140,13 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   pdfResumenMantenimientosRoutes
+);
+
+router.use(
+  '/estado-item',
+  authenticate,
+  autorizationMiddleware(),
+  estadoItemChecklist
 );
 
 export default router;
