@@ -44,6 +44,7 @@ export type Actividad = {
 };
 
 export type Checklist = {
+  id: number;
   titulo: string;
   ubicacion: string;
   tareas: Actividad[];
