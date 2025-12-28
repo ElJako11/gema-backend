@@ -120,7 +120,7 @@ export const getTareasChecklist = async (idInspeccion: number) => {
   try {
     const infoChecklist = await db
       .select({
-        idInspeccion: inspeccion.id,
+        idChecklist: checklist.idChecklist,
         nombreInspeccion: trabajo.nombre,
         ubicacion: ubicacionTecnica.descripcion,
         idTarea: itemChecklist.idItemCheck,
@@ -152,7 +152,7 @@ export const getTareasChecklist = async (idInspeccion: number) => {
         }));
 
     const response: Checklist = {
-      id: firstRow.idInspeccion,
+      id: firstRow.idChecklist,
       titulo: firstRow.nombreInspeccion,
       ubicacion: firstRow.ubicacion,
       tareas: tasks,

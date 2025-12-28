@@ -75,6 +75,7 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
       nombreMantenimiento: trabajo.nombre,
       ubicacion: ubicacionTecnica.descripcion,
       idTrabajo: trabajo.idTrabajo,
+      idChecklist: checklist.idChecklist,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
@@ -107,7 +108,7 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
     .where(eq(estadoItemChecklist.idTrabajo, info.idTrabajo));
 
   return {
-    id: info.idTrabajo,
+    id: info.idChecklist,
     titulo: info.nombreMantenimiento,
     ubicacion: info.ubicacion,
     tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
