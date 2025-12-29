@@ -18,32 +18,31 @@ import { createItemSchema, idParamSchema, UpdateParamSchema, UpdateBodySchema } 
 const router = Router();
 
 /**
- * @openapi
+ * @swagger
  * /item-checklist:
  *  get:
  *    summary: Obtiene todos los items de checklists
- *    tags:
- *      - Items Checklists
+ *    tags: [ItemsChecklist]
+ *    security:
+ *      - bearerAuth: []
  *    responses:
  *        200:
  *          description: Listado de todos los items
  *        500:
  *          description: Error interno del servidor
  */
-
-router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
-
 router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
 
 // Route moved to checklist.routes.ts
 
 /**
- * @openapi
+ * @swagger
  * /item-checklist:
  *  post:
  *    summary: Permite la creacion de un item.
- *    tags:
- *      - Items Checklists
+ *    tags: [ItemsChecklist]
+ *    security:
+ *      - bearerAuth: []
  *    requestBody:
  *      required: true
  *      content:
@@ -81,12 +80,13 @@ router.post(
 );
 
 /**
- * @openapi
+ * @swagger
  * /item-checklist/{idChecklist}/{idItem}:
  *   patch:
  *    summary: Actualiza el item de una checklist por ID
- *    tags:
- *      - Items Checklists
+ *    tags: [ItemsChecklist]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: idChecklist
@@ -131,12 +131,13 @@ router.patch(
 );
 
 /**
- * @openapi
+ * @swagger
  * /item-checklist/{idChecklist}/{idItem}:
  *  delete:
  *    summary: Elimina un item usando su ID
- *    tags:
- *      - Items Checklists
+ *    tags: [ItemsChecklist]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: idChecklist
