@@ -18,10 +18,10 @@ import itemPlantillaRoutes from './routes/itemPlantilla.routes';
 import pdfchecklist from './routes/pdfChecklist.routes';
 import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
 import estadoItemChecklist  from './routes/estadoItemChecklist.routes';
+import grupoXtrabajoRoutes from './routes/grupoXtrabajo.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
-
 
 const router = Router();
 
@@ -149,4 +149,10 @@ router.use(
   estadoItemChecklist
 );
 
+router.use(
+  '/grupoXtrabajo',
+  authenticate,
+  autorizationMiddleware(),
+  grupoXtrabajoRoutes
+)
 export default router;
