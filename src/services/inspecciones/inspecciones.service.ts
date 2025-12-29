@@ -27,6 +27,7 @@ import {
   getStartofMonth,
   getStartOfWeek,
 } from '../../utils/dateHandler';
+import { id } from 'zod/v4/locales';
 
 const getResumenQueryBase = () => {
   const baseQuery = db
@@ -121,6 +122,7 @@ export const getTareasChecklist = async (idInspeccion: number) => {
     const infoChecklist = await db
       .select({
         idChecklist: checklist.idChecklist,
+        idTrabajo: inspeccion.idT,
         nombreInspeccion: trabajo.nombre,
         ubicacion: ubicacionTecnica.descripcion,
         idTarea: itemChecklist.idItemCheck,
@@ -153,6 +155,7 @@ export const getTareasChecklist = async (idInspeccion: number) => {
 
     const response: Checklist = {
       id: firstRow.idChecklist,
+      idTrabajo: firstRow.idTrabajo,
       titulo: firstRow.nombreInspeccion,
       ubicacion: firstRow.ubicacion,
       tareas: tasks,
