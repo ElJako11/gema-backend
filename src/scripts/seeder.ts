@@ -130,6 +130,12 @@ export const grupoXtrabajoData = [
   { idG: 3, idT: 8 },
   { idG: 4, idT: 1 },
   { idG: 5, idT: 2 },
+  // Asignaciones faltantes para cubrir todos los trabajos (1-10)
+  { idG: 3, idT: 3 },
+  { idG: 4, idT: 4 },
+  { idG: 5, idT: 5 },
+  { idG: 1, idT: 9 },
+  { idG: 2, idT: 10 },
 ];
 
 export const trabajaEnGrupoData = [
@@ -205,6 +211,11 @@ const cleanDb = async () => {
 const fillDB = async () => {
   try {
     await cleanDb();
+    
+    // Limpiamos usuarios insertados por el seeder (ID > 1) para evitar duplicados
+    await db.execute(sql`DELETE FROM "Usuarios" WHERE "Id" > 1;`);
+    // Reiniciamos la secuencia de IDs de usuarios para que los nuevos empiecen en 2
+    await db.execute(sql`ALTER SEQUENCE "Usuarios_Id_seq" RESTART WITH 2;`);
 
     console.log('🌱 Insertando datos...');
 
@@ -239,6 +250,11 @@ const fillDB = async () => {
     await db.insert(grupoXtrabajo).values(grupoXtrabajoData);
     await db.insert(mantenimiento_inspeccion).values(mantenimientoInspeccionData);
     await db.insert(estadoItemChecklist).values(estadoItemChecklistData as any);
+
+    // Ajustamos las secuencias para que los próximos inserts automáticos (SERIAL) no choquen
+    // Asumiendo que insertamos 5 inspecciones y 10 trabajos
+    await db.execute(sql`ALTER SEQUENCE "inspeccion_idInspeccion_seq" RESTART WITH 6;`);
+    await db.execute(sql`ALTER SEQUENCE "trabajo_idTrabajo_seq" RESTART WITH 11;`);
 
     console.log('✅ Seeding completado exitosamente.');
     process.exit(0);
