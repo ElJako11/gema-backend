@@ -11,7 +11,6 @@ import {
 import { validateBody, validateParams } from '../middleware/validate.middleware'; 
 import { 
     createEstadoItemSchema, 
-    updateEstadoItemBodySchema, 
     estadoItemParamsSchema 
 } from '../validations/estadoItemChecklistSchema';
 
@@ -35,7 +34,6 @@ router.post(
 router.patch(
     '/:idTrabajo/:idChecklist/:idItemChecklist', 
     validateParams(estadoItemParamsSchema),     // Valida que sean números en la URL
-    validateBody(updateEstadoItemBodySchema),   // Valida que el body tenga 'estado'
     patchEstadoItemHandler
 );
 

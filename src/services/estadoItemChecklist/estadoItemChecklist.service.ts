@@ -1,16 +1,14 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { db } from "../../config/db";
 import { estadoItemChecklist } from "../../tables/estadoItemChecklist";
 import { CreateEstadoItemChecklist } from "../../types/estadoItemChecklist";
 
-// Tipo auxiliar para las claves
 type EstadoItemKeys = {
     idTrabajo: number;
     idChecklist: number;
     idItemChecklist: number;
 };
 
-// Create
 export const createEstadoItemChecklist = async (data: CreateEstadoItemChecklist) => {
     try {
         const newEstadoItemChecklist = await db
@@ -29,7 +27,6 @@ export const createEstadoItemChecklist = async (data: CreateEstadoItemChecklist)
     }
 };
 
-// Get By Keys
 export const getEstadoItemChecklist = async (keys: EstadoItemKeys) => {
     try {
         const estadoItem = await db
@@ -49,11 +46,17 @@ export const getEstadoItemChecklist = async (keys: EstadoItemKeys) => {
     }
 };
 
-// Patch (Actualizar solo estado)
-export const patchEstadoItemChecklist = async (keys: EstadoItemKeys, nuevoEstado: 'COMPLETADA' | 'PENDIENTE') => {
+export const toggleEstadoItemChecklist = async (keys: EstadoItemKeys) => {
     try {
         const updatedEstadoItemChecklist = await db.update(estadoItemChecklist)
-            .set({ estado: nuevoEstado })
+            .set({ 
+                estado: sql< 'COMPLETADA' | 'PENDIENTE' >`
+                    CASE 
+                        WHEN ${estadoItemChecklist.estado} = 'PENDIENTE' THEN 'COMPLETADA'::"estadoItem"
+                        ELSE 'PENDIENTE'::"estadoItem"
+                    END
+                `
+            })
             .where(
                 and(
                     eq(estadoItemChecklist.idTrabajo, keys.idTrabajo),
@@ -65,12 +68,11 @@ export const patchEstadoItemChecklist = async (keys: EstadoItemKeys, nuevoEstado
         
         return updatedEstadoItemChecklist[0] || null;
     } catch (error) {
-        console.error('Error al actualizar el Estado del Item', error);
-        throw new Error('No se pudo actualizar el Estado del Item');
+        console.error('Error al alternar el Estado del Item', error);
+        throw new Error('No se pudo alternar el Estado del Item');
     }
 };
 
-// Delete
 export const deleteEstadoItemChecklist = async (keys: EstadoItemKeys) => {
     try {
         const deleted = await db.delete(estadoItemChecklist)

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {
     createEstadoItemChecklist,
-    patchEstadoItemChecklist,
+    toggleEstadoItemChecklist,
     getEstadoItemChecklist,
     deleteEstadoItemChecklist
 } from '../../services/estadoItemChecklist/estadoItemChecklist.service';
@@ -16,12 +16,11 @@ export const postEstadoItemHandler = async (req: Request, res: Response) => {
     }
 };
 
-// PATCH (Con IDs en la URL)
+// PATCH (Con IDs en la URL) - Toggle Logic
 export const patchEstadoItemHandler = async (req: Request, res: Response) => {
     // 1. Extraer Params
     const { idTrabajo, idChecklist, idItemChecklist } = req.params;
-    // 2. Extraer Body
-    const { estado } = req.body;
+    // Body ya no es necesario para el toggle
 
     try {
         // Convertimos params a números
@@ -31,7 +30,7 @@ export const patchEstadoItemHandler = async (req: Request, res: Response) => {
             idItemChecklist: Number(idItemChecklist)
         };
 
-        const result = await patchEstadoItemChecklist(keys, estado);
+        const result = await toggleEstadoItemChecklist(keys);
 
         if (!result) {
             res.status(404).json({ error: 'No se encontró el item o no hubo cambios' });
