@@ -37,7 +37,7 @@ router.get('/', controllers.getTrabajosHandler);
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos reabiertos en el mes actual
  *     tags:
- *       - Trabajos
+ *       - Estadísticas
  *     responses:
  *       200:
  *         description: Cantidad de mantenimientos reabiertos
@@ -57,7 +57,7 @@ router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos reabiertos agrupados por grupo de trabajo
  *     tags:
- *       - Trabajos
+ *       - Estadísticas
  *     responses:
  *       200:
  *         description: Lista de mantenimientos reabiertos por grupo de trabajo
@@ -85,7 +85,7 @@ router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
  *   get:
  *     summary: Obtiene un resumen de los mantenimientos del mes actual
  *     tags:
- *       - Trabajos
+ *       - Estadísticas
  *     responses:
  *       200:
  *         description: Resumen de mantenimientos del mes
@@ -114,7 +114,7 @@ router.get('/resumen/mes-actual', getResumenMantenimientosMesHandler);
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos activos agrupados por grupo de trabajo
  *     tags:
- *       - Trabajos
+ *       - Estadísticas
  *     responses:
  *       200:
  *         description: Lista de mantenimientos activos por grupo de trabajo
