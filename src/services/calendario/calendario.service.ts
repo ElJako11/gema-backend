@@ -18,6 +18,9 @@ export const getAllEventosMensuales = async (date: string) => {
     throw new Error('No se pudo obtener toda la informacion requerida');
   }
 
+  console.log(InspeccionesResult);
+  console.log(MantenimientosResult);
+
   return {
     inspecciones: [...InspeccionesResult],
     mantenimientos: [...MantenimientosResult],

@@ -16,7 +16,7 @@ import { trabajo } from '../../tables/trabajo';
 import { CreateTrabajoParams } from '../../types/trabajo';
 import { createMantenimiento } from '../../types/mantenimiento';
 import { insertInspeccion } from '../../types/inspeccion';
-import { convertToISOStr } from '../../utils/dateHandler';
+import { convertToStr } from '../../utils/dateHandler';
 
 export const createTrabajoFacade = async (data: CreateWorkInput) => {
   return await db.transaction(async (tx) => {
@@ -28,7 +28,7 @@ export const createTrabajoFacade = async (data: CreateWorkInput) => {
       idC: null, // No checklist initially
       idU: data.idUbicacionTecnica,
       nombre: nombre,
-      fecha: convertToISOStr(data.fechaCreacion),
+      fecha: convertToStr(data.fechaCreacion),
       est: 'No empezado',
       tipo: data.tipoTrabajo,
     };

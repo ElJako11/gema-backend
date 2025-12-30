@@ -14,7 +14,7 @@ import { Tx } from '../../types/transaction';
 
 import {
   Add,
-  convertToISOStr,
+  convertToStr,
   getEndofMonth,
   getStartofMonth,
   getStartOfWeek,
@@ -128,8 +128,8 @@ export const getAllMantenimientosSemanales = async (date: string) => {
   const initialDate: Date = getStartOfWeek(date);
   const finalDate: Date = Add(initialDate);
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
 
   const baseQuery = getResumenMantenimientoQuery();
 
@@ -144,8 +144,10 @@ export const getAllMantenimientosPorMes = async (date: string) => {
   const initialDate = getStartofMonth(date);
   const finalDate = getEndofMonth(date);
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
+
+  console.log(initialISO, finalISO);
 
   const baseQuery = getResumenMantenimientoQuery();
 
@@ -176,7 +178,7 @@ export const createMantenimientoPreventivo = async (
     .insert(mantenimiento)
     .values({
       idTrabajo,
-      fechaLimite: convertToISOStr(fechaLimite),
+      fechaLimite: convertToStr(fechaLimite),
       prioridad,
       resumen,
       tipo: tipo as 'Periodico' | 'Condicion',
@@ -217,7 +219,7 @@ export const updateMantenimientoPreventivo = async (
   // 2. Determine Status Update Logic
   let newStatus: string | null = null;
   const newFechaLimite = mantenimientodata.fechaLimite
-    ? convertToISOStr(mantenimientodata.fechaLimite)
+    ? convertToStr(mantenimientodata.fechaLimite)
     : null;
 
   // Check for completed checklist items

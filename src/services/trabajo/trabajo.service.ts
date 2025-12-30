@@ -7,7 +7,7 @@ import {ubicacionTecnica} from '../../tables/ubicacionTecnica';
 import {grupoDeTrabajo} from '../../tables/grupoDeTrabajo';
 import {grupoXtrabajo} from '../../tables/grupoXtrabajo';
 import {
-  convertToISOStr,
+  convertToStr,
   getEndofMonth,
   getStartofMonth,
 } from '../../utils/dateHandler';
@@ -99,8 +99,8 @@ export const getCantidadMantenimientosReabiertos = async (): Promise<number> => 
   const initialDate = getStartofMonth(now);
   const finalDate = getEndofMonth(now);
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
 
   // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
   const ESTADO_REABIERTO = 'Reabierto';
@@ -153,8 +153,8 @@ export const getResumenMantenimientosMes = async () => {
   const initialDate = getStartofMonth(now);
   const finalDate = getEndofMonth(now);
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
 
   // TODO: Verifica si 'Finalizado' es el valor exacto en tu DB.
   const ESTADO_FINALIZADO = 'Completado';

@@ -22,7 +22,7 @@ import { Tx } from '../../types/transaction';
 import { cleanObject } from '../../utils/cleanUpdateData';
 import {
   Add,
-  convertToISOStr,
+  convertToStr,
   getEndofMonth,
   getStartofMonth,
   getStartOfWeek,
@@ -89,8 +89,8 @@ export const getInspeccionesMensuales = async (date: string) => {
   const initialDate = getStartofMonth(date);
   const finalDate = getEndofMonth(date);
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
 
   const baseQuery = getResumenQueryBase();
 
@@ -105,8 +105,8 @@ export const getInspeccionesSemanales = async (date: string) => {
   const initialDate = getStartOfWeek(date);
   const finalDate = Add(new Date(date));
 
-  const initialISO = convertToISOStr(initialDate);
-  const finalISO = convertToISOStr(finalDate);
+  const initialISO = convertToStr(initialDate);
+  const finalISO = convertToStr(finalDate);
 
   const baseQuery = getResumenQueryBase();
 

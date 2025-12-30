@@ -34,6 +34,8 @@ export const getEndofMonth = (datestr: string) => {
   return endOfMonth(date);
 };
 
-export const convertToISOStr = (date: Date) => {
-  return date.toISOString().split('T')[0];
+export const convertToStr = (date: Date) => {
+  return date.toLocaleDateString('sv-SE', {
+    timeZone: 'America/Caracas'
+  });
 };
