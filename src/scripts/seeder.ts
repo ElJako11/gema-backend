@@ -97,17 +97,17 @@ export const incluyenData = [
 // TRABAJOS
 export const trabajoData = [
   // Inspecciones (IDs 1-5)
-  { idC: 1, idU: 1, nombre: 'Inspeccion General', fecha: '2025-01-10', est: 'Pendiente', tipo: 'Inspeccion' },
-  { idC: 2, idU: 2, nombre: 'Inspeccion Calidad Bodega', fecha: '2025-01-11', est: 'En Proceso', tipo: 'Inspeccion' },
-  { idC: 3, idU: 3, nombre: 'Revision Maquinas', fecha: '2025-01-12', est: 'Completado', tipo: 'Inspeccion' },
-  { idC: 4, idU: 4, nombre: 'Auditoria Oficina', fecha: '2025-01-13', est: 'Pendiente', tipo: 'Inspeccion' },
-  { idC: 5, idU: 5, nombre: 'Verificacion Patio', fecha: '2025-01-14', est: 'Cancelado', tipo: 'Inspeccion' },
+  { idC: 1, idU: 1, nombre: 'Inspeccion General', fecha: '2025-01-10', est: 'No Empezado', tipo: 'Inspeccion' },
+  { idC: 2, idU: 2, nombre: 'Inspeccion Calidad Bodega', fecha: '2025-01-11', est: 'En Ejecucion', tipo: 'Inspeccion' },
+  { idC: 3, idU: 3, nombre: 'Revision Maquinas', fecha: '2025-01-12', est: 'Culminado', tipo: 'Inspeccion' },
+  { idC: 4, idU: 4, nombre: 'Auditoria Oficina', fecha: '2025-01-13', est: 'No Empezado', tipo: 'Inspeccion' },
+  { idC: 5, idU: 5, nombre: 'Verificacion Patio', fecha: '2025-01-14', est: 'Reprogramado', tipo: 'Inspeccion' },
   // Mantenimientos (IDs 6-10)
-  { idC: 6, idU: 1, nombre: 'Mantenimiento Preventivo A', fecha: '2025-02-01', est: 'Asignado', tipo: 'Mantenimiento' },
-  { idC: 7, idU: 2, nombre: 'Mantenimiento Correctivo B', fecha: '2025-02-02', est: 'En Proceso', tipo: 'Mantenimiento' },
-  { idC: 8, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Completado', tipo: 'Mantenimiento' },
-  { idC: 9, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Asignado', tipo: 'Mantenimiento' },
-  { idC: 10, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'Pendiente', tipo: 'Mantenimiento' },
+  { idC: 6, idU: 1, nombre: 'Mantenimiento Preventivo A', fecha: '2025-02-01', est: 'No Empezado', tipo: 'Mantenimiento' },
+  { idC: 7, idU: 2, nombre: 'Mantenimiento Correctivo B', fecha: '2025-02-02', est: 'En Ejecucion', tipo: 'Mantenimiento' },
+  { idC: 8, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Culminado', tipo: 'Mantenimiento' },
+  { idC: 9, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Reprogramado', tipo: 'Mantenimiento' },
+  { idC: 10, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'No Empezado', tipo: 'Mantenimiento' },
 ];
 
 export const itemChecklistData = [

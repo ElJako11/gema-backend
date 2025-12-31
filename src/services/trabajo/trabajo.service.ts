@@ -103,7 +103,7 @@ export const getCantidadMantenimientosReabiertos = async (): Promise<number> => 
   const finalISO = convertToStr(finalDate);
 
   // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
-  const ESTADO_REABIERTO = 'Reabierto';
+  const ESTADO_REABIERTO = 'Reprogramado';
 
   // TODO: Asumo que existe una columna 'tipo' para diferenciar mantenimientos. Verifica el nombre y el valor.
   const TIPO_MANTENIMIENTO = 'Mantenimiento';
@@ -124,7 +124,7 @@ export const getCantidadMantenimientosReabiertos = async (): Promise<number> => 
 };
 
 export const getMantenimientosReabiertosPorArea = async () => {
-  const ESTADO_REABIERTO = 'Reabierto';
+  const ESTADO_REABIERTO = 'Reprogramado';
   const TIPO_MANTENIMIENTO = 'Mantenimiento';
 
   try {
@@ -157,7 +157,7 @@ export const getResumenMantenimientosMes = async () => {
   const finalISO = convertToStr(finalDate);
 
   // TODO: Verifica si 'Finalizado' es el valor exacto en tu DB.
-  const ESTADO_FINALIZADO = 'Completado';
+  const ESTADO_FINALIZADO = 'Culminado';
   const TIPO_MANTENIMIENTO = 'Mantenimiento';
 
   try {
@@ -204,7 +204,7 @@ export const getResumenMantenimientosMes = async () => {
 };
 
 export const getMantenimientosActivosPorArea = async () => {
-  const ESTADOS_ACTIVOS = ['Reabierto', 'En Proceso', 'Asignado'];
+  const ESTADOS_ACTIVOS = ['Reprogramado', 'En Ejecucion'];
   const TIPO_MANTENIMIENTO = 'Mantenimiento';
 
   try {
