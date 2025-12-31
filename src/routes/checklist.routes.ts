@@ -14,14 +14,13 @@ import { checklistIdParamSchema, createChecklistSchema, updateChecklistSchema } 
 const router = Router();
 
 /**
- * @openapi
+ * @swagger
  * /checklists:
  *   get:
  *     summary: Obtiene la lista de checklists.
  *     security:
  *       - bearerAuth: []
- *     tags:
- *       - Checklist
+ *     tags: [Checklist]
  *     responses:
  *       200:
  *         description: Lista de checklists obtenida correctamente.
@@ -31,14 +30,13 @@ const router = Router();
 router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
 
 /**
- * @openapi
+ * @swagger
  * /checklists: 
  *   post:
  *     summary: Crea un nuevo checklist.
  *     security:
  *       - bearerAuth: []
- *     tags:
- *       - Checklist
+ *     tags: [Checklist]
  *     requestBody:
  *       required: true
  *       content:
@@ -52,40 +50,52 @@ router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
  *               nombre:
  *                 type: string
  *                 example: Checklist de seguridad
+ *               descripcion:
+ *                 type: string
+ *                 example: "Descripción detallada del checklist de seguridad."
  *     responses:
  *       201:
  *         description: Checklist creado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                    message:
- *                      type: string
- *                   checklistId:
- *                     type: integer
  *       400:
  *         description: Datos inválidos.
  *       500:
  *         description: Error al crear el checklist.
- * 
- * 
-*/
-router.get('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), getChecklistWithItemsHandler);
+ */
 router.post('/', authenticate, autorizationMiddleware(), validateBody(createChecklistSchema), postChecklistHandler);
 
 /**
- * @openapi
+ * @swagger
+ * /checklists/{id}:
+ *   get:
+ *     summary: Obtiene un checklist con sus items por ID.
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Checklist]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del checklist a obtener.
+ *     responses:
+ *       200:
+ *         description: Checklist obtenido correctamente.
+ *       404:
+ *         description: Checklist no encontrado.
+ *       500:
+ *         description: Error al obtener el checklist.
+ */
+router.get('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), getChecklistWithItemsHandler);
+
+/**
+ * @swagger
  * /checklists/{id}:
  *   put:
  *     summary: Actualiza un checklist existente.
  *     security:
  *       - bearerAuth: []
- *     tags:
- *       - Checklist
+ *     tags: [Checklist]
  *     parameters:
  *       - in: path
  *         name: id
@@ -103,6 +113,9 @@ router.post('/', authenticate, autorizationMiddleware(), validateBody(createChec
  *               nombre:
  *                 type: string
  *                 example: Checklist de seguridad actualizado
+ *               descripcion:
+ *                 type: string
+ *                 example: "Descripción actualizada del checklist."
  *     responses:
  *       200:
  *         description: Checklist actualizado correctamente.
@@ -113,18 +126,16 @@ router.post('/', authenticate, autorizationMiddleware(), validateBody(createChec
  *       500:
  *         description: Error al actualizar el checklist.
  */
-
 router.put('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), validateBody(updateChecklistSchema), putChecklistHandler);
 
 /**
- * @openapi
+ * @swagger
  * /checklists/{id}:
  *   delete:
  *     summary: Elimina un checklist existente.
  *     security:
  *       - bearerAuth: []
- *     tags:
- *       - Checklist
+ *     tags: [Checklist]
  *     parameters:
  *       - in: path
  *         name: id
