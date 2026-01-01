@@ -108,6 +108,16 @@ export const trabajoData = [
   { idC: 8, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Culminado', tipo: 'Mantenimiento' },
   { idC: 9, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Reprogramado', tipo: 'Mantenimiento' },
   { idC: 10, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'No Empezado', tipo: 'Mantenimiento' },
+  // NUEVO: Datos para el mes actual (Enero 2026)
+  { idC: 1, idU: 1, nombre: 'Inspeccion Mensual Enero', fecha: '2026-01-15', est: 'No Empezado', tipo: 'Inspeccion' }, // ID 11
+  { idC: 2, idU: 2, nombre: 'Inspeccion Quincenal Enero', fecha: '2026-01-20', est: 'En Ejecucion', tipo: 'Inspeccion' }, // ID 12
+  { idC: 6, idU: 3, nombre: 'Mantenimiento Inicio Año', fecha: '2026-01-10', est: 'Culminado', tipo: 'Mantenimiento' }, // ID 13
+  { idC: 7, idU: 4, nombre: 'Revision General Enero', fecha: '2026-01-25', est: 'No Empezado', tipo: 'Mantenimiento' }, // ID 14
+  // NUEVO 2: Datos adicionales para Enero 2026
+  { idC: 3, idU: 5, nombre: 'Inspeccion Extra A', fecha: '2026-01-28', est: 'No Empezado', tipo: 'Inspeccion' }, // ID 15
+  { idC: 4, idU: 1, nombre: 'Inspeccion Extra B', fecha: '2026-01-29', est: 'En Ejecucion', tipo: 'Inspeccion' }, // ID 16
+  { idC: 8, idU: 2, nombre: 'Mantenimiento Extra C', fecha: '2026-01-12', est: 'Culminado', tipo: 'Mantenimiento' }, // ID 17
+  { idC: 9, idU: 3, nombre: 'Mantenimiento Extra D', fecha: '2026-01-27', est: 'Reprogramado', tipo: 'Mantenimiento' }, // ID 18
 ];
 
 export const itemChecklistData = [
@@ -136,6 +146,16 @@ export const grupoXtrabajoData = [
   { idG: 5, idT: 5 },
   { idG: 1, idT: 9 },
   { idG: 2, idT: 10 },
+  // NUEVO: Asignaciones para trabajos 11-14
+  { idG: 1, idT: 11 },
+  { idG: 2, idT: 12 },
+  { idG: 3, idT: 13 },
+  { idG: 4, idT: 14 },
+  // NUEVO 2: Asignaciones para 15-18
+  { idG: 5, idT: 15 },
+  { idG: 1, idT: 16 },
+  { idG: 2, idT: 17 },
+  { idG: 3, idT: 18 },
 ];
 
 export const trabajaEnGrupoData = [
@@ -152,6 +172,12 @@ export const inspeccionData = [
   { id: 3, idT: 3, observacion: 'Desgaste leve', frecuencia: 'Mensual' },
   { id: 4, idT: 4, observacion: 'Falta iluminacion', frecuencia: 'Trimestral' },
   { id: 5, idT: 5, observacion: 'Acceso bloqueado', frecuencia: 'Anual' },
+  // NUEVO: Inspecciones mes actual
+  { id: 6, idT: 11, observacion: 'Inicio de año ok', frecuencia: 'Mensual' },
+  { id: 7, idT: 12, observacion: 'Pendiente revisión', frecuencia: 'Quincenal' },
+  // NUEVO 2: Inspecciones adicionales
+  { id: 8, idT: 15, observacion: 'Revisión extra requerida', frecuencia: 'Semanal' },
+  { id: 9, idT: 16, observacion: 'Chequeo rutinario', frecuencia: 'Diaria' },
 ];
 
 export const mantenimientoData = [
@@ -160,6 +186,12 @@ export const mantenimientoData = [
   { idTrabajo: 8, fechaLimite: '2026-02-03', prioridad: 'Baja', resumen: 'Engrase general', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
   { idTrabajo: 9, fechaLimite: '2026-02-04', prioridad: 'Alta', resumen: 'Limpieza profunda', tipo: 'Periodico', frecuencia: 'Semanal', instancia: 'No Reabierto', condicion: 'Operativo' },
   { idTrabajo: 10, fechaLimite: '2026-02-05', prioridad: 'Critica', resumen: 'Calibracion sensores', tipo: 'Condicion', frecuencia: 'Anual', instancia: 'No Reabierto', condicion: 'Descalibrado' },
+  // NUEVO: Mantenimientos mes actual
+  { idTrabajo: 13, fechaLimite: '2026-01-20', prioridad: 'Media', resumen: 'Mantenimiento Enero', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
+  { idTrabajo: 14, fechaLimite: '2026-01-30', prioridad: 'Alta', resumen: 'Revision General', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
+  // NUEVO 2: Mantenimientos adicionales
+  { idTrabajo: 17, fechaLimite: '2026-01-20', prioridad: 'Baja', resumen: 'Ajuste tornillería', tipo: 'Periodico', frecuencia: 'Semestral', instancia: 'No Reabierto', condicion: 'Operativo' },
+  { idTrabajo: 18, fechaLimite: '2026-02-10', prioridad: 'Media', resumen: 'Limpieza técnica', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'Reabierto', condicion: 'Sucio' },
 ];
 
 export const mantenimientoInspeccionData = [
@@ -175,6 +207,12 @@ export const estadoItemChecklistData = [
   { idTrabajo: 1, idChecklist: 1, idItemChecklist: 2, estado: 'PENDIENTE' },
   { idTrabajo: 6, idChecklist: 6, idItemChecklist: 7, estado: 'COMPLETADA' },
   { idTrabajo: 2, idChecklist: 2, idItemChecklist: 3, estado: 'PENDIENTE' },
+  // NUEVO: Estados para los nuevos trabajos
+  { idTrabajo: 11, idChecklist: 1, idItemChecklist: 1, estado: 'PENDIENTE' },
+  { idTrabajo: 13, idChecklist: 6, idItemChecklist: 7, estado: 'COMPLETADA' },
+  // NUEVO 2: Estados adicionales
+  { idTrabajo: 15, idChecklist: 3, idItemChecklist: 4, estado: 'PENDIENTE' },
+  { idTrabajo: 17, idChecklist: 8, idItemChecklist: 9, estado: 'COMPLETADA' },
 ];
 
 // --- FUNCIÓN DE LIMPIEZA ---
@@ -252,9 +290,9 @@ const fillDB = async () => {
     await db.insert(estadoItemChecklist).values(estadoItemChecklistData as any);
 
     // Ajustamos las secuencias para que los próximos inserts automáticos (SERIAL) no choquen
-    // Asumiendo que insertamos 5 inspecciones y 10 trabajos
-    await db.execute(sql`ALTER SEQUENCE "inspeccion_idInspeccion_seq" RESTART WITH 6;`);
-    await db.execute(sql`ALTER SEQUENCE "trabajo_idTrabajo_seq" RESTART WITH 11;`);
+    // Asumiendo que insertamos 9 inspecciones y 18 trabajos
+    await db.execute(sql`ALTER SEQUENCE "inspeccion_idInspeccion_seq" RESTART WITH 10;`);
+    await db.execute(sql`ALTER SEQUENCE "trabajo_idTrabajo_seq" RESTART WITH 19;`);
 
     console.log('✅ Seeding completado exitosamente.');
     process.exit(0);
