@@ -5,9 +5,13 @@ import { Pool } from 'pg';
 export class DB {
   static instance: DB;
   ssl = process.env.SSL === 'true' ? true : false;
-  databaseUrl = `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${
-    process.env.PGSERVER
-  }:${process.env.PGPORT}/${process.env.PGNAME}${this.ssl ? '?ssl=true' : ''}`;
+  databaseUrl =
+    process.env.DATABASE_URL ||
+    `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${
+      process.env.PGSERVER
+    }:${process.env.PGPORT}/${process.env.PGNAME}${
+      this.ssl ? '?ssl=true' : ''
+    }`;
   pool = new Pool({
     connectionString: this.databaseUrl,
     ssl: this.ssl,

@@ -2,11 +2,11 @@ import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
 
 const ssl = process.env.SSL === 'true' ? true : false;
-const databaseUrl = `postgres://${process.env.PGUSER}:${
-  process.env.PGPASSWORD
-}@${process.env.PGSERVER}:${process.env.PGPORT}/${process.env.PGNAME}${
-  ssl ? '?ssl=true' : ''
-}`;
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${
+    process.env.PGSERVER
+  }:${process.env.PGPORT}/${process.env.PGNAME}${ssl ? '?ssl=true' : ''}`;
 
 export default defineConfig({
   out: './drizzle',
