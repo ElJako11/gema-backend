@@ -9,6 +9,7 @@ import {
   getUbicacionesPorNivelHandler,
   getPadresByIdHijoHandler,
   exportUbicacionesToExcelHandler,
+  getUbicacionesTecnicasListHandler,
 } from '../controllers/ubicacionesTecnicas/ubicacionesTecnicas.controller';
 import { validateBody, validateParams, validateQuery } from '../middleware/validate.middleware';
 import {
@@ -36,6 +37,21 @@ const router = Router();
  *         description: Archivo Excel generado correctamente
  */
 router.get('/export/excel', exportUbicacionesToExcelHandler);
+
+/**
+ * @openapi
+ * /ubicaciones-tecnicas/lista:
+ *   get:
+ *     summary: Obtiene una lista plana de ubicaciones técnicas
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - UbicacionesTecnicas
+ *     responses:
+ *       200:
+ *         description: Lista plana de ubicaciones técnicas
+ */
+router.get('/lista', getUbicacionesTecnicasListHandler);
 
 /**
  * @openapi

@@ -8,6 +8,7 @@ import {
   getUbicacionesDependientes,
   getUbicacionesPorNivel,
   getPadresByIdHijo,
+  getUbicacionesTecnicasList,
 } from '../../services/ubicacionesTecnicas/ubicacionesTecnicas.service';
 import { exportUbicacionesToExcel } from '../../scripts/exportToExcel';
 
@@ -260,6 +261,29 @@ export const getPadresByIdHijoHandler = async (
   } catch (error) {
     console.error('Error in getPadresByIdHijoHandler:', error);
     res.status(500).json({ error: 'Error al obtener los padres jerárquicos' });
+    return;
+  }
+};
+
+/**
+ * Obtiene una lista plana de todas las ubicaciones técnicas habilitadas.
+ * Método: GET
+ * Endpoint: /ubicaciones-tecnicas/lista
+ * Descripción: Retorna una lista simple con id, abreviación, descripción y código de identificación de todas las ubicaciones habilitadas.
+ */
+export const getUbicacionesTecnicasListHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const ubicaciones = await getUbicacionesTecnicasList();
+    res.status(200).json({ data: ubicaciones });
+    return;
+  } catch (error) {
+    console.error('Error in getUbicacionesTecnicasListHandler:', error);
+    res
+      .status(500)
+      .json({ error: 'Error al obtener la lista de ubicaciones técnicas' });
     return;
   }
 };

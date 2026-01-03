@@ -452,3 +452,31 @@ export const getPadresByIdHijo = async (
     );
   }
 };
+
+/**
+ * Obtiene una lista plana de todas las ubicaciones técnicas habilitadas con atributos específicos.
+ * @returns Array de ubicaciones técnicas con id, abreviación, descripción y código de identificación.
+ * Endpoint: GET /ubicaciones-tecnicas/lista
+ */
+export const getUbicacionesTecnicasList = async () => {
+  try {
+    const ubicaciones = await db
+      .select({
+        idUbicacion: ubicacionTecnica.idUbicacion,
+        abreviacion: ubicacionTecnica.abreviacion,
+        descripcion: ubicacionTecnica.descripcion,
+        codigo_Identificacion: ubicacionTecnica.codigo_Identificacion,
+      })
+      .from(ubicacionTecnica)
+      .where(eq(ubicacionTecnica.estaHabilitado, true));
+    return ubicaciones;
+  } catch (error) {
+    console.error('Error fetching ubicaciones tecnicas list:', error);
+    throw new Error(
+      `Error al obtener la lista de ubicaciones técnicas: ${
+        error instanceof Error ? error.message : error
+      }`
+    );
+  }
+};
+
