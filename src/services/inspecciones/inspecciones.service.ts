@@ -70,7 +70,7 @@ export const getDetalleInspeccion = async (id: number) => {
     .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
     .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG))
     .innerJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id))
-    .innerJoin(checklist, eq(checklist.idChecklist, trabajo.idC))
+    .leftJoin(checklist, eq(checklist.idChecklist, trabajo.idC))
     .where(eq(inspeccion.id, id));
 
   return result[0];
@@ -133,10 +133,19 @@ export const getTareasChecklist = async (idInspeccion: number) => {
       })
       .from(inspeccion)
       .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-      .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
+      .innerJoin(
+        ubicacionTecnica,
+        eq(trabajo.idU, ubicacionTecnica.idUbicacion)
+      )
       .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
-      .leftJoin(estadoItemChecklist, eq(trabajo.idTrabajo, estadoItemChecklist.idTrabajo))
-      .leftJoin(itemChecklist, eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck))
+      .leftJoin(
+        estadoItemChecklist,
+        eq(trabajo.idTrabajo, estadoItemChecklist.idTrabajo)
+      )
+      .leftJoin(
+        itemChecklist,
+        eq(estadoItemChecklist.idItemChecklist, itemChecklist.idItemCheck)
+      )
       .where(eq(inspeccion.id, idInspeccion));
 
     if (infoChecklist.length === 0) {
@@ -146,13 +155,13 @@ export const getTareasChecklist = async (idInspeccion: number) => {
     // Grouping results
     const firstRow = infoChecklist[0];
     const tasks = infoChecklist
-        .filter(row => row.idTarea !== null)
-        .map((row) => ({
-            id: row.idTarea!,
-            nombre: row.nombreTarea!,
-            descripcion: row.descripcionTarea!,
-            estado: row.estado as 'COMPLETADA' | 'PENDIENTE',
-        }));
+      .filter(row => row.idTarea !== null)
+      .map(row => ({
+        id: row.idTarea!,
+        nombre: row.nombreTarea!,
+        descripcion: row.descripcionTarea!,
+        estado: row.estado as 'COMPLETADA' | 'PENDIENTE',
+      }));
 
     const response: Checklist = {
       id: firstRow.idChecklist,
@@ -164,12 +173,10 @@ export const getTareasChecklist = async (idInspeccion: number) => {
 
     return response;
   } catch (error) {
-    console.error("Error en getTareasChecklist:", error);
+    console.error('Error en getTareasChecklist:', error);
     throw error;
   }
 };
-
-
 
 export const createInspeccion = async (
   inspeccionData: insertInspeccion,
