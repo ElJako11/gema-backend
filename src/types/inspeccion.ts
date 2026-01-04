@@ -20,12 +20,13 @@ export type Inspeccion = {
 export type ResumenInspeccion = Pick<
   Inspeccion,
   | 'idInspeccion'
+  | 'fechaCreacion'
   | 'ubicacion'
   | 'estado'
   | 'areaEncargada'
   | 'supervisor'
   | 'frecuencia'
-  | 'titulo' // Added
+  | 'titulo'
 >;
 
 export type insertInspeccion = {

@@ -33,6 +33,7 @@ const getResumenQueryBase = () => {
   const baseQuery = db
     .select({
       idInspeccion: inspeccion.id,
+      fechaCreacion: trabajo.fecha,
       ubicacion: ubicacionTecnica.descripcion,
       estado: trabajo.est,
       areaEncargada: grupoDeTrabajo.area,
