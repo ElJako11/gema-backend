@@ -6,6 +6,7 @@ export const setCookie = (res: Response, cookieName: string, token: string) => {
     httpOnly: true,
     secure: (process.env.NODE_ENV as string) === 'production',
     sameSite: 'none',
+    partitioned: true,
     maxAge: 1000 * 60 * 60 * 24,
   });
 };
