@@ -40,9 +40,6 @@ const getResumenMantenimientoQuery = () => {
   return result;
 };
 
-
-
-
 export const getMantenimientobyID = async (id: number) => {
   const result = await db
     .select({
@@ -59,7 +56,7 @@ export const getMantenimientobyID = async (id: number) => {
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
     .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
-    .innerJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
+    .leftJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
     .where(eq(mantenimiento.idMantenimiento, id));
 
   if (result.length === 0) {
@@ -237,10 +234,7 @@ export const updateMantenimientoPreventivo = async (
 
   if (hasProgress) {
     newStatus = 'En progreso';
-  } else if (
-    newFechaLimite &&
-    newFechaLimite !== currentFechaLimite
-  ) {
+  } else if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
     newStatus = 'Reprogramado';
   }
 
