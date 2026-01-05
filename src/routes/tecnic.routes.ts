@@ -15,6 +15,7 @@ import {
     updateTecnicoSchema,
     urlParamsTecnicoSchema
 } from '../validations/tecnicSchema'
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -38,7 +39,7 @@ const router = Router();
  *         description: Error interno del servidor
  */
 //Get all Tecnicos
-router.get('/', getAllTecnicosHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getAllTecnicosHandler);
 
 /**
  * @swagger
@@ -53,7 +54,7 @@ router.get('/', getAllTecnicosHandler);
  *         description: Error interno del servidor
  */
 //Get lista de Tecnicos
-router.get('/lista', getListaTecnicosHandler);
+router.get('/lista', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getListaTecnicosHandler);
 
 /**
  * @swagger
@@ -90,7 +91,7 @@ router.get('/lista', getListaTecnicosHandler);
  *         description: Error interno del servidor
  */
 //Post Tecnico
-router.post('/', validateBody(createTecnicoSchema), createTecnicoHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateBody(createTecnicoSchema), createTecnicoHandler);
 
 /**
  * @swagger
@@ -132,7 +133,7 @@ router.post('/', validateBody(createTecnicoSchema), createTecnicoHandler);
  *         description: Error interno del servidor
  */
 //Patch Tecnico
-router.patch('/:id', validateParams(urlParamsTecnicoSchema), validateBody(updateTecnicoSchema), updateTecnicoHandler);
+router.patch('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateParams(urlParamsTecnicoSchema), validateBody(updateTecnicoSchema), updateTecnicoHandler);
 
 /**
  * @swagger
@@ -156,6 +157,6 @@ router.patch('/:id', validateParams(urlParamsTecnicoSchema), validateBody(update
  *         description: Error interno del servidor
  */
 //Delete Tecnico
-router.delete('/:id', validateParams(urlParamsTecnicoSchema), deleteTecnicoHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateParams(urlParamsTecnicoSchema), deleteTecnicoHandler);
 
 export default router;
