@@ -44,6 +44,7 @@ export const getMantenimientobyID = async (id: number) => {
   const result = await db
     .select({
       idMantenimiento: mantenimiento.idMantenimiento,
+      titulo: trabajo.nombre,
       fechaCreacion: trabajo.fecha,
       fechaLimite: mantenimiento.fechaLimite,
       ubicacion: ubicacionTecnica.descripcion,

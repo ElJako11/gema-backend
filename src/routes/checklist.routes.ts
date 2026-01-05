@@ -8,8 +8,15 @@ import {
   putChecklistHandler,
 } from '../controllers/checklist/checklist.controller';
 import { autorizationMiddleware } from '../middleware/autorization.middleware';
-import { validateBody, validateParams } from '../middleware/validate.middleware';
-import { checklistIdParamSchema, createChecklistSchema, updateChecklistSchema } from '../validations/checklist.schema';
+import {
+  validateBody,
+  validateParams,
+} from '../middleware/validate.middleware';
+import {
+  checklistIdParamSchema,
+  createChecklistSchema,
+  updateChecklistSchema,
+} from '../validations/checklist.schema';
 
 const router = Router();
 
@@ -31,7 +38,7 @@ router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
 
 /**
  * @swagger
- * /checklists: 
+ * /checklists:
  *   post:
  *     summary: Crea un nuevo checklist.
  *     security:
@@ -61,7 +68,13 @@ router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
  *       500:
  *         description: Error al crear el checklist.
  */
-router.post('/', authenticate, autorizationMiddleware(), validateBody(createChecklistSchema), postChecklistHandler);
+router.post(
+  '/',
+  authenticate,
+  autorizationMiddleware(),
+  validateBody(createChecklistSchema),
+  postChecklistHandler
+);
 
 /**
  * @swagger
@@ -86,7 +99,13 @@ router.post('/', authenticate, autorizationMiddleware(), validateBody(createChec
  *       500:
  *         description: Error al obtener el checklist.
  */
-router.get('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), getChecklistWithItemsHandler);
+router.get(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(checklistIdParamSchema),
+  getChecklistWithItemsHandler
+);
 
 /**
  * @swagger
@@ -126,7 +145,14 @@ router.get('/:id', authenticate, autorizationMiddleware(), validateParams(checkl
  *       500:
  *         description: Error al actualizar el checklist.
  */
-router.put('/:id', authenticate, autorizationMiddleware(), validateParams(checklistIdParamSchema), validateBody(updateChecklistSchema), putChecklistHandler);
+router.put(
+  '/:id',
+  authenticate,
+  autorizationMiddleware(),
+  validateParams(checklistIdParamSchema),
+  validateBody(updateChecklistSchema),
+  putChecklistHandler
+);
 
 /**
  * @swagger
