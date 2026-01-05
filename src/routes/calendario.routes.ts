@@ -47,7 +47,7 @@ const router = Router();
 router.get(
   '/',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   getAllEventosByFechaHandler
 );
 
