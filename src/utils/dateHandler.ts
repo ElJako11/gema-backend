@@ -9,7 +9,9 @@ const startofWeek = (date: Date): Date => {
 };
 
 export const getStartOfWeek = (date: string): Date => {
-  const formattedDate = new Date(date);
+  const formattedDate = new Date(
+    date.includes('T') ? date : `${date}T00:00:00`
+  );
 
   const initialDate: Date = isMonday(formattedDate)
     ? formattedDate
@@ -23,13 +25,13 @@ export const Add = (date: Date) => {
 };
 
 export const getStartofMonth = (datestr: string) => {
-  const date = new Date(datestr);
+  const date = new Date(datestr.includes('T') ? datestr : `${datestr}T00:00:00`);
 
   return startOfMonth(date);
 };
 
 export const getEndofMonth = (datestr: string) => {
-  const date = new Date(datestr);
+  const date = new Date(datestr.includes('T') ? datestr : `${datestr}T00:00:00`);
 
   return endOfMonth(date);
 };
