@@ -8,6 +8,7 @@ import {
 } from '../controllers/gruposDeTrabajo/gruposDeTrabajo.controller';
 import { validateBody } from '../middleware/validate.middleware';
 import { grupoTrabajoSchema } from '../validations/grupoTrabajoSchema';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -53,7 +54,7 @@ const router = Router();
  *       500:
  *         description: Error al crear el grupo de trabajo
  */
-router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos:
@@ -67,7 +68,7 @@ router.post('/', validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
  *       200:
  *         description: Lista de grupos de trabajo
  */
-router.get('/', getGruposDeTrabajoHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDeTrabajoHandler);
 
 /**
  * @openapi
@@ -91,7 +92,7 @@ router.get('/', getGruposDeTrabajoHandler);
  *       404:
  *         description: Grupo de trabajo no encontrado
  */
-router.get('/:id', getGruposDeTrabajoByIdHandler);
+router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDeTrabajoByIdHandler);
 
 /**
  * @openapi
@@ -136,7 +137,7 @@ router.get('/:id', getGruposDeTrabajoByIdHandler);
  *         description: Error al actualizar el grupo de trabajo
  */
 
-router.put('/:id', updateGrupoDeTrabajoHandler);
+router.put('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), updateGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos/{id}:
@@ -161,5 +162,5 @@ router.put('/:id', updateGrupoDeTrabajoHandler);
  *       500:
  *         description: Error al eliminar el grupo de trabajo
  */
-router.delete('/:id', deleteGrupoDeTrabajoHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), deleteGrupoDeTrabajoHandler);
 export default router;
