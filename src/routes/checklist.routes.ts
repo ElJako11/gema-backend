@@ -18,6 +18,7 @@ import {
   updateChecklistSchema,
 } from '../validations/checklist.schema';
 
+
 const router = Router();
 
 /**
@@ -34,7 +35,7 @@ const router = Router();
  *       500:
  *         description: Error al obtener checklists.
  */
-router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
+router.get('/', authenticate, autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getChecklistHandler);
 
 /**
  * @swagger
@@ -71,7 +72,7 @@ router.get('/', authenticate, autorizationMiddleware(), getChecklistHandler);
 router.post(
   '/',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(createChecklistSchema),
   postChecklistHandler
 );
@@ -102,7 +103,7 @@ router.post(
 router.get(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(checklistIdParamSchema),
   getChecklistWithItemsHandler
 );
@@ -148,7 +149,7 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(checklistIdParamSchema),
   validateBody(updateChecklistSchema),
   putChecklistHandler
@@ -180,7 +181,7 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(checklistIdParamSchema),
   deleteChecklistHandler
 );
