@@ -146,6 +146,36 @@
         {{/each}}
     </div>
 
+    {{#if inspecciones}}
+    <div class="header" style="margin-top: 40px; border-bottom: 2px solid #28a745;">
+        <div class="title-box">
+            <h1>Resumen de Inspecciones</h1>
+        </div>
+    </div>
+
+    <div class="cards-container">
+        {{#each inspecciones}}
+        <div class="card">
+            <div class="card-header">
+                <span class="job-title">{{nombreTrabajo}}</span>
+                <span class="badge {{claseEstado}}">{{estado}}</span>
+            </div>
+
+            <div class="info-row">
+                <div>
+                    <span class="icon">📍</span>
+                    <strong>Ubicación:</strong> {{ubicacion}}
+                </div>
+                <div>
+                    <span class="icon">📅</span>
+                    <strong>Fecha Creación:</strong> {{fechaCreacionFormateada}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+
 </body>
 
 </html>
