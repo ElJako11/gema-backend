@@ -55,6 +55,7 @@ export const getDetalleInspeccion = async (id: number) => {
   const result = await db
     .select({
       idInspeccion: inspeccion.id,
+      titulo: trabajo.nombre,
       fechaCreacion: trabajo.fecha,
       ubicacion: ubicacionTecnica.descripcion,
       estado: trabajo.est,
