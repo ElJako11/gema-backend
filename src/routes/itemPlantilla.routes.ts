@@ -58,7 +58,7 @@ const router = Router();
 router.post(
     '/',
     authenticate,
-    autorizationMiddleware(),
+    autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
     validateBody(createItemSchema),
     postItemHandler
 );
@@ -110,7 +110,7 @@ router.post(
 router.put(
     '/:idItemPlantilla/plantilla/:idPlantilla',
     authenticate,
-    autorizationMiddleware(),
+    autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
     validateParams(urlParamsSchema),
     validateBody(updateItemSchema),
     putItemHandler
@@ -148,7 +148,7 @@ router.put(
 router.delete(
     '/:idItemPlantilla/plantilla/:idPlantilla',
     authenticate,
-    autorizationMiddleware(),
+    autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
     validateParams(urlParamsSchema),
     deleteItemHandler
 );

@@ -16,6 +16,7 @@ import {
     updateUserSchema,
     urlParamsSchema
 } from '../validations/usuarioSchema';
+import {autorizationMiddleware} from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -39,7 +40,7 @@ const router = Router();
  *         description: Error interno del servidor
  */
 //Get all Usuarios
-router.get('/', getUsuariosHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR']), getUsuariosHandler);
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ router.get('/', getUsuariosHandler);
  *         description: Error interno del servidor
  */
 //Get Usuario Credentials
-router.get('/list', getUsuarioCredentialsHandler);
+router.get('/list', autorizationMiddleware(['DIRECTOR']), getUsuarioCredentialsHandler);
 
 /**
  * @swagger
@@ -78,7 +79,7 @@ router.get('/list', getUsuarioCredentialsHandler);
  *         description: Error interno del servidor
  */
 //Get Usuario by ID
-router.get('/:id', validateParams(urlParamsSchema), getUsuarioByIdHandler);
+router.get('/:id', autorizationMiddleware(['DIRECTOR']), validateParams(urlParamsSchema), getUsuarioByIdHandler);
 
 /**
  * @swagger
@@ -118,7 +119,7 @@ router.get('/:id', validateParams(urlParamsSchema), getUsuarioByIdHandler);
  *         description: Error interno del servidor
  */
 //Post Usuario
-router.post('/', validateBody(createUserSchema), createUsuarioHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR']), validateBody(createUserSchema), createUsuarioHandler);
 
 /**
  * @swagger
@@ -164,7 +165,7 @@ router.post('/', validateBody(createUserSchema), createUsuarioHandler);
  *         description: Error interno del servidor
  */
 //Patch Usuario
-router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateUserSchema), updateUsuarioHandler);
+router.patch('/:id', autorizationMiddleware(['DIRECTOR']), validateParams(urlParamsSchema), validateBody(updateUserSchema), updateUsuarioHandler);
 
 /**
  * @swagger
@@ -188,6 +189,6 @@ router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateUserSch
  *         description: Error interno del servidor
  */
 //Delete Usuario
-router.delete('/:id', validateParams(urlParamsSchema), deleteUsuarioHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR']), validateParams(urlParamsSchema), deleteUsuarioHandler);
 
 export default router;

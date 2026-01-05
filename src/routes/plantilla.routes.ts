@@ -34,7 +34,7 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', authenticate, autorizationMiddleware(), getPlantillaHandler);
+router.get('/', authenticate, autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getPlantillaHandler);
 
 /**
  * @swagger
@@ -62,7 +62,7 @@ router.get('/', authenticate, autorizationMiddleware(), getPlantillaHandler);
 router.get(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
   validateParams(plantillaIdParamSchema),
   getPlantillaWithItemsHandler
 );
@@ -99,7 +99,7 @@ router.get(
 router.post(
   '/', 
   authenticate, 
-  autorizationMiddleware(), 
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), 
   validateBody(createPlantillaSchema), 
   postPlantillaHandler
 );
@@ -145,7 +145,7 @@ router.post(
 router.put(
   '/:id', 
   authenticate, 
-  autorizationMiddleware(), 
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), 
   validateParams(plantillaIdParamSchema), 
   validateBody(updatePlantillaSchema), 
   putPlantillaHandler
@@ -177,7 +177,7 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
   validateParams(plantillaIdParamSchema),
   deletePlantillaHandler
 );
