@@ -16,6 +16,7 @@ import {
     updateMantenimientoXInspeccionSchema,
     urlParamsSchema
 } from '../validations/mantenimientoXinspeccionSchema';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -39,7 +40,7 @@ const router = Router();
  *         description: Error interno del servidor
  */
 //Get all MantenimientosXInspeccion
-router.get('/', getMantenimientosXInspeccion);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantenimientosXInspeccion);
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ router.get('/', getMantenimientosXInspeccion);
  *         description: Error interno del servidor
  */
 //Get MantXInsp Resumen
-router.get('/resumen', getMantXInspResumenHandler);
+router.get('/resumen', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantXInspResumenHandler);
 
 /**
  * @swagger
@@ -78,7 +79,7 @@ router.get('/resumen', getMantXInspResumenHandler);
  *         description: Error interno del servidor
  */
 //Get MantenimientoXInspeccion by ID
-router.get('/:id', validateParams(urlParamsSchema), getMantenimientoXInspeccion);
+router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateParams(urlParamsSchema), getMantenimientoXInspeccion);
 
 /**
  * @swagger
@@ -108,7 +109,7 @@ router.get('/:id', validateParams(urlParamsSchema), getMantenimientoXInspeccion)
  *         description: Error interno del servidor
  */
 //Post MantenimientoXInspeccion
-router.post('/', validateBody(createMantenimientoXInspeccionSchema), createMantenimientoXInspeccionHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateBody(createMantenimientoXInspeccionSchema), createMantenimientoXInspeccionHandler);
 
 /**
  * @swagger
@@ -147,7 +148,7 @@ router.post('/', validateBody(createMantenimientoXInspeccionSchema), createMante
  *         description: Error interno del servidor
  */
 //Patch MantenimientoXInspeccion
-router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateMantenimientoXInspeccionSchema), updateMantenimientoXInspeccionHandler);
+router.patch('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateParams(urlParamsSchema), validateBody(updateMantenimientoXInspeccionSchema), updateMantenimientoXInspeccionHandler);
 
 /**
  * @swagger
@@ -171,6 +172,6 @@ router.patch('/:id', validateParams(urlParamsSchema), validateBody(updateManteni
  *         description: Error interno del servidor
  */
 //Delete MantenimientoXInspeccion
-router.delete('/:id', validateParams(urlParamsSchema), deleteMantenimientoXInspeccionHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateParams(urlParamsSchema), deleteMantenimientoXInspeccionHandler);
 
 export default router;
