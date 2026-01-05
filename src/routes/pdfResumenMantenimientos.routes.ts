@@ -47,6 +47,6 @@ const router = Router();
  *         description: Error interno del servidor
  */
 // Endpoint: /api/mantenimientos/export-pdf?date=2025-11-04&filter=mensual
-router.get('/pdf-ResumenMantenimientos', authenticate, autorizationMiddleware(), exportMaintenanceSummaryPdf);
+router.get('/pdf-ResumenMantenimientos', authenticate, autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), exportMaintenanceSummaryPdf);
 
 export default router;
