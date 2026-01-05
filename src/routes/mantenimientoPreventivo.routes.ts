@@ -62,7 +62,7 @@ const router = Router();
 router.get(
   '/filtros',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR']),
   validateQuery(QuerySchema),
   getAllMantenimientoByFechaHandler
 );
@@ -86,7 +86,7 @@ router.get(
 router.get(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(urlParamsSchema),
   getMantenimientobyIDHandler
 )
@@ -119,7 +119,7 @@ router.get(
 router.get(
   '/:id/resumen',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(urlParamsSchema),
   getResumenMantenimientoHandler
 );
@@ -152,7 +152,7 @@ router.get(
 router.get(
   '/:id/checklist',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(urlParamsSchema),
   getChecklistByMantenimientoHandler
 );
@@ -228,7 +228,7 @@ router.get(
 router.post(
   '/',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(createMantenimientoSchema),
   postMantenimientoHandler
 );
@@ -295,7 +295,7 @@ router.post(
 router.patch(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(updateMantenimientoSchema),
   validateParams(urlParamsSchema),
   patchMantenimientoHandler
@@ -331,7 +331,7 @@ router.patch(
 router.delete(
   '/:id',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(urlParamsSchema),
   deleteMantenimientoHandler
 );
