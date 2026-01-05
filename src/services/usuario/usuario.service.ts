@@ -2,6 +2,7 @@ import { eq, asc, and, ne } from 'drizzle-orm'; // <--- IMPORTANTE: Agregados 'a
 import { db } from '../../config/db';
 import { usuarios } from '../../tables/usuarios';
 import { CreateUserParams } from '../../types/userType';
+import { hashPassword } from '../../utils/password';
 
 // Get all usuarios
 export const getAllUsuarios = async () => {
@@ -34,7 +35,7 @@ export const getUsuarioCredentials = async () => {
             correo: usuarios.Correo,
             tipo: usuarios.Tipo
         }).from(usuarios)
-        .orderBy(asc(usuarios.Id));
+            .orderBy(asc(usuarios.Id));
 
         return listaUsuarios;
     } catch (error) {
@@ -56,13 +57,16 @@ export const createUsuario = async (userData: CreateUserParams) => {
             throw new Error('El correo electrónico ya está registrado en el sistema.');
         }
 
+        // Hashear contraseña
+        const hashedPassword = await hashPassword(userData.contraseña);
+
         // Crear el usuario
         const newUsuario = await db.insert(usuarios)
             .values({
                 Nombre: userData.nombre,
                 Correo: userData.correo,
-                Tipo: userData.tipo,      
-                Contraseña: userData.contraseña
+                Tipo: userData.tipo,
+                Contraseña: hashedPassword
             })
             .returning();
         return newUsuario[0] || null;
@@ -74,13 +78,13 @@ export const createUsuario = async (userData: CreateUserParams) => {
         }
         console.error('Error al crear el Usuario', error);
         throw new Error('No se pudo crear el Usuario');
-    }   
+    }
 }
 
 // Update usuario
 export const updateUsuario = async (id: number, userData: Partial<CreateUserParams>) => {
     if (Object.keys(userData).length === 0) {
-        return null; 
+        return null;
     }
 
     try {
@@ -102,6 +106,10 @@ export const updateUsuario = async (id: number, userData: Partial<CreateUserPara
             }
         }
 
+        if (userData.contraseña) {
+            userData.contraseña = await hashPassword(userData.contraseña);
+        }
+
         const updatedUsuario = await db.update(usuarios)
             .set({
                 Nombre: userData.nombre,
@@ -111,7 +119,7 @@ export const updateUsuario = async (id: number, userData: Partial<CreateUserPara
             })
             .where(eq(usuarios.Id, id))
             .returning();
-        
+
         return updatedUsuario[0] || null;
 
     } catch (error) {
@@ -126,14 +134,14 @@ export const updateUsuario = async (id: number, userData: Partial<CreateUserPara
 
 // Delete usuario
 export const deleteUsuario = async (id: number) => {
-    try {   
-       const deleted = await db.delete(usuarios)
-        .where(eq(usuarios.Id, id))
-        .returning();
+    try {
+        const deleted = await db.delete(usuarios)
+            .where(eq(usuarios.Id, id))
+            .returning();
 
-       return deleted[0] || null;
+        return deleted[0] || null;
     } catch (error) {
         console.error('Error al eliminar el Usuario', error);
         throw new Error('No se pudo eliminar el Usuario');
-    }   
+    }
 }
