@@ -33,6 +33,6 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id/pdf', authenticate, autorizationMiddleware(), exportChecklistPdf);
+router.get('/:id/pdf', authenticate, autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), exportChecklistPdf);
 
 export default router;
