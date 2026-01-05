@@ -8,8 +8,11 @@ export const loginHandler = async (
 ): Promise<void> => {
   try {
     const user = await login(req.body);
+
+    console.log(req.headers.origin);
+
     // Seteo de la cookie.
-    setCookie(res, 'accessToken', user.token);
+    setCookie(req, res, 'accessToken', user.token);
 
     res.status(200).json({
       data: user,
@@ -37,7 +40,7 @@ export const registerHandler = async (
     const user = await register(req.body); // { token, usuario }
 
     // Seteo de la cookie con el token (login automático)
-    setCookie(res, 'accessToken', user.token);
+    setCookie(req, res, 'accessToken', user.token);
 
     res.status(201).json({
       data: user,
