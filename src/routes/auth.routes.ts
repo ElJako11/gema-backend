@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   loginHandler,
+  logoutHandler,
   registerHandler,
 } from '../controllers/auth/auth.controller';
 import { validateBody } from '../middleware/validate.middleware';
@@ -21,7 +22,7 @@ const router = Router();
  *           schema:
  *             type: object
  *             properties:
- *               Correo: 
+ *               Correo:
  *                 type: string
  *                 example: coordinador@ucab.edu.ve
  *               Contraseña:
@@ -93,5 +94,7 @@ router.post('/login', validateBody(loginSchema), loginHandler);
  */
 
 router.post('/register', registerHandler);
+
+router.post('/logout', logoutHandler);
 
 export default router;

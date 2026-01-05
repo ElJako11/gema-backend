@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { login, AuthError, register } from '../../services/auth/auth.service';
-import { setCookie } from '../../utils/cookieHandler';
+import { clearCookie, setCookie } from '../../utils/cookieHandler';
 
 export const loginHandler = async (
   req: Request,
@@ -58,4 +58,16 @@ export const registerHandler = async (
       error: 'Error al registrar coordinador',
     });
   }
+};
+
+export const logoutHandler = (req: Request, res: Response) => {
+  if (!req.cookies?.accessToken) {
+    res.status(400).json({ message: 'No se pudo obtener la sesion' });
+    return;
+  }
+
+  clearCookie(req, res, 'accessToken');
+
+  res.status(200).json({ message: 'Logout exitoso' });
+  return;
 };

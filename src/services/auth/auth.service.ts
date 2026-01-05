@@ -4,6 +4,7 @@ import { authParams } from '../../types/types';
 import { comparePassword, hashPassword } from '../../utils/password';
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
+import { clearCookie } from '../../utils/cookieHandler';
 
 export class AuthError extends Error {
   constructor(message: string) {
