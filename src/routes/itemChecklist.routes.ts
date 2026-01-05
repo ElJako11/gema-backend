@@ -31,7 +31,7 @@ const router = Router();
  *        500:
  *          description: Error interno del servidor
  */
-router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
+router.get('/', authenticate, autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getAllItemsHandler);
 
 // Route moved to checklist.routes.ts
 
@@ -74,7 +74,7 @@ router.get('/', authenticate, autorizationMiddleware(), getAllItemsHandler);
 router.post(
   '/',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(createItemSchema),
   postItemHandler
 );
@@ -124,7 +124,7 @@ router.post(
 router.patch(
   '/:idChecklist/:idItem',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(UpdateParamSchema),
   validateBody(UpdateBodySchema),
   patchItemHandler
@@ -162,7 +162,7 @@ router.patch(
 router.delete(
   '/:idChecklist/:idItem',
   authenticate,
-  autorizationMiddleware(),
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateParams(UpdateParamSchema),
   deleteItemHandler
 );
