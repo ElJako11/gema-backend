@@ -56,7 +56,7 @@ const router = Router();
  *         description: Error interno del servidor.
  */
 
-router.get('/:id', getDetalleInspeccionHandler);
+router.get('/:id',autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getDetalleInspeccionHandler);
 
 /**
  * @openapi
@@ -93,7 +93,7 @@ router.get('/:id', getDetalleInspeccionHandler);
  *       '500':
  *         description: Error interno del servidor.
  */
-router.get('/', getInspeccionesByFecha);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getInspeccionesByFecha);
 
 /**
  * @openapi
@@ -122,7 +122,7 @@ router.get('/', getInspeccionesByFecha);
  *         description: Error interno del servidor.
  */
 
-router.get('/resumen/:id', getResumenInspeccionHandler);
+router.get('/resumen/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getResumenInspeccionHandler);
 
 /**
  * @openapi
@@ -150,7 +150,7 @@ router.get('/resumen/:id', getResumenInspeccionHandler);
  *       '500':
  *         description: Error interno del servidor.
  */
-router.get('/:id/checklist', getTareasChecklistHandler);
+router.get('/:id/checklist', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getTareasChecklistHandler);
 
 /**
  * @openapi
@@ -192,7 +192,7 @@ router.get('/:id/checklist', getTareasChecklistHandler);
  *         description: Error interno del servidor.
  */
 
-router.post('/', createInspeccionHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), createInspeccionHandler);
 
 /**
  * @openapi
@@ -253,7 +253,7 @@ router.post('/', createInspeccionHandler);
  */
 
 
-router.patch('/:id', updateInspeccionHandler);
+router.patch('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), updateInspeccionHandler);
 
 /**
  * @openapi
@@ -282,6 +282,6 @@ router.patch('/:id', updateInspeccionHandler);
  *         description: Error interno del servidor.
  */
 
-router.delete('/:id', deleteInspeccionHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), deleteInspeccionHandler);
 
 export default router;
