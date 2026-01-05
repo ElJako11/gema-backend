@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { createTrabajoFacadeHandler } from '../controllers/facades/trabajoFacade.controller';
 import { validateBody } from '../middleware/validate.middleware';
 import { createWorkSchema } from '../validations/workCreationSchema';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -39,6 +40,6 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', validateBody(createWorkSchema), createTrabajoFacadeHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateBody(createWorkSchema), createTrabajoFacadeHandler);
 
 export default router;

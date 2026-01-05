@@ -8,6 +8,7 @@ import {
     getResumenMantenimientosMesHandler,
     getMantenimientosActivosPorAreaHandler
 } from '../controllers/trabajo/trabajo.controller';
+import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
 
@@ -29,7 +30,7 @@ const router = Router();
  *         description: Error interno del servidor.
  */
 
-router.get('/', controllers.getTrabajosHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), controllers.getTrabajosHandler);
 
 /**
  * @openapi
@@ -49,7 +50,7 @@ router.get('/', controllers.getTrabajosHandler);
  *       500:
  *         description: Error al obtener la cantidad de mantenimientos
  */
-router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
+router.get('/reabiertos', autorizationMiddleware(['DIRECTOR']), getCantidadMantenimientosReabiertosHandler);
 
 /**
  * @openapi
@@ -77,7 +78,7 @@ router.get('/reabiertos', getCantidadMantenimientosReabiertosHandler);
  *       500:
  *         description: Error al obtener el reporte por área
  */
-router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
+router.get('/reabiertos/por-area', autorizationMiddleware(['DIRECTOR']), getMantenimientosReabiertosPorAreaHandler);
 
 /**
  * @openapi
@@ -106,7 +107,7 @@ router.get('/reabiertos/por-area', getMantenimientosReabiertosPorAreaHandler);
  *       500:
  *         description: Error al obtener el resumen del mes
  */
-router.get('/resumen/mes-actual', getResumenMantenimientosMesHandler);
+router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getResumenMantenimientosMesHandler);
 
 /**
  * @openapi
@@ -134,7 +135,7 @@ router.get('/resumen/mes-actual', getResumenMantenimientosMesHandler);
  *       500:
  *         description: Error al obtener el reporte de activos por área
  */
-router.get('/activos/por-area', getMantenimientosActivosPorAreaHandler);
+router.get('/activos/por-area', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantenimientosActivosPorAreaHandler);
 
 //Get Trabajo by ID
 
@@ -162,7 +163,7 @@ router.get('/activos/por-area', getMantenimientosActivosPorAreaHandler);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);
+router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), middleware.validateParams(validators.urlParamsSchema), controllers.getTrabajoByIdHandler);
 
 //Post Trabajo
 
@@ -218,7 +219,7 @@ router.get('/:id', middleware.validateParams(validators.urlParamsSchema), contro
  *         description: Error interno del servidor.
  */
 
-router.post('/', middleware.validateBody(validators.createTrabajoSchema), controllers.createTrabajoHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), middleware.validateBody(validators.createTrabajoSchema), controllers.createTrabajoHandler);
 
 //Patch Trabajo
 
@@ -277,7 +278,7 @@ router.post('/', middleware.validateBody(validators.createTrabajoSchema), contro
  *         description: Error interno del servidor.
  */
 
-router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), middleware.validateBody(validators.updateTrabajoSchema), controllers.updateTrabajoHandler);
+router.patch('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), middleware.validateParams(validators.urlParamsSchema), middleware.validateBody(validators.updateTrabajoSchema), controllers.updateTrabajoHandler);
 
 //Delete Trabajo
 
@@ -306,7 +307,7 @@ router.patch('/:id', middleware.validateParams(validators.urlParamsSchema), midd
  *         description: Error interno del servidor.
  */
 
-router.delete('/:id', middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), middleware.validateParams(validators.urlParamsSchema), controllers.deleteTrabajoHandler);
 
 
 
