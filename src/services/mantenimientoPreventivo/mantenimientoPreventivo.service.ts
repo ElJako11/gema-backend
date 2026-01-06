@@ -48,6 +48,8 @@ export const getMantenimientobyID = async (id: number) => {
       fechaCreacion: trabajo.fecha,
       fechaLimite: mantenimiento.fechaLimite,
       ubicacion: ubicacionTecnica.descripcion,
+      abreviacion: ubicacionTecnica.abreviacion,
+      codigoVerificacion: ubicacionTecnica.codigo_Identificacion,
       estado: trabajo.est,
       tipo: mantenimiento.tipo,
       resumen: mantenimiento.resumen,

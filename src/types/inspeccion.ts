@@ -15,6 +15,8 @@ export type Inspeccion = {
   frecuencia: string;
   areaEncargada: string;
   titulo: string;
+  abreviacion: string;
+  codigoVerificacion: string;
 };
 
 export type ResumenInspeccion = Pick<

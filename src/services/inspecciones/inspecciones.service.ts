@@ -58,6 +58,8 @@ export const getDetalleInspeccion = async (id: number) => {
       titulo: trabajo.nombre,
       fechaCreacion: trabajo.fecha,
       ubicacion: ubicacionTecnica.descripcion,
+      abreviacion: ubicacionTecnica.abreviacion,
+      codigoVerificacion: ubicacionTecnica.codigo_Identificacion,
       estado: trabajo.est,
       supervisor: usuarios.Nombre,
       observacion: inspeccion.observacion,
