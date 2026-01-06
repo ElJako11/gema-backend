@@ -1,7 +1,13 @@
 import { Router } from 'express';
-import { createTrabajoFacadeHandler } from '../controllers/facades/trabajoFacade.controller';
+import {
+  createTrabajoFacadeHandler,
+  createChecklistFromTemplateHandler,
+} from '../controllers/facades/trabajoFacade.controller';
 import { validateBody } from '../middleware/validate.middleware';
-import { createWorkSchema } from '../validations/workCreationSchema';
+import {
+  createWorkSchema,
+  createChecklistFromTemplateSchema,
+} from '../validations/workCreationSchema';
 import { autorizationMiddleware } from '../middleware/autorization.middleware';
 
 const router = Router();
@@ -40,6 +46,45 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateBody(createWorkSchema), createTrabajoFacadeHandler);
+router.post(
+  '/',
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
+  validateBody(createWorkSchema),
+  createTrabajoFacadeHandler
+);
+
+/**
+ * @swagger
+ * /trabajos/checklist-template:
+ *   post:
+ *     summary: Crear una checklist para un trabajo a partir de una plantilla
+ *     tags: [Trabajos Facade]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idTrabajo:
+ *                 type: number
+ *                 example: 1
+ *               idPlantilla:
+ *                 type: number
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Checklist creada exitosamente
+ *       400:
+ *         description: Datos de entrada inválidos
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post(
+  '/checklist-template',
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
+  validateBody(createChecklistFromTemplateSchema),
+  createChecklistFromTemplateHandler
+);
 
 export default router;

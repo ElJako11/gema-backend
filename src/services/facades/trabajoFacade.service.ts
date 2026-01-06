@@ -1,6 +1,5 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../config/db';
-import { CreateWorkInput } from '../../validations/workCreationSchema';
 
 import { createTrabajo } from '../trabajo/trabajo.service';
 import { createMantenimientoPreventivo } from '../mantenimientoPreventivo/mantenimientoPreventivo.service';
@@ -18,11 +17,13 @@ import { createMantenimiento } from '../../types/mantenimiento';
 import { insertInspeccion } from '../../types/inspeccion';
 import { convertToStr } from '../../utils/dateHandler';
 
-export const createTrabajoFacade = async (data: CreateWorkInput) => {
-  return await db.transaction(async (tx) => {
+export const createTrabajoFacade = async (data: any) => {
+  return await db.transaction(async tx => {
     // 1. Create Trabajo
     // Determine 'nombre'. Using especification if available, otherwise TipoTrabajo + Date.
-    const nombre = data.especificacion || `${data.tipoTrabajo} - ${data.fechaCreacion.toISOString().split('T')[0]}`;
+    const nombre =
+      data.especificacion ||
+      `${data.tipoTrabajo} - ${data.fechaCreacion.toISOString().split('T')[0]}`;
 
     const trabajoParams: CreateTrabajoParams = {
       idC: null, // No checklist initially
@@ -82,7 +83,7 @@ export const createChecklistFromTemplate = async (
     throw new Error('La plantilla solicitada no existe');
   }
 
-  return await db.transaction(async (tx) => {
+  return await db.transaction(async tx => {
     const newChecklist = await tx
       .insert(checklist)
       .values({
