@@ -4,7 +4,7 @@ import usuarioRoutes from './routes/usuario.routes';
 import grupoDeTrabajoRoutes from './routes/gruposDeTrabajo.routes';
 import authRoutes from './routes/auth.routes';
 import ubicacionesTecnicasRoutes from './routes/ubicacionesTecnicas.routes';
-import trabajaEnGrupoRoutes from './routes/trabajaEnGrupo.routes';
+
 import checklistRoutes from './routes/checklist.routes';
 import trabajoRoutes from './routes/trabajo.routes';
 import mantenimientoRoutes from './routes/mantenimientoPreventivo.routes';
@@ -17,7 +17,7 @@ import plantillaRoutes from './routes/plantilla.routes';
 import itemPlantillaRoutes from './routes/itemPlantilla.routes';
 import pdfchecklist from './routes/pdfChecklist.routes';
 import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
-import estadoItemChecklist  from './routes/estadoItemChecklist.routes';
+import estadoItemChecklist from './routes/estadoItemChecklist.routes';
 import grupoXtrabajoRoutes from './routes/grupoXtrabajo.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
@@ -26,25 +26,13 @@ import { autorizationMiddleware } from './middleware/autorization.middleware';
 const router = Router();
 
 // Protege la ruta de usuarios
-router.use(
-  '/usuarios', 
-  authenticate, 
-  autorizationMiddleware(), 
-  usuarioRoutes
-);
+router.use('/usuarios', authenticate, autorizationMiddleware(), usuarioRoutes);
 
 router.use(
   '/grupos',
   authenticate,
   autorizationMiddleware(),
   grupoDeTrabajoRoutes
-);
-
-router.use(
-  '/trabajaEnGrupo',
-  authenticate,
-  autorizationMiddleware(),
-  trabajaEnGrupoRoutes
 );
 
 router.use('/auth', authRoutes);
@@ -114,12 +102,7 @@ router.use(
   mantenimientoXinspeccionRoutes
 );
 
-router.use(
-  '/tecnicos',
-  authenticate,
-  autorizationMiddleware(),
-  tecnicoRoutes
-);
+router.use('/tecnicos', authenticate, autorizationMiddleware(), tecnicoRoutes);
 
 router.use(
   '/work-creation',
@@ -154,5 +137,5 @@ router.use(
   authenticate,
   autorizationMiddleware(),
   grupoXtrabajoRoutes
-)
+);
 export default router;

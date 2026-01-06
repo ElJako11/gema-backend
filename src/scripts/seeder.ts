@@ -9,26 +9,51 @@ import { grupoXtrabajo } from '../tables/grupoXtrabajo';
 import { incluyen } from '../tables/incluyen';
 import { inspeccion } from '../tables/inspeccion';
 import { itemChecklist } from '../tables/item-checklist';
-import { mantenimiento_inspeccion } from '../tables/mantenimiento-inspeccion'; 
-import { mantenimiento } from '../tables/mantenimiento'; 
+import { mantenimiento_inspeccion } from '../tables/mantenimiento-inspeccion';
+import { mantenimiento } from '../tables/mantenimiento';
 import { tecnico } from '../tables/tecnico';
-import { trabajaEnGrupo } from '../tables/trabajaEnGrupo';
+
 import { trabajo } from '../tables/trabajo';
 import { ubicacionTecnica } from '../tables/ubicacionTecnica';
 import { estadoItemChecklist } from '../tables/estadoItemChecklist';
-import { plantilla } from '../tables/plantilla';      
-import { itemPlantilla } from '../tables/itemPlantilla'; 
+import { plantilla } from '../tables/plantilla';
+import { itemPlantilla } from '../tables/itemPlantilla';
 
 // --- DATOS ESTÁTICOS ---
 
 // Usuarios: Se insertarán después del Coordinador (ID 1).
 // Por lo tanto: Juan(2), Maria(3), Carlos(4), Ana(5), Luis(6).
 export const usuariosData = [
-  { Nombre: 'Juan Pérez', Correo: 'juan.perez@ucab.edu.ve', Tipo: 'SUPERVISOR', Contraseña: 'hashed_password_1' },
-  { Nombre: 'Maria Acosta', Correo: 'maria.acosta@ucab.edu.ve', Tipo: 'DIRECTOR', Contraseña: 'hashed_password_2' },
-  { Nombre: 'Carlos Ruiz', Correo: 'carlos.ruiz@ucab.edu.ve', Tipo: 'SUPERVISOR', Contraseña: 'hashed_password_3' },
-  { Nombre: 'Ana Lopez', Correo: 'ana.lopez@ucab.edu.ve', Tipo: 'DIRECTOR', Contraseña: 'hashed_password_4' },
-  { Nombre: 'Luis Torres', Correo: 'luis.torres@ucab.edu.ve', Tipo: 'SUPERVISOR', Contraseña: 'hashed_password_5' },
+  {
+    Nombre: 'Juan Pérez',
+    Correo: 'juan.perez@ucab.edu.ve',
+    Tipo: 'SUPERVISOR',
+    Contraseña: 'hashed_password_1',
+  },
+  {
+    Nombre: 'Maria Acosta',
+    Correo: 'maria.acosta@ucab.edu.ve',
+    Tipo: 'DIRECTOR',
+    Contraseña: 'hashed_password_2',
+  },
+  {
+    Nombre: 'Carlos Ruiz',
+    Correo: 'carlos.ruiz@ucab.edu.ve',
+    Tipo: 'SUPERVISOR',
+    Contraseña: 'hashed_password_3',
+  },
+  {
+    Nombre: 'Ana Lopez',
+    Correo: 'ana.lopez@ucab.edu.ve',
+    Tipo: 'DIRECTOR',
+    Contraseña: 'hashed_password_4',
+  },
+  {
+    Nombre: 'Luis Torres',
+    Correo: 'luis.torres@ucab.edu.ve',
+    Tipo: 'SUPERVISOR',
+    Contraseña: 'hashed_password_5',
+  },
 ];
 
 export const checklistData = [
@@ -45,27 +70,72 @@ export const checklistData = [
 ];
 
 export const plantillaData = [
-    { nombre: 'Plantilla Mantenimiento General' },
-    { nombre: 'Plantilla Inspección Seguridad' },
-    { nombre: 'Plantilla Revisión Eléctrica' },
+  { nombre: 'Plantilla Mantenimiento General' },
+  { nombre: 'Plantilla Inspección Seguridad' },
+  { nombre: 'Plantilla Revisión Eléctrica' },
 ];
 
 export const itemPlantillaData = [
-    { idPlantilla: 1, titulo: 'Revisión Visual', descripcion: 'Inspeccionar visualmente el equipo en busca de daños.' },
-    { idPlantilla: 1, titulo: 'Limpieza', descripcion: 'Limpiar superficie y componentes externos.' },
-    { idPlantilla: 2, titulo: 'Extintores', descripcion: 'Verificar fecha de vencimiento y presión.' },
-    { idPlantilla: 2, titulo: 'Salidas de Emergencia', descripcion: 'Asegurar que no estén bloqueadas.' },
-    { idPlantilla: 3, titulo: 'Voltaje', descripcion: 'Medir voltaje de entrada y salida.' },
+  {
+    idPlantilla: 1,
+    titulo: 'Revisión Visual',
+    descripcion: 'Inspeccionar visualmente el equipo en busca de daños.',
+  },
+  {
+    idPlantilla: 1,
+    titulo: 'Limpieza',
+    descripcion: 'Limpiar superficie y componentes externos.',
+  },
+  {
+    idPlantilla: 2,
+    titulo: 'Extintores',
+    descripcion: 'Verificar fecha de vencimiento y presión.',
+  },
+  {
+    idPlantilla: 2,
+    titulo: 'Salidas de Emergencia',
+    descripcion: 'Asegurar que no estén bloqueadas.',
+  },
+  {
+    idPlantilla: 3,
+    titulo: 'Voltaje',
+    descripcion: 'Medir voltaje de entrada y salida.',
+  },
 ];
 
 // GRUPOS DE TRABAJO
 // supervisorId apunta a USUARIOS. Como el ID 1 es Coordinador, usamos 2, 4, 6 (Juan, Carlos, Luis).
 export const grupoDeTrabajoData = [
-  { codigo: 'G-001', nombre: 'Grupo Alpha', area: 'Mantenimiento', supervisorId: 2 }, 
-  { codigo: 'G-002', nombre: 'Grupo Beta', area: 'Inspeccion', supervisorId: 4 },    
-  { codigo: 'G-003', nombre: 'Grupo Gamma', area: 'Logistica', supervisorId: 6 },    
-  { codigo: 'G-004', nombre: 'Grupo Delta', area: 'Seguridad', supervisorId: 2 },    
-  { codigo: 'G-005', nombre: 'Grupo Epsilon', area: 'Operaciones', supervisorId: 4 },
+  {
+    codigo: 'G-001',
+    nombre: 'Grupo Alpha',
+    area: 'Mantenimiento',
+    supervisorId: 2,
+  },
+  {
+    codigo: 'G-002',
+    nombre: 'Grupo Beta',
+    area: 'Inspeccion',
+    supervisorId: 4,
+  },
+  {
+    codigo: 'G-003',
+    nombre: 'Grupo Gamma',
+    area: 'Logistica',
+    supervisorId: 6,
+  },
+  {
+    codigo: 'G-004',
+    nombre: 'Grupo Delta',
+    area: 'Seguridad',
+    supervisorId: 2,
+  },
+  {
+    codigo: 'G-005',
+    nombre: 'Grupo Epsilon',
+    area: 'Operaciones',
+    supervisorId: 4,
+  },
 ];
 
 // TECNICOS
@@ -81,11 +151,41 @@ export const tecnicoData = [
 // UBICACIONES
 // La tabla se limpia, IDs serán 1, 2, 3, 4, 5.
 export const ubicacionTecnicaData = [
-  { descripcion: 'Planta Principal', abreviacion: 'PP', codigo_Identificacion: 'LOC-001', nivel: 1, estaHabilitado: true },
-  { descripcion: 'Bodega Norte', abreviacion: 'BN', codigo_Identificacion: 'LOC-002', nivel: 1, estaHabilitado: true },
-  { descripcion: 'Sala de Maquinas', abreviacion: 'SM', codigo_Identificacion: 'LOC-003', nivel: 2, estaHabilitado: true },
-  { descripcion: 'Oficina Tecnica', abreviacion: 'OT', codigo_Identificacion: 'LOC-004', nivel: 2, estaHabilitado: true },
-  { descripcion: 'Patio de Maniobras', abreviacion: 'PM', codigo_Identificacion: 'LOC-005', nivel: 1, estaHabilitado: true },
+  {
+    descripcion: 'Planta Principal',
+    abreviacion: 'PP',
+    codigo_Identificacion: 'LOC-001',
+    nivel: 1,
+    estaHabilitado: true,
+  },
+  {
+    descripcion: 'Bodega Norte',
+    abreviacion: 'BN',
+    codigo_Identificacion: 'LOC-002',
+    nivel: 1,
+    estaHabilitado: true,
+  },
+  {
+    descripcion: 'Sala de Maquinas',
+    abreviacion: 'SM',
+    codigo_Identificacion: 'LOC-003',
+    nivel: 2,
+    estaHabilitado: true,
+  },
+  {
+    descripcion: 'Oficina Tecnica',
+    abreviacion: 'OT',
+    codigo_Identificacion: 'LOC-004',
+    nivel: 2,
+    estaHabilitado: true,
+  },
+  {
+    descripcion: 'Patio de Maniobras',
+    abreviacion: 'PM',
+    codigo_Identificacion: 'LOC-005',
+    nivel: 1,
+    estaHabilitado: true,
+  },
 ];
 
 export const incluyenData = [
@@ -97,27 +197,153 @@ export const incluyenData = [
 // TRABAJOS
 export const trabajoData = [
   // Inspecciones (IDs 1-5)
-  { idC: 1, idU: 1, nombre: 'Inspeccion General', fecha: '2025-01-10', est: 'No Empezado', tipo: 'Inspeccion' },
-  { idC: 2, idU: 2, nombre: 'Inspeccion Calidad Bodega', fecha: '2025-01-11', est: 'En Ejecucion', tipo: 'Inspeccion' },
-  { idC: 3, idU: 3, nombre: 'Revision Maquinas', fecha: '2025-01-12', est: 'Culminado', tipo: 'Inspeccion' },
-  { idC: 4, idU: 4, nombre: 'Auditoria Oficina', fecha: '2025-01-13', est: 'No Empezado', tipo: 'Inspeccion' },
-  { idC: 5, idU: 5, nombre: 'Verificacion Patio', fecha: '2025-01-14', est: 'Reprogramado', tipo: 'Inspeccion' },
+  {
+    idC: 1,
+    idU: 1,
+    nombre: 'Inspeccion General',
+    fecha: '2025-01-10',
+    est: 'No Empezado',
+    tipo: 'Inspeccion',
+  },
+  {
+    idC: 2,
+    idU: 2,
+    nombre: 'Inspeccion Calidad Bodega',
+    fecha: '2025-01-11',
+    est: 'En Ejecucion',
+    tipo: 'Inspeccion',
+  },
+  {
+    idC: 3,
+    idU: 3,
+    nombre: 'Revision Maquinas',
+    fecha: '2025-01-12',
+    est: 'Culminado',
+    tipo: 'Inspeccion',
+  },
+  {
+    idC: 4,
+    idU: 4,
+    nombre: 'Auditoria Oficina',
+    fecha: '2025-01-13',
+    est: 'No Empezado',
+    tipo: 'Inspeccion',
+  },
+  {
+    idC: 5,
+    idU: 5,
+    nombre: 'Verificacion Patio',
+    fecha: '2025-01-14',
+    est: 'Reprogramado',
+    tipo: 'Inspeccion',
+  },
   // Mantenimientos (IDs 6-10)
-  { idC: 6, idU: 1, nombre: 'Mantenimiento Preventivo A', fecha: '2025-02-01', est: 'No Empezado', tipo: 'Mantenimiento' },
-  { idC: 7, idU: 2, nombre: 'Mantenimiento Correctivo B', fecha: '2025-02-02', est: 'En Ejecucion', tipo: 'Mantenimiento' },
-  { idC: 8, idU: 3, nombre: 'Cambio Repuestos C', fecha: '2025-02-03', est: 'Culminado', tipo: 'Mantenimiento' },
-  { idC: 9, idU: 4, nombre: 'Limpieza D', fecha: '2025-02-04', est: 'Reprogramado', tipo: 'Mantenimiento' },
-  { idC: 10, idU: 5, nombre: 'Ajuste Maquinaria E', fecha: '2025-02-05', est: 'No Empezado', tipo: 'Mantenimiento' },
+  {
+    idC: 6,
+    idU: 1,
+    nombre: 'Mantenimiento Preventivo A',
+    fecha: '2025-02-01',
+    est: 'No Empezado',
+    tipo: 'Mantenimiento',
+  },
+  {
+    idC: 7,
+    idU: 2,
+    nombre: 'Mantenimiento Correctivo B',
+    fecha: '2025-02-02',
+    est: 'En Ejecucion',
+    tipo: 'Mantenimiento',
+  },
+  {
+    idC: 8,
+    idU: 3,
+    nombre: 'Cambio Repuestos C',
+    fecha: '2025-02-03',
+    est: 'Culminado',
+    tipo: 'Mantenimiento',
+  },
+  {
+    idC: 9,
+    idU: 4,
+    nombre: 'Limpieza D',
+    fecha: '2025-02-04',
+    est: 'Reprogramado',
+    tipo: 'Mantenimiento',
+  },
+  {
+    idC: 10,
+    idU: 5,
+    nombre: 'Ajuste Maquinaria E',
+    fecha: '2025-02-05',
+    est: 'No Empezado',
+    tipo: 'Mantenimiento',
+  },
   // NUEVO: Datos para el mes actual (Enero 2026)
-  { idC: 1, idU: 1, nombre: 'Inspeccion Mensual Enero', fecha: '2026-01-15', est: 'No Empezado', tipo: 'Inspeccion' }, // ID 11
-  { idC: 2, idU: 2, nombre: 'Inspeccion Quincenal Enero', fecha: '2026-01-20', est: 'En Ejecucion', tipo: 'Inspeccion' }, // ID 12
-  { idC: 6, idU: 3, nombre: 'Mantenimiento Inicio Año', fecha: '2026-01-10', est: 'Culminado', tipo: 'Mantenimiento' }, // ID 13
-  { idC: 7, idU: 4, nombre: 'Revision General Enero', fecha: '2026-01-25', est: 'No Empezado', tipo: 'Mantenimiento' }, // ID 14
+  {
+    idC: 1,
+    idU: 1,
+    nombre: 'Inspeccion Mensual Enero',
+    fecha: '2026-01-15',
+    est: 'No Empezado',
+    tipo: 'Inspeccion',
+  }, // ID 11
+  {
+    idC: 2,
+    idU: 2,
+    nombre: 'Inspeccion Quincenal Enero',
+    fecha: '2026-01-20',
+    est: 'En Ejecucion',
+    tipo: 'Inspeccion',
+  }, // ID 12
+  {
+    idC: 6,
+    idU: 3,
+    nombre: 'Mantenimiento Inicio Año',
+    fecha: '2026-01-10',
+    est: 'Culminado',
+    tipo: 'Mantenimiento',
+  }, // ID 13
+  {
+    idC: 7,
+    idU: 4,
+    nombre: 'Revision General Enero',
+    fecha: '2026-01-25',
+    est: 'No Empezado',
+    tipo: 'Mantenimiento',
+  }, // ID 14
   // NUEVO 2: Datos adicionales para Enero 2026
-  { idC: 3, idU: 5, nombre: 'Inspeccion Extra A', fecha: '2026-01-28', est: 'No Empezado', tipo: 'Inspeccion' }, // ID 15
-  { idC: 4, idU: 1, nombre: 'Inspeccion Extra B', fecha: '2026-01-29', est: 'En Ejecucion', tipo: 'Inspeccion' }, // ID 16
-  { idC: 8, idU: 2, nombre: 'Mantenimiento Extra C', fecha: '2026-01-12', est: 'Culminado', tipo: 'Mantenimiento' }, // ID 17
-  { idC: 9, idU: 3, nombre: 'Mantenimiento Extra D', fecha: '2026-01-27', est: 'Reprogramado', tipo: 'Mantenimiento' }, // ID 18
+  {
+    idC: 3,
+    idU: 5,
+    nombre: 'Inspeccion Extra A',
+    fecha: '2026-01-28',
+    est: 'No Empezado',
+    tipo: 'Inspeccion',
+  }, // ID 15
+  {
+    idC: 4,
+    idU: 1,
+    nombre: 'Inspeccion Extra B',
+    fecha: '2026-01-29',
+    est: 'En Ejecucion',
+    tipo: 'Inspeccion',
+  }, // ID 16
+  {
+    idC: 8,
+    idU: 2,
+    nombre: 'Mantenimiento Extra C',
+    fecha: '2026-01-12',
+    est: 'Culminado',
+    tipo: 'Mantenimiento',
+  }, // ID 17
+  {
+    idC: 9,
+    idU: 3,
+    nombre: 'Mantenimiento Extra D',
+    fecha: '2026-01-27',
+    est: 'Reprogramado',
+    tipo: 'Mantenimiento',
+  }, // ID 18
 ];
 
 export const itemChecklistData = [
@@ -158,14 +384,6 @@ export const grupoXtrabajoData = [
   { idG: 3, idT: 18 },
 ];
 
-export const trabajaEnGrupoData = [
-  { tecnicoId: 1, grupoDeTrabajoId: 1 },
-  { tecnicoId: 2, grupoDeTrabajoId: 2 },
-  { tecnicoId: 3, grupoDeTrabajoId: 3 },
-  { tecnicoId: 4, grupoDeTrabajoId: 4 },
-  { tecnicoId: 5, grupoDeTrabajoId: 5 },
-];
-
 export const inspeccionData = [
   { id: 1, idT: 1, observacion: 'Todo en orden', frecuencia: 'Semanal' },
   { id: 2, idT: 2, observacion: 'Requiere limpieza', frecuencia: 'Diaria' },
@@ -174,24 +392,115 @@ export const inspeccionData = [
   { id: 5, idT: 5, observacion: 'Acceso bloqueado', frecuencia: 'Anual' },
   // NUEVO: Inspecciones mes actual
   { id: 6, idT: 11, observacion: 'Inicio de año ok', frecuencia: 'Mensual' },
-  { id: 7, idT: 12, observacion: 'Pendiente revisión', frecuencia: 'Quincenal' },
+  {
+    id: 7,
+    idT: 12,
+    observacion: 'Pendiente revisión',
+    frecuencia: 'Quincenal',
+  },
   // NUEVO 2: Inspecciones adicionales
-  { id: 8, idT: 15, observacion: 'Revisión extra requerida', frecuencia: 'Semanal' },
+  {
+    id: 8,
+    idT: 15,
+    observacion: 'Revisión extra requerida',
+    frecuencia: 'Semanal',
+  },
   { id: 9, idT: 16, observacion: 'Chequeo rutinario', frecuencia: 'Diaria' },
 ];
 
 export const mantenimientoData = [
-  { idTrabajo: 6, fechaLimite: '2026-02-01', prioridad: 'Alta', resumen: 'Cambio de filtros', tipo: 'Periodico', frecuencia: 'Semestral', instancia: 'Reabierto', condicion: 'Operativo' },
-  { idTrabajo: 7, fechaLimite: '2026-02-02', prioridad: 'Media', resumen: 'Reparacion de fuga', tipo: 'Condicion', frecuencia: 'Anual',instancia: 'Reabierto', condicion: 'Parada por falla' },
-  { idTrabajo: 8, fechaLimite: '2026-02-03', prioridad: 'Baja', resumen: 'Engrase general', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
-  { idTrabajo: 9, fechaLimite: '2026-02-04', prioridad: 'Alta', resumen: 'Limpieza profunda', tipo: 'Periodico', frecuencia: 'Semanal', instancia: 'No Reabierto', condicion: 'Operativo' },
-  { idTrabajo: 10, fechaLimite: '2026-02-05', prioridad: 'Critica', resumen: 'Calibracion sensores', tipo: 'Condicion', frecuencia: 'Anual', instancia: 'No Reabierto', condicion: 'Descalibrado' },
+  {
+    idTrabajo: 6,
+    fechaLimite: '2026-02-01',
+    prioridad: 'Alta',
+    resumen: 'Cambio de filtros',
+    tipo: 'Periodico',
+    frecuencia: 'Semestral',
+    instancia: 'Reabierto',
+    condicion: 'Operativo',
+  },
+  {
+    idTrabajo: 7,
+    fechaLimite: '2026-02-02',
+    prioridad: 'Media',
+    resumen: 'Reparacion de fuga',
+    tipo: 'Condicion',
+    frecuencia: 'Anual',
+    instancia: 'Reabierto',
+    condicion: 'Parada por falla',
+  },
+  {
+    idTrabajo: 8,
+    fechaLimite: '2026-02-03',
+    prioridad: 'Baja',
+    resumen: 'Engrase general',
+    tipo: 'Periodico',
+    frecuencia: 'Mensual',
+    instancia: 'No Reabierto',
+    condicion: 'Operativo',
+  },
+  {
+    idTrabajo: 9,
+    fechaLimite: '2026-02-04',
+    prioridad: 'Alta',
+    resumen: 'Limpieza profunda',
+    tipo: 'Periodico',
+    frecuencia: 'Semanal',
+    instancia: 'No Reabierto',
+    condicion: 'Operativo',
+  },
+  {
+    idTrabajo: 10,
+    fechaLimite: '2026-02-05',
+    prioridad: 'Critica',
+    resumen: 'Calibracion sensores',
+    tipo: 'Condicion',
+    frecuencia: 'Anual',
+    instancia: 'No Reabierto',
+    condicion: 'Descalibrado',
+  },
   // NUEVO: Mantenimientos mes actual
-  { idTrabajo: 13, fechaLimite: '2026-01-20', prioridad: 'Media', resumen: 'Mantenimiento Enero', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
-  { idTrabajo: 14, fechaLimite: '2026-01-30', prioridad: 'Alta', resumen: 'Revision General', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'No Reabierto', condicion: 'Operativo' },
+  {
+    idTrabajo: 13,
+    fechaLimite: '2026-01-20',
+    prioridad: 'Media',
+    resumen: 'Mantenimiento Enero',
+    tipo: 'Periodico',
+    frecuencia: 'Mensual',
+    instancia: 'No Reabierto',
+    condicion: 'Operativo',
+  },
+  {
+    idTrabajo: 14,
+    fechaLimite: '2026-01-30',
+    prioridad: 'Alta',
+    resumen: 'Revision General',
+    tipo: 'Periodico',
+    frecuencia: 'Mensual',
+    instancia: 'No Reabierto',
+    condicion: 'Operativo',
+  },
   // NUEVO 2: Mantenimientos adicionales
-  { idTrabajo: 17, fechaLimite: '2026-01-20', prioridad: 'Baja', resumen: 'Ajuste tornillería', tipo: 'Periodico', frecuencia: 'Semestral', instancia: 'No Reabierto', condicion: 'Operativo' },
-  { idTrabajo: 18, fechaLimite: '2026-02-10', prioridad: 'Media', resumen: 'Limpieza técnica', tipo: 'Periodico', frecuencia: 'Mensual', instancia: 'Reabierto', condicion: 'Sucio' },
+  {
+    idTrabajo: 17,
+    fechaLimite: '2026-01-20',
+    prioridad: 'Baja',
+    resumen: 'Ajuste tornillería',
+    tipo: 'Periodico',
+    frecuencia: 'Semestral',
+    instancia: 'No Reabierto',
+    condicion: 'Operativo',
+  },
+  {
+    idTrabajo: 18,
+    fechaLimite: '2026-02-10',
+    prioridad: 'Media',
+    resumen: 'Limpieza técnica',
+    tipo: 'Periodico',
+    frecuencia: 'Mensual',
+    instancia: 'Reabierto',
+    condicion: 'Sucio',
+  },
 ];
 
 export const mantenimientoInspeccionData = [
@@ -217,12 +526,14 @@ export const estadoItemChecklistData = [
 
 // --- FUNCIÓN DE LIMPIEZA ---
 const cleanDb = async () => {
-    console.log('🧹 Limpiando base de datos (Preservando Usuarios del initDB)...');
-    
-    // NO borramos Usuarios para mantener al Coordinador.
-    // Todas las demás tablas se TRUNCAN y REINICIAN IDs a 1.
-    
-    await db.execute(sql`
+  console.log(
+    '🧹 Limpiando base de datos (Preservando Usuarios del initDB)...'
+  );
+
+  // NO borramos Usuarios para mantener al Coordinador.
+  // Todas las demás tablas se TRUNCAN y REINICIAN IDs a 1.
+
+  await db.execute(sql`
       TRUNCATE TABLE 
         "mantenimientoInspeccion", 
         "estadoItemChecklist", 
@@ -230,7 +541,7 @@ const cleanDb = async () => {
         "mantenimiento", 
         "inspeccion", 
         "trabajo", 
-        "TrabajaEnGrupo", 
+
         "tecnico", 
         "GrupoDeTrabajo", 
         "Incluyen", 
@@ -241,15 +552,15 @@ const cleanDb = async () => {
         "checklist"
       RESTART IDENTITY CASCADE;
     `);
-    
-    console.log('✨ Tablas secundarias limpias y contadores reiniciados.');
+
+  console.log('✨ Tablas secundarias limpias y contadores reiniciados.');
 };
 
 // --- INSERCIÓN ---
 const fillDB = async () => {
   try {
     await cleanDb();
-    
+
     // Limpiamos usuarios insertados por el seeder (ID > 1) para evitar duplicados
     await db.execute(sql`DELETE FROM "Usuarios" WHERE "Id" > 1;`);
     // Reiniciamos la secuencia de IDs de usuarios para que los nuevos empiecen en 2
@@ -259,7 +570,7 @@ const fillDB = async () => {
 
     // 1. Usuarios Adicionales (empezarán desde ID 2)
     await db.insert(usuarios).values(usuariosData as any);
-    
+
     await db.insert(checklist).values(checklistData);
     await db.insert(plantilla).values(plantillaData);
     await db.insert(itemPlantilla).values(itemPlantillaData);
@@ -268,12 +579,11 @@ const fillDB = async () => {
     await db.insert(ubicacionTecnica).values(ubicacionTecnicaData);
     await db.insert(incluyen).values(incluyenData);
 
-    // 3. Grupos y Técnicos 
+    // 3. Grupos y Técnicos
     // Grupos usan supervisorId (Usuarios -> 2,4,6)
     // Tecnicos se generan frescos (IDs 1..5)
     await db.insert(grupoDeTrabajo).values(grupoDeTrabajoData);
     await db.insert(tecnico).values(tecnicoData);
-    await db.insert(trabajaEnGrupo).values(trabajaEnGrupoData);
 
     // 4. Items y Trabajos
     // Trabajo usa idU (Ubicacion/Tecnico -> 1..5)
@@ -286,13 +596,19 @@ const fillDB = async () => {
 
     // 6. Relaciones
     await db.insert(grupoXtrabajo).values(grupoXtrabajoData);
-    await db.insert(mantenimiento_inspeccion).values(mantenimientoInspeccionData);
+    await db
+      .insert(mantenimiento_inspeccion)
+      .values(mantenimientoInspeccionData);
     await db.insert(estadoItemChecklist).values(estadoItemChecklistData as any);
 
     // Ajustamos las secuencias para que los próximos inserts automáticos (SERIAL) no choquen
     // Asumiendo que insertamos 9 inspecciones y 18 trabajos
-    await db.execute(sql`ALTER SEQUENCE "inspeccion_idInspeccion_seq" RESTART WITH 10;`);
-    await db.execute(sql`ALTER SEQUENCE "trabajo_idTrabajo_seq" RESTART WITH 19;`);
+    await db.execute(
+      sql`ALTER SEQUENCE "inspeccion_idInspeccion_seq" RESTART WITH 10;`
+    );
+    await db.execute(
+      sql`ALTER SEQUENCE "trabajo_idTrabajo_seq" RESTART WITH 19;`
+    );
 
     console.log('✅ Seeding completado exitosamente.');
     process.exit(0);
