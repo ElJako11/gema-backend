@@ -24,6 +24,8 @@ import { cleanObject } from '../../utils/cleanUpdateData';
 import { checklist } from '../../tables/checklist';
 import { itemChecklist } from '../../tables/item-checklist';
 import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
+import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
+import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
 
 const getResumenMantenimientoQuery = () => {
   const result = db
@@ -49,6 +51,8 @@ export const getMantenimientobyID = async (id: number) => {
       fechaLimite: mantenimiento.fechaLimite,
       ubicacion: ubicacionTecnica.descripcion,
       abreviacion: ubicacionTecnica.abreviacion,
+      areaEncargada: grupoDeTrabajo.nombre,
+      codigoArea: grupoDeTrabajo.codigo,
       codigoVerificacion: ubicacionTecnica.codigo_Identificacion,
       estado: trabajo.est,
       tipo: mantenimiento.tipo,
@@ -60,6 +64,8 @@ export const getMantenimientobyID = async (id: number) => {
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
     .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+    .innerJoin(grupoXtrabajo, eq(grupoXtrabajo.idT, trabajo.idTrabajo))
+    .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG))
     .leftJoin(checklist, eq(trabajo.idC, checklist.idChecklist))
     .where(eq(mantenimiento.idMantenimiento, id));
 

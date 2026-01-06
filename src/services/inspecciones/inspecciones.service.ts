@@ -65,6 +65,7 @@ export const getDetalleInspeccion = async (id: number) => {
       observacion: inspeccion.observacion,
       frecuencia: inspeccion.frecuencia,
       areaEncargada: grupoDeTrabajo.area,
+      codigoArea: grupoDeTrabajo.codigo,
       checklist: checklist.nombre,
     })
     .from(inspeccion)
@@ -72,7 +73,7 @@ export const getDetalleInspeccion = async (id: number) => {
     .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
     .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
     .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG))
-    .innerJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id))
+    .leftJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id))
     .leftJoin(checklist, eq(checklist.idChecklist, trabajo.idC))
     .where(eq(inspeccion.id, id));
 
