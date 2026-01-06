@@ -54,6 +54,7 @@ export const getMantenimientobyID = async (id: number) => {
       tipo: mantenimiento.tipo,
       resumen: mantenimiento.resumen,
       prioridad: mantenimiento.prioridad,
+      frecuencia: mantenimiento.frecuencia,
       tituloChecklist: checklist.nombre,
     })
     .from(mantenimiento)
