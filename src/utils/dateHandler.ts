@@ -31,7 +31,7 @@ export const getEndOfWeek = (datestr: string) => {
     datestr.includes('T') ? datestr : `${datestr}T00:00:00`
   );
 
-  return endOfWeek(date);
+  return endOfWeek(date, { weekStartsOn: 1 });
 };
 
 export const getStartofMonth = (datestr: string) => {
