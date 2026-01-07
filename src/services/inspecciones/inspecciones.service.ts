@@ -21,7 +21,7 @@ import { Tx } from '../../types/transaction';
 
 import { cleanObject } from '../../utils/cleanUpdateData';
 import {
-  Add,
+  getEndOfWeek,
   convertToStr,
   getEndofMonth,
   getStartofMonth,
@@ -108,7 +108,7 @@ export const getInspeccionesMensuales = async (date: string) => {
 
 export const getInspeccionesSemanales = async (date: string) => {
   const initialDate = getStartOfWeek(date);
-  const finalDate = Add(new Date(date));
+  const finalDate = getEndOfWeek(date);
 
   const initialISO = convertToStr(initialDate);
   const finalISO = convertToStr(finalDate);

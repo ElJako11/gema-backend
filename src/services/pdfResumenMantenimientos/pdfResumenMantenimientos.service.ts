@@ -12,7 +12,7 @@ import {
   getStartOfWeek,
   getStartofMonth,
   getEndofMonth,
-  Add,
+  getEndOfWeek,
   convertToStr,
 } from '../../utils/dateHandler';
 
@@ -63,7 +63,10 @@ export class MaintenancePdfService {
       })
       .from(mantenimiento)
       .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
-      .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+      .innerJoin(
+        ubicacionTecnica,
+        eq(ubicacionTecnica.idUbicacion, trabajo.idU)
+      )
       .where(between(mantenimiento.fechaLimite, initialISO, finalISO));
   }
 
@@ -78,11 +81,17 @@ export class MaintenancePdfService {
       })
       .from(inspeccion)
       .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-      .innerJoin(ubicacionTecnica, eq(ubicacionTecnica.idUbicacion, trabajo.idU))
+      .innerJoin(
+        ubicacionTecnica,
+        eq(ubicacionTecnica.idUbicacion, trabajo.idU)
+      )
       .where(between(trabajo.fecha, initialISO, finalISO));
   }
 
-  async generateSummaryPdf(dateStr: string, filterType: 'mensual' | 'semanal'): Promise<Buffer> {
+  async generateSummaryPdf(
+    dateStr: string,
+    filterType: 'mensual' | 'semanal'
+  ): Promise<Buffer> {
     let initialISO = '';
     let finalISO = '';
     let tituloRango = '';
@@ -101,7 +110,7 @@ export class MaintenancePdfService {
       });
     } else {
       const iDate = getStartOfWeek(dateStr);
-      const fDate = Add(iDate);
+      const fDate = getEndOfWeek(dateStr);
       initialISO = convertToStr(iDate);
       finalISO = convertToStr(fDate);
 
@@ -113,17 +122,29 @@ export class MaintenancePdfService {
 
     // 2. Obtener datos
     console.log('PDF Service Date Range:', { initialISO, finalISO });
-    const rawDataMantenimientos = await this.fetchMaintenanceData(initialISO, finalISO);
-    console.log('PDF Service Records Found (Mantenimientos):', rawDataMantenimientos.length);
+    const rawDataMantenimientos = await this.fetchMaintenanceData(
+      initialISO,
+      finalISO
+    );
+    console.log(
+      'PDF Service Records Found (Mantenimientos):',
+      rawDataMantenimientos.length
+    );
 
-    const rawDataInspecciones = await this.fetchInspectionData(initialISO, finalISO);
-    console.log('PDF Service Records Found (Inspecciones):', rawDataInspecciones.length);
+    const rawDataInspecciones = await this.fetchInspectionData(
+      initialISO,
+      finalISO
+    );
+    console.log(
+      'PDF Service Records Found (Inspecciones):',
+      rawDataInspecciones.length
+    );
 
     // 3. Preparar datos para Handlebars
     const viewData: MaintenanceViewData = {
       tituloRango: tituloRango.toUpperCase(),
       fechaGeneracion: new Date().toLocaleDateString('es-ES'),
-      mantenimientos: rawDataMantenimientos.map((m) => ({
+      mantenimientos: rawDataMantenimientos.map(m => ({
         nombreTrabajo: m.nombreTrabajo,
         estado: m.estado,
         claseEstado: this.getStatusClass(m.estado),
@@ -132,7 +153,7 @@ export class MaintenancePdfService {
           'es-ES'
         ),
       })),
-      inspecciones: rawDataInspecciones.map((i) => ({
+      inspecciones: rawDataInspecciones.map(i => ({
         nombreTrabajo: i.nombreTrabajo,
         estado: i.estado,
         claseEstado: this.getStatusClass(i.estado),
@@ -144,7 +165,12 @@ export class MaintenancePdfService {
     };
 
     // 4. Renderizar
-    const templatePath = path.join(process.cwd(), 'src', 'templates', 'resumenMantenimiento.hbs');
+    const templatePath = path.join(
+      process.cwd(),
+      'src',
+      'templates',
+      'resumenMantenimiento.hbs'
+    );
     const templateHtml = await fs.readFile(templatePath, 'utf-8');
     const template = handlebars.compile(templateHtml);
     const finalHtml = template(viewData);

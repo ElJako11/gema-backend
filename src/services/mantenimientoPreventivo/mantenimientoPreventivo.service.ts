@@ -13,7 +13,7 @@ import {
 import { Tx } from '../../types/transaction';
 
 import {
-  Add,
+  getEndOfWeek,
   convertToStr,
   getEndofMonth,
   getStartofMonth,
@@ -133,10 +133,12 @@ export const getResumenMantenimiento = async (id: number) => {
 
 export const getAllMantenimientosSemanales = async (date: string) => {
   const initialDate: Date = getStartOfWeek(date);
-  const finalDate: Date = Add(initialDate);
+  const finalDate: Date = getEndOfWeek(date);
 
   const initialISO = convertToStr(initialDate);
   const finalISO = convertToStr(finalDate);
+
+  console.log({ initialISO, finalISO });
 
   const baseQuery = getResumenMantenimientoQuery();
 

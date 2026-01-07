@@ -24,6 +24,8 @@ export const autorizationMiddleware = (authorizedRoles: string[] = []) => {
       role => role === userdata.tipo
     );
 
+    console.log(role);
+
     if (role === undefined) {
       res.status(403).json({ error: 'Usuario no autorizado' });
       return;
