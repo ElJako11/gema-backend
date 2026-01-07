@@ -11,7 +11,7 @@ const isMonday = (date: Date): boolean => {
 };
 
 const startofWeek = (date: Date): Date => {
-  return startOfWeek(date, { weekStartsOn: 1 });
+  return startOfWeek(date);
 };
 
 export const getStartOfWeek = (date: string): Date => {
