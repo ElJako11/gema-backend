@@ -52,26 +52,34 @@ export const createChecklist = async (
   tx?: Tx
 ) => {
   const database = tx ?? db;
+
+  const createChecklist = {
+    nombre: params.nombre,
+  };
+
+  const idMantenimiento = parseInt(params.idMantenimiento, 10);
+  const idInspeccion = parseInt(params.idInspeccion, 10);
+
   try {
     const inserted = await database
       .insert(checklist)
-      .values(params)
+      .values(createChecklist)
       .returning();
 
     const idChecklist = inserted[0].idChecklist;
 
     let result;
 
-    if (params.idMantenimiento) {
+    if (idMantenimiento > 0) {
       result = await database
         .select({ idTrabajo: mantenimiento.idTrabajo })
         .from(mantenimiento)
-        .where(eq(mantenimiento.idMantenimiento, params.idMantenimiento));
-    } else if (params.idInspeccion) {
+        .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+    } else if (idInspeccion > 0) {
       result = await database
         .select({ idTrabajo: inspeccion.idT })
         .from(inspeccion)
-        .where(eq(inspeccion.id, params.idInspeccion));
+        .where(eq(inspeccion.id, idInspeccion));
     }
 
     if (!result) {

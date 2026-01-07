@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import { positiveIntId } from './globalTypeSchema';
 
+const idNumber = z.coerce.number().min(0);
+
 export const createChecklistSchema = z.object({
   nombre: z.string().min(1).max(100),
-  idMantenimiento: positiveIntId.optional(),
-  idInspeccion: positiveIntId.optional(),
+  idMantenimiento: idNumber,
+  idInspeccion: idNumber,
 });
 
 export const updateChecklistSchema = z.object({
