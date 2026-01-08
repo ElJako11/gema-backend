@@ -13,7 +13,9 @@ export const itemChecklist = pgTable(
     idItemCheck: serial('idItemChecklist').notNull(),
     idCheck: integer('idChecklist')
       .notNull()
-      .references(() => checklist.idChecklist),
+      .references(() => checklist.idChecklist, {
+        onDelete: 'cascade',
+      }),
     descripcion: varchar('descripcion', { length: 100 }).notNull(),
     titulo: varchar('titulo', { length: 100 }).notNull(),
   },
