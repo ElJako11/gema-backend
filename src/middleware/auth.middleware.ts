@@ -33,8 +33,6 @@ export const authenticate = (
       return;
     }
 
-    console.log(decoded);
-
     req.user = decoded;
     next();
 
