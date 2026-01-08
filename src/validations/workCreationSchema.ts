@@ -7,7 +7,10 @@ export const createWorkSchema = z.object({
   idGrupo: z.number().positive(),
   supervisorId: z.number().positive().optional(),
   prioridad: z.enum(['Alta', 'Media', 'Baja']),
-  fechaLimite: z.string().transform(str => new Date(str)),
+  fechaLimite: z
+    .string()
+    .transform(str => new Date(str))
+    .optional(),
   frecuencia: z.enum(['Diaria', 'Semanal', 'Mensual', 'Trimestral', 'Anual']),
   tipoMantenimiento: z.enum(['Periodico', 'Condicion']).optional(),
   condicion: z.string().optional(),
