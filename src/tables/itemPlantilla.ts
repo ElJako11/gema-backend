@@ -1,4 +1,10 @@
-import { pgTable, serial, integer, varchar, primaryKey } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  integer,
+  varchar,
+  primaryKey,
+} from 'drizzle-orm/pg-core';
 import { plantilla } from './plantilla';
 
 export const itemPlantilla = pgTable(
@@ -7,11 +13,13 @@ export const itemPlantilla = pgTable(
     idItemPlantilla: serial('idItemPlantilla').notNull(),
     idPlantilla: integer('idPlantilla')
       .notNull()
-      .references(() => plantilla.idPlantilla),
+      .references(() => plantilla.idPlantilla, {
+        onDelete: 'cascade',
+      }),
     descripcion: varchar('descripcion', { length: 200 }).notNull(),
     titulo: varchar('titulo', { length: 100 }).notNull(),
   },
-  (table) => {
+  table => {
     return {
       pk: primaryKey({ columns: [table.idItemPlantilla, table.idPlantilla] }),
     };
