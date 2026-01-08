@@ -38,6 +38,7 @@ export const getListaTecnicos = async () => {
     const listaTecnicos = await db
       .select({
         idTecnico: tecnico.idTecnico,
+        idGrupo: tecnico.idGT,
         nombre: tecnico.nombre,
         correo: tecnico.correo,
         area: grupoDeTrabajo.area
