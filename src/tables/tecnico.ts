@@ -4,7 +4,9 @@ import { grupoDeTrabajo } from './grupoDeTrabajo';
 
 export const tecnico = pgTable('tecnico', {
   idTecnico: serial('idTecnico').primaryKey().notNull(),
-  idGT: integer('idGrupoDeTrabajo').notNull().references(() => grupoDeTrabajo.id),
+  idGT: integer('idGrupoDeTrabajo').references(() => grupoDeTrabajo.id, {
+    onDelete: 'set null',
+  }),
   nombre: varchar('nombre', { length: 50 }).notNull(),
   correo: varchar('correo', { length: 100 }).notNull().unique(),
 });

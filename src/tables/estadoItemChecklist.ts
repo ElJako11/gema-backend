@@ -9,10 +9,7 @@ import { trabajo } from './trabajo';
 import { checklist } from './checklist';
 import { itemChecklist } from './item-checklist';
 
-export const estadoItemEnum = pgEnum('estadoItem', [
-  'COMPLETADA',
-  'PENDIENTE',
-]);
+export const estadoItemEnum = pgEnum('estadoItem', ['COMPLETADA', 'PENDIENTE']);
 
 export const estadoItemChecklist = pgTable(
   'estadoItemChecklist',
@@ -22,11 +19,13 @@ export const estadoItemChecklist = pgTable(
       .references(() => trabajo.idTrabajo),
     idChecklist: integer('idChecklist')
       .notNull()
-      .references(() => checklist.idChecklist),
+      .references(() => checklist.idChecklist, {
+        onDelete: 'cascade',
+      }),
     idItemChecklist: integer('idItemChecklist').notNull(),
     estado: estadoItemEnum('estado').notNull(),
   },
-  (table) => {
+  table => {
     return {
       pk: primaryKey({
         columns: [table.idTrabajo, table.idChecklist, table.idItemChecklist],

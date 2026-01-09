@@ -138,8 +138,6 @@ export const getAllMantenimientosSemanales = async (date: string) => {
   const initialISO = convertToStr(initialDate);
   const finalISO = convertToStr(finalDate);
 
-  console.log({ initialISO, finalISO });
-
   const baseQuery = getResumenMantenimientoQuery();
 
   const result = await baseQuery.where(
@@ -155,8 +153,6 @@ export const getAllMantenimientosPorMes = async (date: string) => {
 
   const initialISO = convertToStr(initialDate);
   const finalISO = convertToStr(finalDate);
-
-  console.log(initialISO, finalISO);
 
   const baseQuery = getResumenMantenimientoQuery();
 

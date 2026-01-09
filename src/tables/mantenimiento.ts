@@ -20,7 +20,9 @@ export const mantenimiento = pgTable(
     idMantenimiento: serial('idMantenimiento').notNull(),
     idTrabajo: integer('idTrabajo')
       .notNull()
-      .references(() => trabajo.idTrabajo),
+      .references(() => trabajo.idTrabajo, {
+        onDelete: 'cascade',
+      }),
     fechaLimite: date('fechaLimite').notNull(),
     prioridad: varchar('prioridad').notNull(),
     resumen: varchar('resumen', { length: 250 }),
