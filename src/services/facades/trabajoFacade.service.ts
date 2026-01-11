@@ -12,29 +12,32 @@ import { itemChecklist } from '../../tables/item-checklist';
 import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 import { trabajo } from '../../tables/trabajo';
 
-import { CreateTrabajoParams } from '../../types/trabajo';
 import { createMantenimiento } from '../../types/mantenimiento';
+import { CreateTrabajoParams } from '../../types/trabajo';
+import { Trabajo } from '../../types/trabajoFacade';
 import { insertInspeccion } from '../../types/inspeccion';
-import { convertToStr } from '../../utils/dateHandler';
+import { convertUtcToStr } from '../../utils/dateHandler';
+import { Tx } from '../../types/transaction';
 
-export const createTrabajoFacade = async (data: any) => {
+export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
     // 1. Create Trabajo
     // Determine 'nombre'. Using especification if available, otherwise TipoTrabajo + Date.
-    const nombre =
-      data.especificacion ||
-      `${data.tipoTrabajo} - ${data.fechaCreacion.toISOString().split('T')[0]}`;
+    const nombre = `${data.tipoTrabajo} - ${
+      data.fechaCreacion.toISOString().split('T')[0]
+    }`;
 
     const trabajoParams: CreateTrabajoParams = {
       idC: null, // No checklist initially
       idU: data.idUbicacionTecnica,
       nombre: nombre,
-      fecha: convertToStr(data.fechaCreacion),
+      fecha: convertUtcToStr(data.fechaCreacion),
       est: 'No empezado',
       tipo: data.tipoTrabajo,
     };
 
     const newTrabajo = await createTrabajo(trabajoParams, tx);
+
     if (!newTrabajo) {
       throw new Error('Error al crear el trabajo principal');
     }
@@ -43,11 +46,16 @@ export const createTrabajoFacade = async (data: any) => {
 
     // 2. Insert into Mantenimiento or Inspeccion
     if (data.tipoTrabajo === 'Mantenimiento') {
-      const mantData: createMantenimiento = {
+      if (!data.fechaLimite)
+        throw new Error(
+          'La fecha limite es requerida para crear un mantenimiento'
+        );
+
+      const mantData = {
         idTrabajo,
         fechaLimite: data.fechaLimite,
         prioridad: data.prioridad,
-        resumen: data.especificacion, // Mapped as requested
+        resumen: data.resumen, // Mapped as requested
         tipo: data.tipoMantenimiento || 'Periodico', // Default fallback
         frecuencia: data.frecuencia,
         condicion: data.condicion,
@@ -55,9 +63,15 @@ export const createTrabajoFacade = async (data: any) => {
       };
       await createMantenimientoPreventivo(mantData, tx);
     } else if (data.tipoTrabajo === 'Inspeccion') {
+      if (!data.frecuencia) {
+        throw new Error(
+          'La frecuencia es requerida para la creacion de inspecciones'
+        );
+      }
+
       const inspData: insertInspeccion = {
         idTrabajo,
-        observaciones: data.especificacion || '', // Mapped as requested
+        observaciones: data.observaciones || '', // Mapped as requested
         frecuencia: data.frecuencia,
       };
       await createInspeccion(inspData, tx);
@@ -75,7 +89,8 @@ export const createTrabajoFacade = async (data: any) => {
 
 export const createChecklistFromTemplate = async (
   idTrabajo: number,
-  idPlantilla: number
+  idPlantilla: number,
+  tx?: Tx
 ) => {
   const plantillaInfo = await getPlantillaWithItems(idPlantilla);
 
@@ -83,56 +98,56 @@ export const createChecklistFromTemplate = async (
     throw new Error('La plantilla solicitada no existe');
   }
 
-  return await db.transaction(async tx => {
-    const newChecklist = await tx
-      .insert(checklist)
+  const database = tx || db;
+
+  const newChecklist = await database
+    .insert(checklist)
+    .values({
+      nombre: plantillaInfo.nombre,
+    })
+    .returning();
+
+  if (newChecklist.length === 0) {
+    throw new Error('Error al crear la checklist desde plantilla');
+  }
+
+  const idChecklist = newChecklist[0].idChecklist;
+
+  for (const item of plantillaInfo.items) {
+    const newItem = await database
+      .insert(itemChecklist)
       .values({
-        nombre: plantillaInfo.nombre,
+        idCheck: idChecklist,
+        titulo: item.titulo,
+        descripcion: item.descripcion,
       })
       .returning();
 
-    if (newChecklist.length === 0) {
-      throw new Error('Error al crear la checklist desde plantilla');
+    if (newItem.length === 0) {
+      throw new Error('Error al clonar item de la plantilla');
     }
 
-    const idChecklist = newChecklist[0].idChecklist;
+    await database.insert(estadoItemChecklist).values({
+      idTrabajo: idTrabajo,
+      idChecklist: idChecklist,
+      idItemChecklist: newItem[0].idItemCheck,
+      estado: 'PENDIENTE',
+    });
+  }
 
-    for (const item of plantillaInfo.items) {
-      const newItem = await tx
-        .insert(itemChecklist)
-        .values({
-          idCheck: idChecklist,
-          titulo: item.titulo,
-          descripcion: item.descripcion,
-        })
-        .returning();
+  const updatedTrabajo = await database
+    .update(trabajo)
+    .set({ idC: idChecklist })
+    .where(eq(trabajo.idTrabajo, idTrabajo))
+    .returning();
 
-      if (newItem.length === 0) {
-        throw new Error('Error al clonar item de la plantilla');
-      }
+  if (updatedTrabajo.length === 0) {
+    throw new Error('Error al asociar la checklist al trabajo');
+  }
 
-      await tx.insert(estadoItemChecklist).values({
-        idTrabajo: idTrabajo,
-        idChecklist: idChecklist,
-        idItemChecklist: newItem[0].idItemCheck,
-        estado: 'PENDIENTE',
-      });
-    }
-
-    const updatedTrabajo = await tx
-      .update(trabajo)
-      .set({ idC: idChecklist })
-      .where(eq(trabajo.idTrabajo, idTrabajo))
-      .returning();
-
-    if (updatedTrabajo.length === 0) {
-      throw new Error('Error al asociar la checklist al trabajo');
-    }
-
-    return {
-      success: true,
-      idChecklist,
-      itemsCreated: plantillaInfo.items.length,
-    };
-  });
+  return {
+    success: true,
+    idChecklist,
+    itemsCreated: plantillaInfo.items.length,
+  };
 };

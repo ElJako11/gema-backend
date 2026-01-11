@@ -55,3 +55,9 @@ export const convertToStr = (date: Date) => {
     timeZone: 'America/Caracas',
   });
 };
+
+export const convertUtcToStr = (date: Date) => {
+  return date.toLocaleDateString('sv-SE', {
+    timeZone: 'UTC',
+  });
+};
