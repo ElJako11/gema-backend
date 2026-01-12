@@ -21,16 +21,10 @@ import { convertUtcToStr } from '../../utils/dateHandler';
 
 export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
-    // 1. Create Trabajo
-    // Determine 'nombre'. Using especification if available, otherwise TipoTrabajo + Date.
-    const nombre = `${data.tipoTrabajo} - ${
-      data.fechaCreacion.toISOString().split('T')[0]
-    }`;
-
     const trabajoParams: CreateTrabajoParams = {
       idC: null, // No checklist initially
       idU: data.idUbicacionTecnica,
-      nombre: nombre,
+      nombre: data.nombre,
       fecha: convertUtcToStr(data.fechaCreacion),
       est: 'No empezado',
       tipo: data.tipoTrabajo,
@@ -61,6 +55,7 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         condicion: data.condicion,
         instancia: data.instancia,
       };
+
       await createMantenimientoPreventivo(mantData, tx);
     } else if (data.tipoTrabajo === 'Inspeccion') {
       if (!data.frecuencia) {

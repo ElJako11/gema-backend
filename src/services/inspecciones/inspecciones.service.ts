@@ -234,5 +234,15 @@ export const deleteInspeccion = async (id: number) => {
     throw new Error('El elemento no se elimino correctamente');
   }
 
+  const idTrabajo = result[0].idT;
+
+  const deleteResult = await db
+    .delete(inspeccion)
+    .where(eq(inspeccion.idT, idTrabajo));
+
+  if (!deleteResult) {
+    throw new Error('No se elimino correctamente el trabajo');
+  }
+
   return;
 };

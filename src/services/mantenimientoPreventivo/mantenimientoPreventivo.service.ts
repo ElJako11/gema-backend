@@ -281,5 +281,15 @@ export const deleteMantenimientoPreventivo = async (
     throw new Error('No se elimino correctamente el elemento');
   }
 
+  const idTrabajo = result[0].idTrabajo;
+
+  const deleteResult = await db
+    .delete(trabajo)
+    .where(eq(trabajo.idTrabajo, idTrabajo));
+
+  if (!deleteResult) {
+    throw new Error('No se elimino correctamente el trabajo');
+  }
+
   return;
 };

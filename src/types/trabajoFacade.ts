@@ -12,6 +12,7 @@ export type Trabajo = {
   condicion?: string;
   instancia?: string;
   observaciones?: string;
+  nombre: string;
 };
 
 export type CreateChecklistTemplate = {
