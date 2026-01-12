@@ -19,6 +19,7 @@ export const createWorkSchema = z.object({
   observaciones: z.string().optional(),
   especificacion: z.string().optional(),
   instancia: z.string().optional(),
+  observacion: z.string().min(1).optional(),
 });
 
 export const createChecklistFromTemplateSchema = z.object({

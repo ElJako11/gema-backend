@@ -18,6 +18,7 @@ import {
   getEndofMonth,
   getStartofMonth,
   getStartOfWeek,
+  convertUtcToStr,
 } from '../../utils/dateHandler';
 import { cleanObject } from '../../utils/cleanUpdateData';
 
@@ -183,7 +184,7 @@ export const createMantenimientoPreventivo = async (
     .insert(mantenimiento)
     .values({
       idTrabajo,
-      fechaLimite: convertToStr(fechaLimite),
+      fechaLimite: convertUtcToStr(fechaLimite),
       prioridad,
       resumen,
       tipo: tipo as 'Periodico' | 'Condicion',
