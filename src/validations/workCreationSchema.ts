@@ -6,7 +6,7 @@ export const createWorkSchema = z.object({
   idUbicacionTecnica: z.number().positive(),
   idGrupo: z.number().positive(),
   supervisorId: z.number().positive().optional(),
-  prioridad: z.enum(['Alta', 'Media', 'Baja']),
+  prioridad: z.enum(['ALTA', 'MEDIA', 'BAJA']),
   fechaLimite: z
     .string()
     .transform(str => new Date(str))
