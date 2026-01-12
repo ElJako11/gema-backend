@@ -11,7 +11,7 @@ export type Trabajo = {
   tipoMantenimiento?: 'Periodico' | 'Condicion';
   condicion?: string;
   instancia?: string;
-  observaciones?: string;
+  observacion?: string;
   nombre: string;
 };
 

@@ -13,9 +13,10 @@ export const createWorkSchema = z.object({
     .optional(),
   frecuencia: z.enum(['Diaria', 'Semanal', 'Mensual', 'Trimestral', 'Anual']),
   tipoMantenimiento: z.enum(['Periodico', 'Condicion']).optional(),
-  condicion: z.string().optional(),
-  especificacion: z.string().optional(),
-  instancia: z.string().optional(),
+  condicion: z.string().min(1).optional(),
+  observacion: z.string().min(1).optional(),
+  instancia: z.string().min(1).optional(),
+  nombre: z.string().min(1),
 });
 
 export const createChecklistFromTemplateSchema = z.object({

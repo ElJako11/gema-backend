@@ -18,6 +18,7 @@ import { CreateTrabajoParams } from '../../types/trabajo';
 import { Trabajo } from '../../types/trabajoFacade';
 import { insertInspeccion } from '../../types/inspeccion';
 import { convertUtcToStr } from '../../utils/dateHandler';
+import { asignarGrupo } from '../grupoXtrabajo/grupoXtrabajo.service';
 
 export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
@@ -38,7 +39,6 @@ export const createTrabajoFacade = async (data: Trabajo) => {
 
     const idTrabajo = newTrabajo.idTrabajo;
 
-    // 2. Insert into Mantenimiento or Inspeccion
     if (data.tipoTrabajo === 'Mantenimiento') {
       if (!data.fechaLimite)
         throw new Error(
@@ -64,19 +64,17 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         );
       }
 
+      console.log(data.observacion);
+
       const inspData: insertInspeccion = {
         idTrabajo,
-        observaciones: data.observaciones || '', // Mapped as requested
+        observaciones: data.observacion || '', // Mapped as requested
         frecuencia: data.frecuencia,
       };
       await createInspeccion(inspData, tx);
     }
 
-    // 3. Insert into GrupoXTrabajo
-    await tx.insert(grupoXtrabajo).values({
-      idG: data.idGrupo,
-      idT: idTrabajo,
-    });
+    await asignarGrupo({ idG: data.idGrupo, idT: idTrabajo }, tx);
 
     return { success: true, idTrabajo };
   });
