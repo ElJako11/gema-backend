@@ -19,6 +19,7 @@ export const createWorkSchema = z.object({
 });
 
 export const createChecklistFromTemplateSchema = z.object({
-  idTrabajo: z.number().positive(),
-  idPlantilla: z.number().positive(),
+  idMantenimiento: z.coerce.number(),
+  idInspeccion: z.coerce.number(),
+  idPlantilla: z.coerce.number().positive(),
 });

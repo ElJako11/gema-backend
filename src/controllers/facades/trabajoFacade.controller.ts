@@ -30,9 +30,13 @@ export const createChecklistFromTemplateHandler = async (
   res: Response
 ) => {
   try {
-    const { idTrabajo, idPlantilla } = req.body;
+    const { idMantenimiento, idInspeccion, idPlantilla } = req.body;
 
-    const result = await createChecklistFromTemplate(idTrabajo, idPlantilla);
+    const result = await createChecklistFromTemplate(
+      parseInt(idMantenimiento, 10),
+      parseInt(idInspeccion, 10),
+      parseInt(idPlantilla, 10)
+    );
 
     res.status(201).json({
       message: 'Checklist creada desde plantilla exitosamente',

@@ -13,3 +13,9 @@ export type Trabajo = {
   instancia?: string;
   observaciones?: string;
 };
+
+export type CreateChecklistTemplate = {
+  idMantenimiento: number;
+  idInspeccion: number;
+  idPlantilla: number;
+};

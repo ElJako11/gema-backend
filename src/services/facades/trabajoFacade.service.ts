@@ -11,13 +11,13 @@ import { checklist } from '../../tables/checklist';
 import { itemChecklist } from '../../tables/item-checklist';
 import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 import { trabajo } from '../../tables/trabajo';
+import { mantenimiento } from '../../tables/mantenimiento';
+import { inspeccion } from '../../tables/inspeccion';
 
-import { createMantenimiento } from '../../types/mantenimiento';
 import { CreateTrabajoParams } from '../../types/trabajo';
 import { Trabajo } from '../../types/trabajoFacade';
 import { insertInspeccion } from '../../types/inspeccion';
 import { convertUtcToStr } from '../../utils/dateHandler';
-import { Tx } from '../../types/transaction';
 
 export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
@@ -88,66 +88,86 @@ export const createTrabajoFacade = async (data: Trabajo) => {
 };
 
 export const createChecklistFromTemplate = async (
-  idTrabajo: number,
-  idPlantilla: number,
-  tx?: Tx
+  idMantenimiento: number,
+  idInspeccion: number,
+  idPlantilla: number
 ) => {
-  const plantillaInfo = await getPlantillaWithItems(idPlantilla);
+  return await db.transaction(async tx => {
+    const plantillaInfo = await getPlantillaWithItems(idPlantilla);
 
-  if (!plantillaInfo) {
-    throw new Error('La plantilla solicitada no existe');
-  }
+    if (!plantillaInfo) {
+      throw new Error('La plantilla solicitada no existe');
+    }
 
-  const database = tx || db;
+    const database = tx || db;
 
-  const newChecklist = await database
-    .insert(checklist)
-    .values({
-      nombre: plantillaInfo.nombre,
-    })
-    .returning();
-
-  if (newChecklist.length === 0) {
-    throw new Error('Error al crear la checklist desde plantilla');
-  }
-
-  const idChecklist = newChecklist[0].idChecklist;
-
-  for (const item of plantillaInfo.items) {
-    const newItem = await database
-      .insert(itemChecklist)
+    const newChecklist = await database
+      .insert(checklist)
       .values({
-        idCheck: idChecklist,
-        titulo: item.titulo,
-        descripcion: item.descripcion,
+        nombre: plantillaInfo.nombre,
       })
       .returning();
 
-    if (newItem.length === 0) {
+    if (newChecklist.length === 0) {
+      throw new Error('Error al crear la checklist desde plantilla');
+    }
+
+    const idChecklist = newChecklist[0].idChecklist;
+
+    let result;
+
+    if (idMantenimiento > 0) {
+      result = await database
+        .select({ idTrabajo: mantenimiento.idTrabajo })
+        .from(mantenimiento)
+        .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+    } else if (idInspeccion > 0) {
+      result = await database
+        .select({ idTrabajo: inspeccion.idT })
+        .from(inspeccion)
+        .where(eq(inspeccion.id, idInspeccion));
+    }
+
+    if (!result) {
+      throw new Error('No se pudo obtener el trabajo con ese ID');
+    }
+
+    const idTrabajo = result[0].idTrabajo;
+
+    const itemsData = plantillaInfo.items.map(item => ({
+      idCheck: idChecklist,
+      titulo: item.titulo,
+      descripcion: item.descripcion,
+    }));
+
+    const newItems = await database
+      .insert(itemChecklist)
+      .values(itemsData)
+      .returning();
+
+    if (newItems.length === 0) {
       throw new Error('Error al clonar item de la plantilla');
     }
 
-    await database.insert(estadoItemChecklist).values({
-      idTrabajo: idTrabajo,
-      idChecklist: idChecklist,
-      idItemChecklist: newItem[0].idItemCheck,
+    const estadosData = newItems.map(estadoItem => ({
+      idTrabajo: idTrabajo!,
+      idChecklist: idChecklist!,
+      idItemChecklist: estadoItem.idItemCheck,
       estado: 'PENDIENTE',
-    });
-  }
+    }));
 
-  const updatedTrabajo = await database
-    .update(trabajo)
-    .set({ idC: idChecklist })
-    .where(eq(trabajo.idTrabajo, idTrabajo))
-    .returning();
+    await database.insert(estadoItemChecklist).values(estadosData as any);
 
-  if (updatedTrabajo.length === 0) {
-    throw new Error('Error al asociar la checklist al trabajo');
-  }
+    const updatedTrabajo = await database
+      .update(trabajo)
+      .set({ idC: idChecklist })
+      .where(eq(trabajo.idTrabajo, idTrabajo))
+      .returning();
 
-  return {
-    success: true,
-    idChecklist,
-    itemsCreated: plantillaInfo.items.length,
-  };
+    if (updatedTrabajo.length === 0) {
+      throw new Error('Error al asociar la checklist al trabajo');
+    }
+
+    return idChecklist;
+  });
 };

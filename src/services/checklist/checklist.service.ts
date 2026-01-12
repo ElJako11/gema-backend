@@ -83,7 +83,7 @@ export const createChecklist = async (
     }
 
     if (!result) {
-      throw new Error('No se pudo obtener el mantenimiento con ese ID');
+      throw new Error('No se pudo obtener el trabajo con ese ID');
     }
 
     const idTrabajo = result[0].idTrabajo;
