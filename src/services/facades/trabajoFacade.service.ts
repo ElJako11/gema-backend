@@ -64,8 +64,6 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         );
       }
 
-      console.log(data.observacion);
-
       const inspData: insertInspeccion = {
         idTrabajo,
         observaciones: data.observacion || '', // Mapped as requested
