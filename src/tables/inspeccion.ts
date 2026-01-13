@@ -5,6 +5,7 @@ import {
   varchar,
   primaryKey,
   boolean,
+  date,
 } from 'drizzle-orm/pg-core';
 import { trabajo } from './trabajo';
 
@@ -20,6 +21,7 @@ export const inspeccion = pgTable(
     observacion: varchar('observacion', { length: 200 }),
     frecuencia: varchar('frecuencia', { length: 100 }).notNull(),
     siguienteCreado: boolean('siguienteCreado').default(false),
+    fechaProximaGeneracion: date('fechaProximaGeneracion'),
   },
   table => {
     return {

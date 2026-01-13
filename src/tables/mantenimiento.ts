@@ -32,6 +32,7 @@ export const mantenimiento = pgTable(
     instancia: varchar('instancia'),
     condicion: varchar('condicion', { length: 100 }),
     siguienteCreado: boolean('siguienteCreado').default(false),
+    fechaProximaGeneracion: date('fechaProximaGeneracion'),
   },
   table => {
     return {

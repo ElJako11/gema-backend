@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { db } from '../config/db';
-import { eq, and, lte } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { mantenimiento } from '../tables/mantenimiento';
 import { inspeccion } from '../tables/inspeccion';
 import { trabajo } from '../tables/trabajo';
@@ -44,9 +44,6 @@ const duplicateChecklist = async (
 
   if (originalItems.length > 0) {
     // 4. Create NEW Items linked to NEW checklist
-    // We need to map old Item IDs to new Item IDs if we want to preserve exact mapping,
-    // but here we just need to create them and create the 'estado' entries.
-
     for (const item of originalItems) {
       const [newItem] = await tx
         .insert(itemChecklist)
@@ -119,8 +116,7 @@ export const checkAndCreatePeriodicMaintenance = async () => {
       .where(
         and(
           eq(mantenimiento.tipo, 'Periodico'),
-          eq(mantenimiento.siguienteCreado, false),
-          lte(mantenimiento.fechaLimite, todayStr)
+          eq(mantenimiento.fechaProximaGeneracion, todayStr)
         )
       );
 
@@ -131,18 +127,19 @@ export const checkAndCreatePeriodicMaintenance = async () => {
     for (const { mantenimiento: mant, trabajo: tr } of maintenances) {
       if (!mant.frecuencia) continue;
 
-      const nextDateStr = calculateNextDate(mant.fechaLimite, mant.frecuencia);
-      if (!nextDateStr) continue;
+      // Base date for grandchild calculation is TODAY (the generation date of the child)
+      const grandchildDateStr = calculateNextDate(todayStr, mant.frecuencia);
+      if (!grandchildDateStr) continue;
 
       await db.transaction(async tx => {
-        // 1. Create new Trabajo (Placeholder idC initially)
+        // 1. Create new Trabajo (Child)
         const [newTrabajo] = await tx
           .insert(trabajo)
           .values({
             idC: null, // Will update if we have a checklist
             idU: tr.idU,
             nombre: tr.nombre,
-            fecha: convertToStr(new Date()),
+            fecha: todayStr, // Child Created Today
             est: 'No Empezado',
             tipo: 'Mantenimiento',
           })
@@ -164,17 +161,18 @@ export const checkAndCreatePeriodicMaintenance = async () => {
           }
         }
 
-        // 3. Create new Mantenimiento
+        // 3. Create new Mantenimiento (Child)
         await tx.insert(mantenimiento).values({
           idTrabajo: newTrabajo.idTrabajo,
-          fechaLimite: nextDateStr,
+          fechaLimite: todayStr, // Requirement: fechaLimite = HOY
           prioridad: mant.prioridad,
           resumen: mant.resumen,
           tipo: 'Periodico',
           frecuencia: mant.frecuencia,
           instancia: mant.instancia,
           condicion: mant.condicion,
-          siguienteCreado: false,
+          siguienteCreado: false, // Legacy flag
+          fechaProximaGeneracion: grandchildDateStr, // Set to calculated Grandchild date
         });
 
         // 4. Copy Groups
@@ -191,12 +189,7 @@ export const checkAndCreatePeriodicMaintenance = async () => {
           );
         }
 
-        // 5. Mark original as processed
-        await tx
-          .update(mantenimiento)
-          .set({ siguienteCreado: true })
-          .where(eq(mantenimiento.idMantenimiento, mant.idMantenimiento));
-
+        // 5. Do NOT update Parent (it remains as history)
         console.log(
           `Created new maintenance (ID: ${newTrabajo.idTrabajo}) from ID ${tr.idTrabajo}`
         );
@@ -216,40 +209,27 @@ export const checkAndCreatePeriodicInspection = async () => {
       .select({ inspeccion: inspeccion, trabajo: trabajo })
       .from(inspeccion)
       .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-      .where(
-        and(
-          eq(inspeccion.siguienteCreado, false),
-          // For inspections, we assume the 'fecha' (creation date) of the previous one works as the anchor.
-          // If it's a periodic inspection created on Jan 1st with 'Mensual' frequency, next should be Feb 1st.
-          // We check if Today >= Date + Frequency
-          // Ideally we should calculate the 'Due Date' (which is effectively Fecha + Frequency) and compare with Today.
-          // Since SQL filtering on calculated date + interval complexity varies, we'll do simple check in loop or roughly here.
-          // But wait, if we are running this daily, we can effectively say: "Is (Fecha + Frequency) <= Today?"
-          // Since we don't have a 'fechaLimite' column for Inspections, we rely on 'fecha'.
-          lte(trabajo.fecha, todayStr) // Optimistic filter: grab everything past/today, then filter by frequency calculation
-        )
-      );
+      .where(and(eq(inspeccion.fechaProximaGeneracion, todayStr)));
 
     console.log(
-      `Found ${inspections.length} candidate inspections to check frequency.`
+      `Found ${inspections.length} candidate inspections to process.`
     );
 
     for (const { inspeccion: insp, trabajo: tr } of inspections) {
       if (!insp.frecuencia) continue;
 
-      const nextDateStr = calculateNextDate(tr.fecha, insp.frecuencia);
-      // If next estimated date is in future, skip. We only create if Due Date <= Today.
-      if (!nextDateStr || nextDateStr > todayStr) continue;
+      const grandchildDateStr = calculateNextDate(todayStr, insp.frecuencia);
+      if (!grandchildDateStr) continue;
 
       await db.transaction(async tx => {
-        // 1. Create New Trabajo
+        // 1. Create New Trabajo (Child)
         const [newTrabajo] = await tx
           .insert(trabajo)
           .values({
             idC: null,
             idU: tr.idU,
             nombre: tr.nombre,
-            fecha: nextDateStr, // Set proper date for the next inspection
+            fecha: todayStr, // Child Created Today
             est: 'No Empezado',
             tipo: 'Inspeccion',
           })
@@ -277,6 +257,7 @@ export const checkAndCreatePeriodicInspection = async () => {
           observacion: insp.observacion,
           frecuencia: insp.frecuencia,
           siguienteCreado: false,
+          fechaProximaGeneracion: grandchildDateStr, // Set to calculated Grandchild date
         });
 
         // 4. Copy Groups
@@ -293,12 +274,7 @@ export const checkAndCreatePeriodicInspection = async () => {
           );
         }
 
-        // 5. Mark original as processed
-        await tx
-          .update(inspeccion)
-          .set({ siguienteCreado: true })
-          .where(eq(inspeccion.id, insp.id));
-
+        // 5. Do NOT update Parent.
         console.log(
           `Created new inspection (ID: ${newTrabajo.idTrabajo}) from ID ${tr.idTrabajo}`
         );
