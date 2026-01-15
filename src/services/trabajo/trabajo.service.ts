@@ -194,8 +194,8 @@ export const getResumenMantenimientosMes = async () => {
 
     return {
       totalMantenimientos: total,
-      completados: finalizados,
-      porcentajeCompletados: Number(porcentaje.toFixed(2)),
+      culminados: finalizados,
+      porcentajeculminados: Number(porcentaje.toFixed(2)),
     };
   } catch (error) {
     console.error('Error al obtener resumen de mantenimientos', error);

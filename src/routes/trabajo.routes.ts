@@ -34,7 +34,7 @@ router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']
 
 /**
  * @openapi
- * /trabajos/reabiertos:
+ * /trabajos/reprogramados:
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos reabiertos en el mes actual
  *     tags:
@@ -50,11 +50,11 @@ router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']
  *       500:
  *         description: Error al obtener la cantidad de mantenimientos
  */
-router.get('/reabiertos', autorizationMiddleware(['DIRECTOR']), getCantidadMantenimientosReabiertosHandler);
+router.get('/reprogramados', autorizationMiddleware(['DIRECTOR']), getCantidadMantenimientosReabiertosHandler);
 
 /**
  * @openapi
- * /trabajos/reabiertos/por-area:
+ * /trabajos/reprogramados/por-area:
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos reabiertos agrupados por grupo de trabajo
  *     tags:
@@ -78,7 +78,7 @@ router.get('/reabiertos', autorizationMiddleware(['DIRECTOR']), getCantidadMante
  *       500:
  *         description: Error al obtener el reporte por área
  */
-router.get('/reabiertos/por-area', autorizationMiddleware(['DIRECTOR']), getMantenimientosReabiertosPorAreaHandler);
+router.get('/reprogramados/por-area', autorizationMiddleware(['DIRECTOR']), getMantenimientosReabiertosPorAreaHandler);
 
 /**
  * @openapi
@@ -111,7 +111,7 @@ router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR', 'COORDINAD
 
 /**
  * @openapi
- * /trabajos/activos/por-area:
+ * /trabajos/empezado/por-area:
  *   get:
  *     summary: Obtiene la cantidad de mantenimientos activos agrupados por grupo de trabajo
  *     tags:
@@ -135,7 +135,7 @@ router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR', 'COORDINAD
  *       500:
  *         description: Error al obtener el reporte de activos por área
  */
-router.get('/activos/por-area', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantenimientosActivosPorAreaHandler);
+router.get('/empezado/por-area', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantenimientosActivosPorAreaHandler);
 
 //Get Trabajo by ID
 
