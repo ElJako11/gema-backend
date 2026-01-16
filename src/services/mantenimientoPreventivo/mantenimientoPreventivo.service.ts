@@ -1,6 +1,6 @@
 import { db } from '../../config/db';
 
-import { eq, between, and, count, ne } from 'drizzle-orm';
+import { eq, between, and, ne } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
@@ -228,22 +228,9 @@ export const updateMantenimientoPreventivo = async (
     ? convertToStr(mantenimientodata.fechaLimite)
     : null;
 
-  // Check for completed checklist items
-  const completedItems = await db
-    .select({ count: count() })
-    .from(estadoItemChecklist)
-    .where(
-      and(
-        eq(estadoItemChecklist.idTrabajo, idTrabajo),
-        eq(estadoItemChecklist.estado, 'COMPLETADA')
-      )
-    );
-
-  const hasProgress = completedItems[0].count > 0;
-
-  if (hasProgress) {
-    newStatus = 'En progreso';
-  } else if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
+  if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
+    // Date changed -> Reprogramado.
+    // Priority update: regardless of progress.
     newStatus = 'Reprogramado';
   }
 

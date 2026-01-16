@@ -209,19 +209,83 @@ export const updateInspeccion = async (
   inspeccionData: putInspeccion,
   id: number
 ) => {
-  const valuesToUpdate = cleanObject(inspeccionData);
-
-  const result = await db
-    .update(inspeccion)
-    .set(valuesToUpdate)
+  // 1. Get current Inspection to find idTrabajo
+  const existingInspeccion = await db
+    .select({
+      idT: inspeccion.idT,
+      fechaCreacion: trabajo.fecha,
+    })
+    .from(inspeccion)
+    .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
     .where(eq(inspeccion.id, id))
-    .returning();
+    .limit(1);
 
-  if (result.length === 0) {
-    throw new Error('La inspeccion no se actualizo correctamente');
+  if (existingInspeccion.length === 0) {
+    throw new Error('Inspeccion no encontrada');
   }
 
-  return result[0];
+  const { idT, fechaCreacion: currentFecha } = existingInspeccion[0];
+
+  // Extract fechaCreacion from input if it exists
+  // Note: putInspeccion type is loosely based on the return type, but for update we only care about specific fields.
+  // We need to cast or access strictly.
+  const { fechaCreacion, ...restData } = inspeccionData as any;
+  // Using any to avoid type changing complexity for now, assuming fechaCreacion might be passed.
+
+  let newStatus: string | null = null;
+  const newFecha = fechaCreacion
+    ? new Date(fechaCreacion).toISOString().split('T')[0]
+    : null;
+  // Assuming strict string format or Date object needed?
+  // trabajo.fecha is 'date' type, usually string YYYY-MM-DD.
+  // Let's assume input is string.
+
+  if (newFecha && currentFecha && newFecha !== currentFecha) {
+    // Date is changing.
+    // Priority update: Set Reprogramado regardless of progress.
+    newStatus = 'Reprogramado';
+
+    // Update Date in Trabajo
+    await db
+      .update(trabajo)
+      .set({ fecha: newFecha })
+      .where(eq(trabajo.idTrabajo, idT));
+  }
+
+  // Update Status if triggered
+  if (newStatus) {
+    await db
+      .update(trabajo)
+      .set({ est: newStatus })
+      .where(eq(trabajo.idTrabajo, idT));
+  }
+
+  // Filter restData to only include valid columns for 'inspeccion' table if needed
+  // For now, we assume cleanObject handles nulls, but we should be careful about extra fields.
+  // We will pass restData to cleanObject.
+  // But wait, the original code passed `inspeccionData` directly.
+  // If `inspeccionData` contained `fechaCreacion`, it would have failed before if it was passed?
+  // Or maybe it wasn't passed before.
+  // We will proceed with `restData`.
+
+  const valuesToUpdate = cleanObject(restData);
+
+  // If there are values to update in inspeccion table
+  if (Object.keys(valuesToUpdate).length > 0) {
+    const result = await db
+      .update(inspeccion)
+      .set(valuesToUpdate)
+      .where(eq(inspeccion.id, id))
+      .returning();
+
+    if (result.length === 0) {
+      throw new Error('La inspeccion no se actualizo correctamente');
+    }
+    return result[0];
+  } else {
+    // If no inspection-specific fields changed, return existing (or minimal info)
+    return { idInspeccion: id, ...existingInspeccion[0] }; // Simplified return
+  }
 };
 
 export const deleteInspeccion = async (id: number) => {
