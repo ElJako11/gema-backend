@@ -50,7 +50,7 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         fechaLimite: data.fechaLimite,
         prioridad: data.prioridad,
         resumen: data.resumen, // Mapped as requested
-        tipo: data.tipoMantenimiento || 'Periodico', // Default fallback
+        tipo: data.tipo || 'Periodico', // Default fallback
         frecuencia: data.frecuencia,
         condicion: data.condicion,
         instancia: data.instancia,

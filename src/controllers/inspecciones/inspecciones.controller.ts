@@ -44,7 +44,7 @@ export const getResumenInspeccionHandler = async (
   try {
     const result = await getResumenInspeccion(id);
 
-    if (result.length === 0) {
+    if (!result) {
       res
         .status(404)
         .json({ error: 'No se encontro una inspeccion asociada a ese ID' });

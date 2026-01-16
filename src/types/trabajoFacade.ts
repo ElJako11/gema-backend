@@ -4,11 +4,11 @@ export type Trabajo = {
   idUbicacionTecnica: number;
   idGrupo: number;
   supervisorId: number;
-  prioridad: 'Baja' | 'Media' | 'Alta';
+  prioridad: 'BAJA' | 'MEDIA' | 'ALTA';
   fechaLimite?: Date;
   frecuencia?: string;
   resumen?: string;
-  tipoMantenimiento?: 'Periodico' | 'Condicion';
+  tipo: 'Periodico' | 'Condicion';
   condicion?: string;
   instancia?: string;
   observacion?: string;

@@ -46,7 +46,7 @@ const getResumenQueryBase = () => {
     .innerJoin(ubicacionTecnica, eq(trabajo.idU, ubicacionTecnica.idUbicacion))
     .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
     .innerJoin(grupoDeTrabajo, eq(grupoDeTrabajo.id, grupoXtrabajo.idG))
-    .innerJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id));
+    .leftJoin(usuarios, eq(grupoDeTrabajo.supervisorId, usuarios.Id));
 
   return baseQuery;
 };
@@ -87,7 +87,7 @@ export const getResumenInspeccion = async (id: number) => {
     eq(inspeccion.id, id)
   );
 
-  return result;
+  return result[0];
 };
 
 export const getInspeccionesMensuales = async (date: string) => {

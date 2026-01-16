@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const createWorkSchema = z.object({
   tipoTrabajo: z.enum(['Mantenimiento', 'Inspeccion']),
-  nombre: z.string().min(1, 'El nombre del trabajo es obligatorio'),
   fechaCreacion: z.string().transform(str => new Date(str)),
   idUbicacionTecnica: z.number().positive(),
   idGrupo: z.number().positive(),
@@ -12,14 +11,14 @@ export const createWorkSchema = z.object({
     .string()
     .transform(str => new Date(str))
     .optional(),
-  frecuencia: z.enum(['Diaria', 'Semanal', 'Mensual', 'Trimestral', 'Anual']),
-  tipoMantenimiento: z.enum(['Periodico', 'Condicion']).optional(),
+  frecuencia: z
+    .enum(['Diaria', 'Semanal', 'Mensual', 'Trimestral', 'Anual'])
+    .optional(),
+  tipo: z.enum(['Periodico', 'Condicion']),
   condicion: z.string().optional(),
-  resumen: z.string().optional(),
-  observaciones: z.string().optional(),
   especificacion: z.string().optional(),
   instancia: z.string().optional(),
-  observacion: z.string().min(1).optional(),
+  nombre: z.string(),
 });
 
 export const createChecklistFromTemplateSchema = z.object({

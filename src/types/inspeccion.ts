@@ -10,7 +10,7 @@ export type Inspeccion = {
   fechaCreacion: string;
   ubicacion: string;
   estado: estadoEnum | string;
-  supervisor: string;
+  supervisor: string | null;
   observaciones: string;
   frecuencia: string;
   areaEncargada: string;
