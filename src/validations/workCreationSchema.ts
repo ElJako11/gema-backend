@@ -16,8 +16,9 @@ export const createWorkSchema = z.object({
     .optional(),
   tipo: z.enum(['Periodico', 'Condicion']),
   condicion: z.string().optional(),
-  especificacion: z.string().optional(),
+  observacion: z.string().optional(),
   instancia: z.string().optional(),
+  resumen: z.string().optional(),
   nombre: z.string(),
 });
 
