@@ -4,7 +4,32 @@ import {
   startOfMonth,
   endOfMonth,
   endOfWeek,
+  addWeeks,
+  addMonths,
+  addYears,
 } from 'date-fns';
+
+export const calculateNextGenerationDate = (
+  startDate: string | Date,
+  frecuencia: string
+): Date | null => {
+  const date = new Date(startDate);
+
+  switch (frecuencia) {
+    case 'Diaria':
+      return addDays(date, 1);
+    case 'Semanal':
+      return addWeeks(date, 1);
+    case 'Mensual':
+      return addMonths(date, 1);
+    case 'Trimestral':
+      return addMonths(date, 3);
+    case 'Anual':
+      return addYears(date, 1);
+    default:
+      return null;
+  }
+};
 
 const isMonday = (date: Date): boolean => {
   return date.getDay() === 1;
