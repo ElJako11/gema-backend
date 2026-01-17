@@ -5,7 +5,7 @@ import routes from './router';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 import cookieParser from 'cookie-parser';
-import { initScheduledJobs } from './services/cron.service';
+import { initScheduledJobs } from './services/cron/cron.service';
 
 const app = express();
 const port = process.env.PORT || 3000;

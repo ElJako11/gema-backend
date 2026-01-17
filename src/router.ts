@@ -19,6 +19,7 @@ import pdfchecklist from './routes/pdfChecklist.routes';
 import pdfResumenMantenimientosRoutes from './routes/pdfResumenMantenimientos.routes';
 import estadoItemChecklist from './routes/estadoItemChecklist.routes';
 import grupoXtrabajoRoutes from './routes/grupoXtrabajo.routes';
+import cronRoutes from './routes/cron.routes';
 
 import { authenticate } from './middleware/auth.middleware'; // Importa el middleware
 import { autorizationMiddleware } from './middleware/autorization.middleware';
@@ -138,4 +139,6 @@ router.use(
   autorizationMiddleware(),
   grupoXtrabajoRoutes
 );
+
+router.use('/cron', authenticate, autorizationMiddleware(), cronRoutes);
 export default router;

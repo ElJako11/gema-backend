@@ -1,16 +1,16 @@
 import cron from 'node-cron';
-import { db } from '../config/db';
+import { db } from '../../config/db';
 import { eq, and } from 'drizzle-orm';
-import { mantenimiento } from '../tables/mantenimiento';
-import { inspeccion } from '../tables/inspeccion';
-import { trabajo } from '../tables/trabajo';
-import { grupoXtrabajo } from '../tables/grupoXtrabajo';
-import { checklist } from '../tables/checklist';
-import { itemChecklist } from '../tables/item-checklist';
-import { estadoItemChecklist } from '../tables/estadoItemChecklist';
+import { mantenimiento } from '../../tables/mantenimiento';
+import { inspeccion } from '../../tables/inspeccion';
+import { trabajo } from '../../tables/trabajo';
+import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
+import { checklist } from '../../tables/checklist';
+import { itemChecklist } from '../../tables/item-checklist';
+import { estadoItemChecklist } from '../../tables/estadoItemChecklist';
 import { addDays, addWeeks, addMonths, addYears, parseISO } from 'date-fns';
-import { convertToStr } from '../utils/dateHandler';
-import { Tx } from '../types/transaction';
+import { convertToStr } from '../../utils/dateHandler';
+import { Tx } from '../../types/transaction';
 
 // Helper to duplicate checklist structure
 const duplicateChecklist = async (
@@ -116,7 +116,8 @@ export const checkAndCreatePeriodicMaintenance = async () => {
       .where(
         and(
           eq(mantenimiento.tipo, 'Periodico'),
-          eq(mantenimiento.fechaProximaGeneracion, todayStr)
+          eq(mantenimiento.fechaProximaGeneracion, todayStr),
+          eq(mantenimiento.siguienteCreado, false)
         )
       );
 
@@ -189,7 +190,12 @@ export const checkAndCreatePeriodicMaintenance = async () => {
           );
         }
 
-        // 5. Do NOT update Parent (it remains as history)
+        // 5. Update Parent to mark as processed
+        await tx
+          .update(mantenimiento)
+          .set({ siguienteCreado: true })
+          .where(eq(mantenimiento.idTrabajo, tr.idTrabajo));
+
         console.log(
           `Created new maintenance (ID: ${newTrabajo.idTrabajo}) from ID ${tr.idTrabajo}`
         );
@@ -209,7 +215,12 @@ export const checkAndCreatePeriodicInspection = async () => {
       .select({ inspeccion: inspeccion, trabajo: trabajo })
       .from(inspeccion)
       .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
-      .where(and(eq(inspeccion.fechaProximaGeneracion, todayStr)));
+      .where(
+        and(
+          eq(inspeccion.fechaProximaGeneracion, todayStr),
+          eq(inspeccion.siguienteCreado, false)
+        )
+      );
 
     console.log(
       `Found ${inspections.length} candidate inspections to process.`
@@ -274,7 +285,12 @@ export const checkAndCreatePeriodicInspection = async () => {
           );
         }
 
-        // 5. Do NOT update Parent.
+        // 5. Update Parent to mark as processed
+        await tx
+          .update(inspeccion)
+          .set({ siguienteCreado: true })
+          .where(eq(inspeccion.idT, tr.idTrabajo));
+
         console.log(
           `Created new inspection (ID: ${newTrabajo.idTrabajo}) from ID ${tr.idTrabajo}`
         );
