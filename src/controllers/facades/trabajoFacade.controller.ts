@@ -21,7 +21,7 @@ export const createTrabajoFacadeHandler = async (
   } catch (error: any) {
     console.error('Error en createWorkHandler:', error);
     res.status(500).json({
-      message: 'Error interno del servidor',
+      message: error.message || 'Error interno del servidor',
     });
   }
 };

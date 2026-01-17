@@ -14,7 +14,7 @@ export const createWorkSchema = z.object({
   frecuencia: z
     .enum(['Diaria', 'Semanal', 'Mensual', 'Trimestral', 'Anual'])
     .optional(),
-  tipo: z.enum(['Periodico', 'Condicion']),
+  tipo: z.enum(['Periodico', 'Condicion']).optional(),
   condicion: z.string().optional(),
   observacion: z.string().optional(),
   instancia: z.string().optional(),
