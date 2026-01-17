@@ -230,7 +230,7 @@ export const updateMantenimientoPreventivo = async (
   // 2. Determine Status Update Logic
   let newStatus: string | null = null;
   const newFechaLimite = mantenimientodata.fechaLimite
-    ? convertToStr(mantenimientodata.fechaLimite)
+    ? convertUtcToStr(mantenimientodata.fechaLimite)
     : null;
 
   // Check for completed checklist items

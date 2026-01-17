@@ -211,10 +211,11 @@ export const createInspeccion = async (
 export const updateInspeccion = async (
   inspeccionData: putInspeccion,
   id: number,
-  tx?: Tx
+  tx?: Tx 
 ) => {
-  const database = tx ?? db;
   const valuesToUpdate = cleanObject(inspeccionData);
+
+  const database = tx ?? db;
 
   const result = await database
     .update(inspeccion)
