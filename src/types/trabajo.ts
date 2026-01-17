@@ -3,6 +3,6 @@ export type CreateTrabajoParams = {
     idU: number;
     nombre: string;
     fecha: string;
-    est: string;
+    est: 'No empezado' | 'En ejecución' | 'Reprogramado' | 'Culminado';
     tipo: 'Mantenimiento' | 'Inspeccion';
 }

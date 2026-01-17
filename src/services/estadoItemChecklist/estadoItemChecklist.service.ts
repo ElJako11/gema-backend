@@ -14,7 +14,6 @@ type EstadoItemKeys = {
 // Helper function to update Trabajo status based on checklist progress
 const updateTrabajoStatus = async (idTrabajo: number, idChecklist: number) => {
   try {
-    // 1. Count total items in the checklist definition
     const totalItemsResult = await db
       .select({ count: count() })
       .from(itemChecklist)
@@ -22,7 +21,6 @@ const updateTrabajoStatus = async (idTrabajo: number, idChecklist: number) => {
 
     const totalItems = totalItemsResult[0].count;
 
-    // 2. Count completed items for this specific work (trabajo)
     const completedItemsResult = await db
       .select({ count: count() })
       .from(estadoItemChecklist)
@@ -43,32 +41,9 @@ const updateTrabajoStatus = async (idTrabajo: number, idChecklist: number) => {
     } else if (completedItems > 0) {
       newStatus = 'En ejecución';
     } else {
-      // Check if it was previously Rescheduled??
-      // For now, if 0 items are done, we revert to 'No empezado' or keep 'Reprogramado' if strictly required?
-      // The requirement says: "No empezado: ... no hay ninguna tarea ... completada."
-      // "Reprogramado: ... se modifica fecha ... "
-
-      // Logic: If we toggle back to 0 items, we might need to check if it was 'Reprogramado' by date.
-      // However, typical flow implies 'No empezado' is the base state for 0 items.
-      // If we want to preserve 'Reprogramado', we would need to check existing status or date diffs.
-      // Let's stick to the prompt's implied priority: "si se modifica... se vea cantidad... si > 1... update a en ejecución"
-      // If falling back to 0, 'No empezado' is safest unless we want to do complex date checks here too.
-      // Given the complexity, let's strictly follow the checklist impact: 0 = No empezado, >0 = En ejecución, All = Finalizada.
-      // This might overwrite 'Reprogramado' if they start working and then uncheck everything.
-      // This seems acceptable as 'No empezado' accurately reflects "nothing done".
-
-      /* 
-                Refinement based on "Reprogramado" persistence:
-                If we go back to 0 items, we should ideally check if the date was modified to decide between 'No empezado' and 'Reprogramado'.
-                But that requires reading Maintenance/Inspection tables which makes this generic service complex.
-                For now, we will set 'No empezado'. 
-                One exception: If the user explicitly wants to handle "Reprogramado" persistence here, tell me.
-                Current plan assumption: 0 completed items -> 'No empezado'.
-            */
       newStatus = 'No empezado';
     }
 
-    // Apply update
     await db
       .update(trabajo)
       .set({ est: newStatus })
@@ -78,8 +53,6 @@ const updateTrabajoStatus = async (idTrabajo: number, idChecklist: number) => {
       'Error updating Trabajo status in estadoItemChecklist service:',
       error
     );
-    // We don't throw hered to avoid blocking the main action if status update fails,
-    // but typically we should. generic error log is fine for now.
   }
 };
 

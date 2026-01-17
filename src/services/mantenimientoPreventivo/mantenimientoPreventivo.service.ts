@@ -229,8 +229,6 @@ export const updateMantenimientoPreventivo = async (
     : null;
 
   if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
-    // Date changed -> Reprogramado.
-    // Priority update: regardless of progress.
     newStatus = 'Reprogramado';
   }
 
