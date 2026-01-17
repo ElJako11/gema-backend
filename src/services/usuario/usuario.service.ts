@@ -58,6 +58,9 @@ export const createUsuario = async (userData: CreateUserParams) => {
         }
 
         // Hashear contraseña
+        if (!userData.contraseña) {
+            throw new Error('La contraseña es obligatoria');
+        }
         const hashedPassword = await hashPassword(userData.contraseña);
 
         // Crear el usuario
