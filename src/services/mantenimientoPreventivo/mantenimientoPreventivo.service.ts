@@ -192,7 +192,7 @@ export const createMantenimientoPreventivo = async (
       instancia,
       condicion,
       fechaProximaGeneracion: mantenimientodata.fechaProximaGeneracion
-        ? convertToStr(mantenimientodata.fechaProximaGeneracion as Date)
+        ? convertUtcToStr(mantenimientodata.fechaProximaGeneracion as Date)
         : null,
     })
     .returning();
