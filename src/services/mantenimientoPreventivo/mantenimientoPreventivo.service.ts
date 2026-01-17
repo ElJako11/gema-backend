@@ -247,7 +247,7 @@ export const updateMantenimientoPreventivo = async (
   const hasProgress = completedItems[0].count > 0;
 
   if (hasProgress) {
-    newStatus = 'En progreso';
+    newStatus = 'En ejecución';
   } else if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
     newStatus = 'Reprogramado';
   }
