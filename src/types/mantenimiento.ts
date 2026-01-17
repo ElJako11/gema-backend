@@ -15,6 +15,7 @@ export type createMantenimiento = {
   frecuencia?: string;
   instancia?: string;
   condicion?: string;
+  fechaProximaGeneracion?: string | Date;
 };
 
 export type updateMantenimiento = Partial<

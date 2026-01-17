@@ -23,7 +23,10 @@ import { inspeccion } from '../../tables/inspeccion';
 import { CreateTrabajoParams } from '../../types/trabajo';
 import { Trabajo } from '../../types/trabajoFacade';
 import { insertInspeccion } from '../../types/inspeccion';
-import { convertUtcToStr } from '../../utils/dateHandler';
+import {
+  convertUtcToStr,
+  calculateNextGenerationDate,
+} from '../../utils/dateHandler';
 import { asignarGrupo } from '../grupoXtrabajo/grupoXtrabajo.service';
 import { cleanObject } from '../../utils/cleanUpdateData';
 
@@ -46,6 +49,18 @@ export const createTrabajoFacade = async (data: Trabajo) => {
 
     const idTrabajo = newTrabajo.idTrabajo;
 
+    // Calculate Next Generation Date if frequency is provided
+    let fechaProximaGeneracion = undefined;
+    if (data.frecuencia) {
+      const nextDate = calculateNextGenerationDate(
+        data.fechaCreacion,
+        data.frecuencia
+      );
+      if (nextDate) {
+        fechaProximaGeneracion = nextDate;
+      }
+    }
+
     if (data.tipoTrabajo === 'Mantenimiento') {
       if (!data.fechaLimite)
         throw new Error(
@@ -61,6 +76,7 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         frecuencia: data.frecuencia,
         condicion: data.condicion,
         instancia: data.instancia,
+        fechaProximaGeneracion,
       };
 
       await createMantenimientoPreventivo(mantData, tx);
@@ -75,6 +91,7 @@ export const createTrabajoFacade = async (data: Trabajo) => {
         idTrabajo,
         observaciones: data.observacion || '', // Mapped as requested
         frecuencia: data.frecuencia,
+        fechaProximaGeneracion,
       };
       await createInspeccion(inspData, tx);
     }

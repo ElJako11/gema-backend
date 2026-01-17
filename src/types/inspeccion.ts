@@ -35,6 +35,7 @@ export type insertInspeccion = {
   idTrabajo: number;
   observaciones: string;
   frecuencia: string;
+  fechaProximaGeneracion?: string | Date;
 };
 
 export type putInspeccion = Partial<Omit<Inspeccion, 'idInspeccion'>>;

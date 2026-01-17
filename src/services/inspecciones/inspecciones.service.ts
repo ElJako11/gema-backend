@@ -195,6 +195,9 @@ export const createInspeccion = async (
       idT: idTrabajo,
       observacion: observaciones,
       frecuencia: frecuencia,
+      fechaProximaGeneracion: inspeccionData.fechaProximaGeneracion
+        ? convertToStr(inspeccionData.fechaProximaGeneracion as Date)
+        : null,
     })
     .returning();
 
