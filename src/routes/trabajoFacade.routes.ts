@@ -195,7 +195,68 @@ router.post(
   createChecklistFromTemplateHandler
 );
 
-router.put(
+/**
+ * @swagger
+ * /work-creation:
+ *   patch:
+ *     summary: Actualiza un mantenimiento o inspección y su trabajo asociado
+ *     description: Permite actualizar campos específicos de un mantenimiento o inspección, incluyendo el nombre del trabajo padre. Se debe proporcionar idMantenimiento o idInspeccion.
+ *     tags: [Creación Globalizada]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idMantenimiento:
+ *                 type: string
+ *                 description: ID del mantenimiento a actualizar (obligatorio si no se envía idInspeccion)
+ *                 example: "123"
+ *               idInspeccion:
+ *                 type: string
+ *                 description: ID de la inspección a actualizar (obligatorio si no se envía idMantenimiento)
+ *                 example: "456"
+ *               nombre:
+ *                 type: string
+ *                 description: Nuevo nombre del trabajo
+ *                 example: "Mantenimiento Correctivo de Motor"
+ *               tipo:
+ *                 type: string
+ *                 enum: [Periodico, Condicion]
+ *                 description: Tipo de mantenimiento (solo Mantenimiento)
+ *               fechaLimite:
+ *                 type: string
+ *                 format: date
+ *                 description: Nueva fecha límite (solo Mantenimiento)
+ *                 example: "2024-12-31"
+ *               prioridad:
+ *                 type: string
+ *                 enum: [ALTA, MEDIA, BAJA]
+ *                 description: Nueva prioridad (solo Mantenimiento)
+ *               frecuencia:
+ *                 type: string
+ *                 enum: [Diaria, Semanal, Mensual, Trimestral, Anual]
+ *                 description: Nueva frecuencia (Mantenimiento e Inspección)
+ *               resumen:
+ *                 type: string
+ *                 description: Nuevo resumen (solo Mantenimiento)
+ *               observacion:
+ *                 type: string
+ *                 description: Nueva observación (solo Inspección)
+ *     responses:
+ *       200:
+ *         description: Trabajo actualizado exitosamente
+ *       400:
+ *         description: Datos de entrada inválidos o falta de ID
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.patch(
   '/',
   authenticate,
   autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
