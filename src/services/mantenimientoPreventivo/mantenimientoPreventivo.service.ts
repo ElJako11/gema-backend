@@ -233,7 +233,6 @@ export const updateMantenimientoPreventivo = async (
     ? convertUtcToStr(mantenimientodata.fechaLimite)
     : null;
 
-  // Check for completed checklist items
   const completedItems = await database
     .select({ count: count() })
     .from(estadoItemChecklist)
@@ -261,6 +260,10 @@ export const updateMantenimientoPreventivo = async (
   }
 
   const valuesToUpdate = cleanObject(mantenimientodata);
+
+  valuesToUpdate.fechaLimite = newFechaLimite
+
+  console.log(valuesToUpdate.fechaLimite);
 
   const result = await database
     .update(mantenimiento)

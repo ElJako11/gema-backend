@@ -36,6 +36,10 @@ export const updateWorkSchema = z
 
     // Campos comunes
     nombre: z.string().optional(),
+    fechaCreacion: z
+      .string()
+      .transform(str => new Date(str))
+      .optional(),
 
     // Campos Mantenimiento
     tipo: z.enum(['Periodico', 'Condicion']).optional(),

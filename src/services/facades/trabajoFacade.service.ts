@@ -29,6 +29,8 @@ import {
 } from '../../utils/dateHandler';
 import { asignarGrupo } from '../grupoXtrabajo/grupoXtrabajo.service';
 import { cleanObject } from '../../utils/cleanUpdateData';
+import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
+import { usuarios } from '../../tables/usuarios';
 
 export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
@@ -207,7 +209,12 @@ export const updateTrabajoFacade = async (
       const idTrabajo = mantInfo[0].idTrabajo;
 
       // 2. Update Trabajo (Only Name)
-      const trabajoUpdateData = cleanObject({ nombre: data.nombre });
+      const trabajoUpdateData = cleanObject({
+        nombre: data.nombre,
+        fecha: data.fechaCreacion
+          ? convertUtcToStr(data.fechaCreacion)
+          : undefined,
+      });
       if (Object.keys(trabajoUpdateData).length > 0) {
         await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
       }
@@ -229,7 +236,6 @@ export const updateTrabajoFacade = async (
 
       return { success: true, idTrabajo };
     } else if (idInspeccion && idInspeccion > 0) {
-      // 1. Get idTrabajo from Inspeccion
       const inspInfo = await tx
         .select({ idTrabajo: inspeccion.idT })
         .from(inspeccion)
@@ -240,8 +246,12 @@ export const updateTrabajoFacade = async (
       }
       const idTrabajo = inspInfo[0].idTrabajo;
 
-      // 2. Update Trabajo (Only Name)
-      const trabajoUpdateData = cleanObject({ nombre: data.nombre });
+      const trabajoUpdateData = cleanObject({
+        nombre: data.nombre,
+        fecha: data.fechaCreacion
+          ? convertUtcToStr(data.fechaCreacion)
+          : undefined,
+      });
       if (Object.keys(trabajoUpdateData).length > 0) {
         await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
       }
