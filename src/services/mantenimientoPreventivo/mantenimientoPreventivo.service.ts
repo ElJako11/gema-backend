@@ -203,10 +203,12 @@ export const createMantenimientoPreventivo = async (
 
 export const updateMantenimientoPreventivo = async (
   mantenimientodata: updateMantenimiento,
-  idMantenimiento: number
+  idMantenimiento: number,
+  tx?: Tx
 ) => {
-  // 1. Fetch existing maintenance and work ID
-  const existingMantenimiento = await db
+  const database = tx ?? db;
+
+  const existingMantenimiento = await database
     .select({
       fechaLimite: mantenimiento.fechaLimite,
       idTrabajo: mantenimiento.idTrabajo,
@@ -229,7 +231,7 @@ export const updateMantenimientoPreventivo = async (
     : null;
 
   // Check for completed checklist items
-  const completedItems = await db
+  const completedItems = await database
     .select({ count: count() })
     .from(estadoItemChecklist)
     .where(
@@ -249,7 +251,7 @@ export const updateMantenimientoPreventivo = async (
 
   // 3. Update Status if needed
   if (newStatus) {
-    await db
+    await database
       .update(trabajo)
       .set({ est: newStatus })
       .where(eq(trabajo.idTrabajo, idTrabajo));
@@ -257,7 +259,7 @@ export const updateMantenimientoPreventivo = async (
 
   const valuesToUpdate = cleanObject(mantenimientodata);
 
-  const result = await db
+  const result = await database
     .update(mantenimiento)
     .set(valuesToUpdate)
     .where(eq(mantenimiento.idMantenimiento, idMantenimiento))

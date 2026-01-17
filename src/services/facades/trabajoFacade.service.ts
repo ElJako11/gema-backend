@@ -1,9 +1,15 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../config/db';
 
-import { createTrabajo } from '../trabajo/trabajo.service';
-import { createMantenimientoPreventivo } from '../mantenimientoPreventivo/mantenimientoPreventivo.service';
-import { createInspeccion } from '../inspecciones/inspecciones.service';
+import { createTrabajo, updateTrabajo } from '../trabajo/trabajo.service';
+import {
+  createMantenimientoPreventivo,
+  updateMantenimientoPreventivo,
+} from '../mantenimientoPreventivo/mantenimientoPreventivo.service';
+import {
+  createInspeccion,
+  updateInspeccion,
+} from '../inspecciones/inspecciones.service';
 import { getPlantillaWithItems } from '../plantilla/plantilla.service';
 
 import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
@@ -19,6 +25,7 @@ import { Trabajo } from '../../types/trabajoFacade';
 import { insertInspeccion } from '../../types/inspeccion';
 import { convertUtcToStr } from '../../utils/dateHandler';
 import { asignarGrupo } from '../grupoXtrabajo/grupoXtrabajo.service';
+import { cleanObject } from '../../utils/cleanUpdateData';
 
 export const createTrabajoFacade = async (data: Trabajo) => {
   return await db.transaction(async tx => {
@@ -160,5 +167,81 @@ export const createChecklistFromTemplate = async (
     }
 
     return idChecklist;
+  });
+};
+
+export const updateTrabajoFacade = async (
+  ids: { idMantenimiento?: number; idInspeccion?: number },
+  data: Partial<Trabajo>
+) => {
+  return await db.transaction(async tx => {
+    const { idMantenimiento, idInspeccion } = ids;
+
+    if (idMantenimiento && idMantenimiento > 0) {
+      // 1. Get idTrabajo from Mantenimiento
+      const mantInfo = await tx
+        .select({ idTrabajo: mantenimiento.idTrabajo })
+        .from(mantenimiento)
+        .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+
+      if (mantInfo.length === 0) {
+        throw new Error('Mantenimiento no encontrado');
+      }
+      const idTrabajo = mantInfo[0].idTrabajo;
+
+      // 2. Update Trabajo (Only Name)
+      const trabajoUpdateData = cleanObject({ nombre: data.nombre });
+      if (Object.keys(trabajoUpdateData).length > 0) {
+        await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
+      }
+
+      // 3. Update Mantenimiento
+      const mantUpdateData = cleanObject({
+        tipo: data.tipo,
+        fechaLimite: data.fechaLimite,
+        prioridad: data.prioridad,
+        frecuencia: data.frecuencia,
+        resumen: data.resumen,
+      });
+
+      await updateMantenimientoPreventivo(
+        mantUpdateData as any,
+        idMantenimiento,
+        tx
+      );
+
+      return { success: true, idTrabajo };
+    } else if (idInspeccion && idInspeccion > 0) {
+      // 1. Get idTrabajo from Inspeccion
+      const inspInfo = await tx
+        .select({ idTrabajo: inspeccion.idT })
+        .from(inspeccion)
+        .where(eq(inspeccion.id, idInspeccion));
+
+      if (inspInfo.length === 0) {
+        throw new Error('Inspeccion no encontrada');
+      }
+      const idTrabajo = inspInfo[0].idTrabajo;
+
+      // 2. Update Trabajo (Only Name)
+      const trabajoUpdateData = cleanObject({ nombre: data.nombre });
+      if (Object.keys(trabajoUpdateData).length > 0) {
+        await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
+      }
+
+      // 3. Update Inspeccion
+      const inspUpdateData = cleanObject({
+        frecuencia: data.frecuencia,
+        observacion: data.observacion,
+      });
+
+      await updateInspeccion(inspUpdateData as any, idInspeccion, tx);
+
+      return { success: true, idTrabajo };
+    } else {
+      throw new Error(
+        'Debe proporcionar un ID válido de Mantenimiento o Inspección'
+      );
+    }
   });
 };

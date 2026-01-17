@@ -1,127 +1,134 @@
-import {eq, and, between, sql, inArray} from 'drizzle-orm';
-import {db} from '../../config/db';
-import {trabajo} from '../../tables/trabajo';
-import {CreateTrabajoParams} from '../../types/trabajo';
+import { eq, and, between, sql, inArray } from 'drizzle-orm';
+import { db } from '../../config/db';
+import { trabajo } from '../../tables/trabajo';
+import { CreateTrabajoParams } from '../../types/trabajo';
 import { Tx } from '../../types/transaction';
-import {ubicacionTecnica} from '../../tables/ubicacionTecnica';
-import {grupoDeTrabajo} from '../../tables/grupoDeTrabajo';
-import {grupoXtrabajo} from '../../tables/grupoXtrabajo';
+import { ubicacionTecnica } from '../../tables/ubicacionTecnica';
+import { grupoDeTrabajo } from '../../tables/grupoDeTrabajo';
+import { grupoXtrabajo } from '../../tables/grupoXtrabajo';
 import {
   convertToStr,
   getEndofMonth,
   getStartofMonth,
 } from '../../utils/dateHandler';
+import { cleanObject } from '../../utils/cleanUpdateData';
 
 //Get Trabajos
 export const getAllTrabajos = async () => {
-    try{
-         const trabajos = await db.select().from(trabajo);
-         return trabajos;
-    }catch(error){
-        console.error('Error al obtener los Trabajos', error);
-        throw new Error('No se pudieron obtener los Trabajos');
-    }
-}
+  try {
+    const trabajos = await db.select().from(trabajo);
+    return trabajos;
+  } catch (error) {
+    console.error('Error al obtener los Trabajos', error);
+    throw new Error('No se pudieron obtener los Trabajos');
+  }
+};
 
 //getTrabajo by ID
 export const getTrabajoById = async (id: number) => {
-    try{
-         const trabajoById = await db.select().from(trabajo).where(eq(trabajo.idTrabajo, id));
+  try {
+    const trabajoById = await db
+      .select()
+      .from(trabajo)
+      .where(eq(trabajo.idTrabajo, id));
 
-         return trabajoById[0] || null;
-    }
-    catch(error){
-        console.error('Error al obtener el Trabajo por ID', error);
-        throw new Error('No se pudo obtener el Trabajo por ID');
-    }
-}
+    return trabajoById[0] || null;
+  } catch (error) {
+    console.error('Error al obtener el Trabajo por ID', error);
+    throw new Error('No se pudo obtener el Trabajo por ID');
+  }
+};
 
 //Post Trabajo
-export const createTrabajo = async (
-  params: CreateTrabajoParams,
-  tx?: Tx
-) => {
+export const createTrabajo = async (params: CreateTrabajoParams, tx?: Tx) => {
   const database = tx ?? db;
 
-    try {
-        const newTrabajo = await database.insert(trabajo)
-        .values(params)
-        .returning();
+  try {
+    const newTrabajo = await database
+      .insert(trabajo)
+      .values(params)
+      .returning();
 
-        return newTrabajo[0] || null;
-    } catch (error) {
-        console.error('Error al crear el Trabajo', error);
-        throw new Error('No se pudo crear el Trabajo');
-    }
-}
+    return newTrabajo[0] || null;
+  } catch (error) {
+    console.error('Error al crear el Trabajo', error);
+    throw new Error('No se pudo crear el Trabajo');
+  }
+};
 
 //Patch Trabajo
-export const updateTrabajo = async (id: number, params: Partial<CreateTrabajoParams>) => {
-    if (Object.keys(params).length === 0) {
-        return null; // No hay campos para actualizar
-    }
-    
-    try{
-        const updated = await db.update(trabajo)
-        .set(params)
-        .where(eq(trabajo.idTrabajo, id))
-        .returning()
+export const updateTrabajo = async (
+  id: number,
+  params: Partial<CreateTrabajoParams>,
+  tx?: Tx
+) => {
+  const valuesToUpdate = cleanObject(params);
 
-        return updated[0] || null;
-    }catch(error){
-        console.error(
-            `Error al actualizar trabajo con ID ${id}`,
-            error
-        )
-        throw new Error('Error al actualizar Trabajo');
-    }
-}
+  if (Object.keys(valuesToUpdate).length === 0) {
+    return null; // No hay campos para actualizar
+  }
+
+  const database = tx ?? db;
+
+  try {
+    const updated = await database
+      .update(trabajo)
+      .set(valuesToUpdate)
+      .where(eq(trabajo.idTrabajo, id))
+      .returning();
+
+    return updated[0] || null;
+  } catch (error) {
+    console.error(`Error al actualizar trabajo con ID ${id}`, error);
+    throw new Error('Error al actualizar Trabajo');
+  }
+};
 
 //Delete Trabajo
 export const deleteTrabajo = async (id: number) => {
-    try{
-        const deleted = await db.delete(trabajo)
-        .where(eq(trabajo.idTrabajo, id))
-        .returning();
+  try {
+    const deleted = await db
+      .delete(trabajo)
+      .where(eq(trabajo.idTrabajo, id))
+      .returning();
 
-        return deleted[0] || null;
-    }catch(error){
-        console.error(
-            `Error al eliminar trabajo con ID ${id}`, error
-        )
-        throw new Error('Error al eliminar Trabajo');
-    }   
-}
-
-export const getCantidadMantenimientosReabiertos = async (): Promise<number> => {
-  // Obtenemos la fecha actual para calcular el rango del mes
-  const now = new Date().toISOString();
-  const initialDate = getStartofMonth(now);
-  const finalDate = getEndofMonth(now);
-
-  const initialISO = convertToStr(initialDate);
-  const finalISO = convertToStr(finalDate);
-
-  // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
-  const ESTADO_REABIERTO = 'Reprogramado';
-
-  // TODO: Asumo que existe una columna 'tipo' para diferenciar mantenimientos. Verifica el nombre y el valor.
-  const TIPO_MANTENIMIENTO = 'Mantenimiento';
-
-  const result = await db
-    .select({
-      count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
-    })
-    .from(trabajo)
-    .where(
-      and(
-        between(trabajo.fecha, initialISO, finalISO),
-        eq(trabajo.est, ESTADO_REABIERTO),
-        eq(trabajo.tipo, TIPO_MANTENIMIENTO)
-      )
-    );
-  return result[0].count;
+    return deleted[0] || null;
+  } catch (error) {
+    console.error(`Error al eliminar trabajo con ID ${id}`, error);
+    throw new Error('Error al eliminar Trabajo');
+  }
 };
+
+export const getCantidadMantenimientosReabiertos =
+  async (): Promise<number> => {
+    // Obtenemos la fecha actual para calcular el rango del mes
+    const now = new Date().toISOString();
+    const initialDate = getStartofMonth(now);
+    const finalDate = getEndofMonth(now);
+
+    const initialISO = convertToStr(initialDate);
+    const finalISO = convertToStr(finalDate);
+
+    // TODO: Verifica si 'Reabierto' es el valor exacto en tu base de datos para este estado
+    const ESTADO_REABIERTO = 'Reprogramado';
+
+    // TODO: Asumo que existe una columna 'tipo' para diferenciar mantenimientos. Verifica el nombre y el valor.
+    const TIPO_MANTENIMIENTO = 'Mantenimiento';
+
+    const result = await db
+      .select({
+        count: sql<number>`cast(count(${trabajo.idTrabajo}) as int)`,
+      })
+      .from(trabajo)
+      .where(
+        and(
+          between(trabajo.fecha, initialISO, finalISO),
+          eq(trabajo.est, ESTADO_REABIERTO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+        )
+      );
+    return result[0].count;
+  };
 
 export const getMantenimientosReabiertosPorArea = async () => {
   const ESTADO_REABIERTO = 'Reprogramado';
@@ -137,7 +144,10 @@ export const getMantenimientosReabiertosPorArea = async () => {
       .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
       .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
       .where(
-        and(eq(trabajo.est, ESTADO_REABIERTO), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+        and(
+          eq(trabajo.est, ESTADO_REABIERTO),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+        )
       )
       .groupBy(grupoDeTrabajo.nombre);
 
@@ -217,7 +227,10 @@ export const getMantenimientosActivosPorArea = async () => {
       .innerJoin(grupoXtrabajo, eq(trabajo.idTrabajo, grupoXtrabajo.idT))
       .innerJoin(grupoDeTrabajo, eq(grupoXtrabajo.idG, grupoDeTrabajo.id))
       .where(
-        and(inArray(trabajo.est, ESTADOS_ACTIVOS), eq(trabajo.tipo, TIPO_MANTENIMIENTO))
+        and(
+          inArray(trabajo.est, ESTADOS_ACTIVOS),
+          eq(trabajo.tipo, TIPO_MANTENIMIENTO)
+        )
       )
       .groupBy(grupoDeTrabajo.nombre);
     return result;

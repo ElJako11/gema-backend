@@ -2,13 +2,16 @@ import { Router } from 'express';
 import {
   createTrabajoFacadeHandler,
   createChecklistFromTemplateHandler,
+  updateTrabajoFacadeHandler,
 } from '../controllers/facades/trabajoFacade.controller';
 import { validateBody } from '../middleware/validate.middleware';
 import {
   createWorkSchema,
   createChecklistFromTemplateSchema,
+  updateWorkSchema,
 } from '../validations/workCreationSchema';
 import { autorizationMiddleware } from '../middleware/autorization.middleware';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -148,6 +151,7 @@ const router = Router();
  */
 router.post(
   '/',
+  authenticate,
   autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(createWorkSchema),
   createTrabajoFacadeHandler
@@ -185,9 +189,18 @@ router.post(
  */
 router.post(
   '/checklist-template',
+  authenticate,
   autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
   validateBody(createChecklistFromTemplateSchema),
   createChecklistFromTemplateHandler
+);
+
+router.put(
+  '/',
+  authenticate,
+  autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']),
+  validateBody(updateWorkSchema),
+  updateTrabajoFacadeHandler
 );
 
 export default router;

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   createTrabajoFacade,
   createChecklistFromTemplate,
+  updateTrabajoFacade,
 } from '../../services/facades/trabajoFacade.service';
 
 export const createTrabajoFacadeHandler = async (
@@ -44,6 +45,35 @@ export const createChecklistFromTemplateHandler = async (
     });
   } catch (error: any) {
     console.error('Error en createChecklistFromTemplateHandler:', error);
+    res.status(500).json({
+      message: error.message || 'Error interno del servidor',
+    });
+  }
+};
+
+export const updateTrabajoFacadeHandler = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { idMantenimiento, idInspeccion, ...data } = req.body;
+
+    // Parse IDs from body strings if they exist
+    const parsedIds = {
+      idMantenimiento: idMantenimiento
+        ? parseInt(idMantenimiento, 10)
+        : undefined,
+      idInspeccion: idInspeccion ? parseInt(idInspeccion, 10) : undefined,
+    };
+
+    const result = await updateTrabajoFacade(parsedIds, data);
+
+    res.status(200).json({
+      message: 'Trabajo actualizado exitosamente',
+      data: result,
+    });
+  } catch (error: any) {
+    console.error('Error en updateTrabajoFacadeHandler:', error);
     res.status(500).json({
       message: error.message || 'Error interno del servidor',
     });

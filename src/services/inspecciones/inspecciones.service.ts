@@ -207,11 +207,13 @@ export const createInspeccion = async (
 
 export const updateInspeccion = async (
   inspeccionData: putInspeccion,
-  id: number
+  id: number,
+  tx?: Tx
 ) => {
+  const database = tx ?? db;
   const valuesToUpdate = cleanObject(inspeccionData);
 
-  const result = await db
+  const result = await database
     .update(inspeccion)
     .set(valuesToUpdate)
     .where(eq(inspeccion.id, id))
