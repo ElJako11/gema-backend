@@ -37,7 +37,7 @@ const updateTrabajoStatus = async (idTrabajo: number, idChecklist: number) => {
     let newStatus = 'No empezado';
 
     if (totalItems > 0 && completedItems === totalItems) {
-      newStatus = 'Finalizada';
+      newStatus = 'Culminado';
     } else if (completedItems > 0) {
       newStatus = 'En ejecución';
     } else {
