@@ -1,6 +1,6 @@
 import { db } from '../../config/db';
 
-import { eq, between, and, count, ne } from 'drizzle-orm';
+import { eq, between, and } from 'drizzle-orm';
 
 import { mantenimiento } from '../../tables/mantenimiento';
 import { trabajo } from '../../tables/trabajo';
@@ -233,21 +233,7 @@ export const updateMantenimientoPreventivo = async (
     ? convertUtcToStr(mantenimientodata.fechaLimite)
     : null;
 
-  const completedItems = await database
-    .select({ count: count() })
-    .from(estadoItemChecklist)
-    .where(
-      and(
-        eq(estadoItemChecklist.idTrabajo, idTrabajo),
-        eq(estadoItemChecklist.estado, 'COMPLETADA')
-      )
-    );
-
-  const hasProgress = completedItems[0].count > 0;
-
-  if (hasProgress) {
-    newStatus = 'En ejecución';
-  } else if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
+  if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
     newStatus = 'Reprogramado';
   }
 
@@ -261,7 +247,7 @@ export const updateMantenimientoPreventivo = async (
 
   const valuesToUpdate = cleanObject(mantenimientodata);
 
-  valuesToUpdate.fechaLimite = newFechaLimite
+  valuesToUpdate.fechaLimite = newFechaLimite;
 
   console.log(valuesToUpdate.fechaLimite);
 
