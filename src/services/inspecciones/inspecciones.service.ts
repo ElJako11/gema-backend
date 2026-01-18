@@ -40,6 +40,7 @@ const getResumenQueryBase = () => {
       supervisor: usuarios.Nombre,
       frecuencia: inspeccion.frecuencia,
       titulo: trabajo.nombre,
+      fechaProximaGeneracion: inspeccion.fechaProximaGeneracion
     })
     .from(inspeccion)
     .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))

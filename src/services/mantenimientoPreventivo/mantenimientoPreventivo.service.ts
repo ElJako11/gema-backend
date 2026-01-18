@@ -36,6 +36,7 @@ const getResumenMantenimientoQuery = () => {
       ubicacion: ubicacionTecnica.descripcion,
       fechaLimite: mantenimiento.fechaLimite,
       titulo: trabajo.nombre,
+      fechaProximaGeneracion: mantenimiento.fechaProximaGeneracion
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
