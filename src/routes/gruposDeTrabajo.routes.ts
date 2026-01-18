@@ -68,7 +68,7 @@ router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateBo
  *       200:
  *         description: Lista de grupos de trabajo
  */
-router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDeTrabajoHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getGruposDeTrabajoHandler);
 
 /**
  * @openapi
