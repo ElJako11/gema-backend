@@ -107,7 +107,7 @@ router.get('/reprogramados/por-area', autorizationMiddleware(['DIRECTOR']), getM
  *       500:
  *         description: Error al obtener el resumen del mes
  */
-router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getResumenMantenimientosMesHandler);
+router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR']), getResumenMantenimientosMesHandler);
 
 /**
  * @openapi
@@ -135,7 +135,7 @@ router.get('/resumen/mes-actual', autorizationMiddleware(['DIRECTOR', 'COORDINAD
  *       500:
  *         description: Error al obtener el reporte de activos por área
  */
-router.get('/empezado/por-area', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getMantenimientosActivosPorAreaHandler);
+router.get('/empezado/por-area', autorizationMiddleware(['DIRECTOR']), getMantenimientosActivosPorAreaHandler);
 
 //Get Trabajo by ID
 
