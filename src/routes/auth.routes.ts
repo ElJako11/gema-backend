@@ -7,6 +7,7 @@ import {
 } from '../controllers/auth/auth.controller';
 import { validateBody } from '../middleware/validate.middleware';
 import { loginSchema } from '../validations/loginSchema';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 /**
@@ -98,6 +99,6 @@ router.post('/register', registerHandler);
 
 router.post('/logout', logoutHandler);  
 
-router.get('/me', verifyIdentityHandler)
+router.get('/me', authenticate, verifyIdentityHandler)
 
 export default router;
