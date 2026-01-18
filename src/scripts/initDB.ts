@@ -17,8 +17,8 @@ const initDB = async () => {
   await db.execute(sql`TRUNCATE TABLE "Usuarios" RESTART IDENTITY CASCADE;`);
 
   const plainPassword = '123456';
-  const nombre = 'Coordinador Principal';
-  const correo = 'coordinador@ucab.edu.ve';
+  const nombre = 'Director';
+  const correo = 'director@ucab.edu.ve';
   const tipo = 'DIRECTOR';
 
   try {
