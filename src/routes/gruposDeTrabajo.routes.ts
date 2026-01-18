@@ -54,7 +54,7 @@ const router = Router();
  *       500:
  *         description: Error al crear el grupo de trabajo
  */
-router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
+router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), validateBody(grupoTrabajoSchema), createGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos:
@@ -68,7 +68,7 @@ router.post('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), validateBo
  *       200:
  *         description: Lista de grupos de trabajo
  */
-router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDeTrabajoHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getGruposDeTrabajoHandler);
 
 /**
  * @openapi
@@ -92,7 +92,7 @@ router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDe
  *       404:
  *         description: Grupo de trabajo no encontrado
  */
-router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGruposDeTrabajoByIdHandler);
+router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getGruposDeTrabajoByIdHandler);
 
 /**
  * @openapi
@@ -137,7 +137,7 @@ router.get('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), getGrupo
  *         description: Error al actualizar el grupo de trabajo
  */
 
-router.put('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), updateGrupoDeTrabajoHandler);
+router.put('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), updateGrupoDeTrabajoHandler);
 /**
  * @openapi
  * /grupos/{id}:
@@ -162,5 +162,5 @@ router.put('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), updateGr
  *       500:
  *         description: Error al eliminar el grupo de trabajo
  */
-router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR']), deleteGrupoDeTrabajoHandler);
+router.delete('/:id', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), deleteGrupoDeTrabajoHandler);
 export default router;

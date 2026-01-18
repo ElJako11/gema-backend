@@ -40,7 +40,7 @@ const router = Router();
  *         description: Error interno del servidor
  */
 //Get all Usuarios
-router.get('/', autorizationMiddleware(['DIRECTOR']), getUsuariosHandler);
+router.get('/', autorizationMiddleware(['DIRECTOR', 'COORDINADOR', 'SUPERVISOR']), getUsuariosHandler);
 
 /**
  * @swagger
