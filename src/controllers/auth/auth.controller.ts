@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { login, AuthError, register, verifyIdentity } from '../../services/auth/auth.service';
+import {
+  login,
+  AuthError,
+  register,
+  verifyIdentity,
+} from '../../services/auth/auth.service';
 import { clearCookie, setCookie } from '../../utils/cookieHandler';
 import { AuthRequest } from '../../types/types';
 
@@ -70,7 +75,10 @@ export const logoutHandler = (req: Request, res: Response) => {
   return;
 };
 
-export const verifyIdentityHandler = async (req: AuthRequest, res: Response) => {
+export const verifyIdentityHandler = async (
+  req: AuthRequest,
+  res: Response
+) => {
   const userData = req.user;
 
   const userID = userData?.userId;
@@ -80,9 +88,10 @@ export const verifyIdentityHandler = async (req: AuthRequest, res: Response) => 
 
     res.status(200).json(userInfo);
     return;
-  } catch(error) {
-    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Error interno del servidor';
     res.status(500).json(errorMessage);
     return;
   }
-}
+};

@@ -1,6 +1,26 @@
 import { Request, Response } from 'express';
 import 'dotenv/config';
 
+const getCookieOptions = (origin: string | undefined) => {
+  const isLocalhost = origin === 'http://localhost:5173' || !origin;
+  const sameSite = isLocalhost ? 'lax' : 'none';
+  const partitioned = !isLocalhost;
+  // Browser requires Secure to be true if SameSite is None or Partitioned is true
+  const secure =
+    process.env.NODE_ENV === 'production' || sameSite === 'none' || partitioned;
+
+  const domain = isLocalhost ? 'localhost' : undefined;
+
+  return {
+    httpOnly: true,
+    secure,
+    sameSite,
+    partitioned,
+    path: '/',
+    ...(domain ? { domain } : {}),
+  } as const;
+};
+
 export const setCookie = (
   req: Request,
   res: Response,
@@ -13,13 +33,8 @@ export const setCookie = (
     throw new Error('Ha ocurrido un error');
   }
 
-  res.cookie(cookieName, token, {
-    httpOnly: true,
-    secure: (process.env.NODE_ENV as string) === 'production',
-    sameSite: origin === 'http://localhost:5173' ? 'lax' : 'none',
-    partitioned: origin === 'http://localhost:5173' ? false : true,
-    maxAge: 1000 * 60 * 60 * 24,
-  });
+  const options = getCookieOptions(origin);
+  res.cookie(cookieName, token, options);
 };
 
 export const clearCookie = (
@@ -33,11 +48,19 @@ export const clearCookie = (
     throw new Error('Ha ocurrido un error');
   }
 
-  res.clearCookie(cookieName, {
-    httpOnly: true,
-    secure: (process.env.NODE_ENV as string) === 'production',
-    sameSite: origin === 'http://localhost:5173' ? 'lax' : 'none',
-    partitioned: origin === 'http://localhost:5173' ? false : true,
-    maxAge: 1000 * 60 * 60 * 24,
-  });
+  const options = getCookieOptions(origin);
+
+  const clearOptions = {
+    ...options,
+    expires: new Date(0),
+    maxAge: 0,
+  };
+
+  res.cookie(cookieName, '', clearOptions);
+
+  if (options.secure === false) {
+    res.cookie(cookieName, '', { ...clearOptions, domain: 'localhost' });
+  }
+
+  res.cookie(cookieName, '', { ...clearOptions, path: undefined });
 };
