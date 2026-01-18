@@ -54,10 +54,13 @@ export const createTrabajoFacade = async (data: Trabajo) => {
     // Calculate Next Generation Date if frequency is provided
     let fechaProximaGeneracion = undefined;
     if (data.frecuencia) {
-      const nextDate = calculateNextGenerationDate(
-        data.fechaCreacion,
-        data.frecuencia
-      );
+      let baseDate = data.fechaCreacion;
+
+      if (data.tipoTrabajo === 'Mantenimiento' && data.fechaLimite) {
+        baseDate = data.fechaLimite;
+      }
+
+      const nextDate = calculateNextGenerationDate(baseDate, data.frecuencia);
       if (nextDate) {
         fechaProximaGeneracion = nextDate;
       }

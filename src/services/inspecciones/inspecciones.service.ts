@@ -26,6 +26,7 @@ import {
   getEndofMonth,
   getStartofMonth,
   getStartOfWeek,
+  convertUtcToStr,
 } from '../../utils/dateHandler';
 import { id } from 'zod/v4/locales';
 
@@ -40,7 +41,7 @@ const getResumenQueryBase = () => {
       supervisor: usuarios.Nombre,
       frecuencia: inspeccion.frecuencia,
       titulo: trabajo.nombre,
-      fechaProximaGeneracion: inspeccion.fechaProximaGeneracion
+      fechaProximaGeneracion: inspeccion.fechaProximaGeneracion,
     })
     .from(inspeccion)
     .innerJoin(trabajo, eq(inspeccion.idT, trabajo.idTrabajo))
@@ -197,7 +198,7 @@ export const createInspeccion = async (
       observacion: observaciones,
       frecuencia: frecuencia,
       fechaProximaGeneracion: inspeccionData.fechaProximaGeneracion
-        ? convertToStr(inspeccionData.fechaProximaGeneracion as Date)
+        ? convertUtcToStr(inspeccionData.fechaProximaGeneracion as Date)
         : null,
     })
     .returning();
@@ -212,7 +213,7 @@ export const createInspeccion = async (
 export const updateInspeccion = async (
   inspeccionData: putInspeccion,
   id: number,
-  tx?: Tx 
+  tx?: Tx
 ) => {
   const valuesToUpdate = cleanObject(inspeccionData);
 
