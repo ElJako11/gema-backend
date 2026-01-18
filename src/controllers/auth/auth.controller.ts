@@ -10,9 +10,6 @@ export const loginHandler = async (
   try {
     const user = await login(req.body);
 
-    console.log(req.headers.origin);
-
-    // Seteo de la cookie.
     setCookie(req, res, 'accessToken', user.token);
 
     res.status(200).json({
