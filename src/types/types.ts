@@ -22,7 +22,7 @@ export type authParams = {
 };
 
 export interface AuthRequest extends Request {
-  user?: JwtPayload;
+  user?: tokenPayload;
 }
 
 export type tokenPayload = {

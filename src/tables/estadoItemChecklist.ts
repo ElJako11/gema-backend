@@ -16,7 +16,9 @@ export const estadoItemChecklist = pgTable(
   {
     idTrabajo: integer('idTrabajo')
       .notNull()
-      .references(() => trabajo.idTrabajo),
+      .references(() => trabajo.idTrabajo, {
+        onDelete: 'cascade'
+      }),
     idChecklist: integer('idChecklist')
       .notNull()
       .references(() => checklist.idChecklist, {

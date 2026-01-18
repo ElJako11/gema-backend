@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { login, AuthError, register } from '../../services/auth/auth.service';
+import { login, AuthError, register, verifyIdentity } from '../../services/auth/auth.service';
 import { clearCookie, setCookie } from '../../utils/cookieHandler';
+import { AuthRequest } from '../../types/types';
 
 export const loginHandler = async (
   req: Request,
@@ -71,3 +72,18 @@ export const logoutHandler = (req: Request, res: Response) => {
   res.status(200).json({ message: 'Logout exitoso' });
   return;
 };
+
+export const verifyIdentityHandler = async (req: AuthRequest, res: Response) => {
+  const userData = req.user;
+
+  const userID = userData?.userId;
+
+  try {
+    const userInfo = await verifyIdentity(userID!);
+
+    return userInfo;
+  } catch(error) {
+    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
+    res.status(500).json(errorMessage);
+  }
+}

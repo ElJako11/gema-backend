@@ -117,3 +117,13 @@ export const register = async (data: any) => {
     throw new Error('Error al registrar usuario');
   }
 };
+
+export const verifyIdentity = async (userID: number) => {
+  const result = await db.select().from(usuarios).where(eq(usuarios.Id, userID)).limit(1);
+
+  if(!result) {
+    throw new Error('Este usuario no esta registrado');
+  }
+
+  return result;
+}
