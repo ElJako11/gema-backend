@@ -125,5 +125,5 @@ export const verifyIdentity = async (userID: number) => {
     throw new Error('Este usuario no esta registrado');
   }
 
-  return result;
+  return result[0];
 }
