@@ -81,9 +81,11 @@ export const verifyIdentityHandler = async (req: AuthRequest, res: Response) => 
   try {
     const userInfo = await verifyIdentity(userID!);
 
-    return userInfo;
+    res.status(200).json('Operación exitosa');
+    return;
   } catch(error) {
     const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
     res.status(500).json(errorMessage);
+    return;
   }
 }

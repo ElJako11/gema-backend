@@ -3,6 +3,7 @@ import {
   loginHandler,
   logoutHandler,
   registerHandler,
+  verifyIdentityHandler,
 } from '../controllers/auth/auth.controller';
 import { validateBody } from '../middleware/validate.middleware';
 import { loginSchema } from '../validations/loginSchema';
@@ -95,6 +96,8 @@ router.post('/login', validateBody(loginSchema), loginHandler);
 
 router.post('/register', registerHandler);
 
-router.post('/logout', logoutHandler);
+router.post('/logout', logoutHandler);  
+
+router.get('/me', verifyIdentityHandler)
 
 export default router;
