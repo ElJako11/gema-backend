@@ -12,7 +12,6 @@ import {
 
 import { ResumenMantenimiento } from '../../types/mantenimiento';
 
-
 export const getResumenMantenimientoHandler = async (
   req: Request,
   res: Response
@@ -72,14 +71,6 @@ export const getChecklistByMantenimientoHandler = async (
 
   try {
     const result = await getChecklistByMantenimiento(id);
-
-    if (!result) {
-      res.status(404).json({
-        error: 'No se encontro checklist o mantenimiento para el ID dado',
-      });
-      return;
-    }
-
     res.status(200).json(result);
     return;
   } catch (error) {

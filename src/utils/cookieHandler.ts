@@ -9,15 +9,12 @@ const getCookieOptions = (origin: string | undefined) => {
   const secure =
     process.env.NODE_ENV === 'production' || sameSite === 'none' || partitioned;
 
-  const domain = isLocalhost ? 'localhost' : undefined;
-
   return {
     httpOnly: true,
     secure,
     sameSite,
     partitioned,
     path: '/',
-    ...(domain ? { domain } : {}),
   } as const;
 };
 
@@ -56,11 +53,5 @@ export const clearCookie = (
     maxAge: 0,
   };
 
-  res.cookie(cookieName, '', clearOptions);
-
-  if (options.secure === false) {
-    res.cookie(cookieName, '', { ...clearOptions, domain: 'localhost' });
-  }
-
-  res.cookie(cookieName, '', { ...clearOptions, path: undefined });
+  res.clearCookie(cookieName, clearOptions);
 };
