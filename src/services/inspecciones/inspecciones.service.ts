@@ -217,14 +217,9 @@ export const updateInspeccion = async (
 ) => {
   const database = tx ?? db;
 
-  // 1. Get current data for recalculation
   const currentInsp = await database
     .select({
       frecuencia: inspeccion.frecuencia,
-      // We might need to fetch the current fechaCreacion from Trabajo if we wanted to compare,
-      // but the caller (Facade) is responsible for passing the NEW fechaCreacion if it changed.
-      // We can just trust fechaCreacionRef implies a change or check if it's provided.
-      // However, to be robust, let's just use the provided ref.
     })
     .from(inspeccion)
     .where(eq(inspeccion.id, id))
@@ -239,7 +234,6 @@ export const updateInspeccion = async (
   let newFechaProximaGeneracion: string | null = null;
   const { fechaCreacionRef, ...dataToUpdate } = inspeccionData;
 
-  // Recalculate if fechaCreacionRef is provided (meaning it changed) and we have a frequency
   if (fechaCreacionRef && frecuencia) {
     const nextDate = calculateNextGenerationDate(fechaCreacionRef, frecuencia);
     if (nextDate) {
