@@ -36,7 +36,7 @@ const getResumenMantenimientoQuery = () => {
       ubicacion: ubicacionTecnica.descripcion,
       fechaLimite: mantenimiento.fechaLimite,
       titulo: trabajo.nombre,
-      fechaProximaGeneracion: mantenimiento.fechaProximaGeneracion
+      fechaProximaGeneracion: mantenimiento.fechaProximaGeneracion,
     })
     .from(mantenimiento)
     .innerJoin(trabajo, eq(mantenimiento.idTrabajo, trabajo.idTrabajo))
@@ -98,7 +98,6 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
 
   const info = checklistInfo[0];
 
-  // Ahora obtenemos los items con su estado usando el idTrabajo obtenido
   const items = await db
     .select({
       id: itemChecklist.idItemCheck,
@@ -121,7 +120,7 @@ export const getChecklistByMantenimiento = async (idMantenimiento: number) => {
     idTrabajo: info.idTrabajo,
     titulo: info.nombreMantenimiento,
     ubicacion: info.ubicacion,
-    tareas: items as any[], // Cast necesario si el enum no machea perfecto con el tipo string de typescript en retorno directo
+    tareas: items as any[],
   };
 };
 

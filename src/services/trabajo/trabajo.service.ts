@@ -214,7 +214,7 @@ export const getResumenMantenimientosMes = async () => {
 };
 
 export const getMantenimientosActivosPorArea = async () => {
-  const ESTADOS_ACTIVOS = ['Reprogramado', 'En Ejecucion'];
+  const ESTADOS_ACTIVOS = ['Reprogramado', 'En ejecución'];
   const TIPO_MANTENIMIENTO = 'Mantenimiento';
 
   try {
