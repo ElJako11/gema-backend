@@ -196,33 +196,65 @@ export const updateTrabajoFacade = async (
   ids: { idMantenimiento?: number; idInspeccion?: number },
   data: Partial<Trabajo>
 ) => {
+  const { idMantenimiento, idInspeccion } = ids;
+
+  let existingData: {
+    idTrabajo: number;
+    fechaReferencia?: string;
+  } | null = null;
+
+  if (idMantenimiento && idMantenimiento > 0) {
+    const mantInfo = await db
+      .select({
+        idTrabajo: mantenimiento.idTrabajo,
+      })
+      .from(mantenimiento)
+      .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
+
+    if (mantInfo.length === 0) {
+      throw new Error('Mantenimiento no encontrado');
+    }
+    const info = mantInfo[0];
+    existingData = {
+      idTrabajo: info.idTrabajo,
+    };
+  } else if (idInspeccion && idInspeccion > 0) {
+    const inspInfo = await db
+      .select({
+        idTrabajo: inspeccion.idT,
+      })
+      .from(inspeccion)
+      .where(eq(inspeccion.id, idInspeccion));
+
+    if (inspInfo.length === 0) {
+      throw new Error('Inspeccion no encontrada');
+    }
+    const info = inspInfo[0];
+    existingData = {
+      idTrabajo: info.idTrabajo,
+    };
+  } else {
+    throw new Error(
+      'Debe proporcionar un ID válido de Mantenimiento o Inspección'
+    );
+  }
+
   return await db.transaction(async tx => {
-    const { idMantenimiento, idInspeccion } = ids;
+    if (!existingData) return;
+
+    const { idTrabajo } = existingData;
+
+    const trabajoUpdateData = cleanObject({
+      nombre: data.nombre,
+      fecha: data.fechaCreacion
+        ? convertUtcToStr(data.fechaCreacion)
+        : undefined,
+    });
+    if (Object.keys(trabajoUpdateData).length > 0) {
+      await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
+    }
 
     if (idMantenimiento && idMantenimiento > 0) {
-      // 1. Get idTrabajo from Mantenimiento
-      const mantInfo = await tx
-        .select({ idTrabajo: mantenimiento.idTrabajo })
-        .from(mantenimiento)
-        .where(eq(mantenimiento.idMantenimiento, idMantenimiento));
-
-      if (mantInfo.length === 0) {
-        throw new Error('Mantenimiento no encontrado');
-      }
-      const idTrabajo = mantInfo[0].idTrabajo;
-
-      // 2. Update Trabajo (Only Name)
-      const trabajoUpdateData = cleanObject({
-        nombre: data.nombre,
-        fecha: data.fechaCreacion
-          ? convertUtcToStr(data.fechaCreacion)
-          : undefined,
-      });
-      if (Object.keys(trabajoUpdateData).length > 0) {
-        await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
-      }
-
-      // 3. Update Mantenimiento
       const mantUpdateData = cleanObject({
         tipo: data.tipo,
         fechaLimite: data.fechaLimite,
@@ -236,42 +268,20 @@ export const updateTrabajoFacade = async (
         idMantenimiento,
         tx
       );
-
-      return { success: true, idTrabajo };
     } else if (idInspeccion && idInspeccion > 0) {
-      const inspInfo = await tx
-        .select({ idTrabajo: inspeccion.idT })
-        .from(inspeccion)
-        .where(eq(inspeccion.id, idInspeccion));
-
-      if (inspInfo.length === 0) {
-        throw new Error('Inspeccion no encontrada');
-      }
-      const idTrabajo = inspInfo[0].idTrabajo;
-
-      const trabajoUpdateData = cleanObject({
-        nombre: data.nombre,
-        fecha: data.fechaCreacion
-          ? convertUtcToStr(data.fechaCreacion)
-          : undefined,
-      });
-      if (Object.keys(trabajoUpdateData).length > 0) {
-        await updateTrabajo(idTrabajo, trabajoUpdateData, tx);
-      }
-
-      // 3. Update Inspeccion
       const inspUpdateData = cleanObject({
         frecuencia: data.frecuencia,
         observacion: data.observacion,
       });
 
-      await updateInspeccion(inspUpdateData as any, idInspeccion, tx);
+      const updatePayload = {
+        ...inspUpdateData,
+        fechaCreacionRef: data.fechaCreacion,
+      };
 
-      return { success: true, idTrabajo };
-    } else {
-      throw new Error(
-        'Debe proporcionar un ID válido de Mantenimiento o Inspección'
-      );
+      await updateInspeccion(updatePayload as any, idInspeccion, tx);
     }
+
+    return { success: true, idTrabajo };
   });
 };

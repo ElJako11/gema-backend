@@ -27,8 +27,8 @@ import {
   getStartofMonth,
   getStartOfWeek,
   convertUtcToStr,
+  calculateNextGenerationDate,
 } from '../../utils/dateHandler';
-import { id } from 'zod/v4/locales';
 
 const getResumenQueryBase = () => {
   const baseQuery = db
@@ -211,13 +211,47 @@ export const createInspeccion = async (
 };
 
 export const updateInspeccion = async (
-  inspeccionData: putInspeccion,
+  inspeccionData: putInspeccion & { fechaCreacionRef?: string | Date },
   id: number,
   tx?: Tx
 ) => {
-  const valuesToUpdate = cleanObject(inspeccionData);
-
   const database = tx ?? db;
+
+  // 1. Get current data for recalculation
+  const currentInsp = await database
+    .select({
+      frecuencia: inspeccion.frecuencia,
+      // We might need to fetch the current fechaCreacion from Trabajo if we wanted to compare,
+      // but the caller (Facade) is responsible for passing the NEW fechaCreacion if it changed.
+      // We can just trust fechaCreacionRef implies a change or check if it's provided.
+      // However, to be robust, let's just use the provided ref.
+    })
+    .from(inspeccion)
+    .where(eq(inspeccion.id, id))
+    .limit(1);
+
+  if (currentInsp.length === 0) {
+    throw new Error('Inspeccion no encontrada');
+  }
+
+  const { frecuencia } = currentInsp[0];
+
+  let newFechaProximaGeneracion: string | null = null;
+  const { fechaCreacionRef, ...dataToUpdate } = inspeccionData;
+
+  // Recalculate if fechaCreacionRef is provided (meaning it changed) and we have a frequency
+  if (fechaCreacionRef && frecuencia) {
+    const nextDate = calculateNextGenerationDate(fechaCreacionRef, frecuencia);
+    if (nextDate) {
+      newFechaProximaGeneracion = convertUtcToStr(nextDate);
+    }
+  }
+
+  const valuesToUpdate = cleanObject(dataToUpdate);
+
+  if (newFechaProximaGeneracion) {
+    valuesToUpdate.fechaProximaGeneracion = newFechaProximaGeneracion;
+  }
 
   const result = await database
     .update(inspeccion)

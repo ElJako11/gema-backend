@@ -19,6 +19,7 @@ import {
   getStartofMonth,
   getStartOfWeek,
   convertUtcToStr,
+  calculateNextGenerationDate,
 } from '../../utils/dateHandler';
 import { cleanObject } from '../../utils/cleanUpdateData';
 
@@ -215,6 +216,7 @@ export const updateMantenimientoPreventivo = async (
     .select({
       fechaLimite: mantenimiento.fechaLimite,
       idTrabajo: mantenimiento.idTrabajo,
+      frecuencia: mantenimiento.frecuencia,
     })
     .from(mantenimiento)
     .where(eq(mantenimiento.idMantenimiento, idMantenimiento))
@@ -224,8 +226,11 @@ export const updateMantenimientoPreventivo = async (
     throw new Error('Mantenimiento no encontrado');
   }
 
-  const { idTrabajo, fechaLimite: currentFechaLimite } =
-    existingMantenimiento[0];
+  const {
+    idTrabajo,
+    fechaLimite: currentFechaLimite,
+    frecuencia,
+  } = existingMantenimiento[0];
 
   // 2. Determine Status Update Logic
   let newStatus: string | null = null;
@@ -233,11 +238,22 @@ export const updateMantenimientoPreventivo = async (
     ? convertUtcToStr(mantenimientodata.fechaLimite)
     : null;
 
+  let newFechaProximaGeneracion: string | null = null;
+
   if (newFechaLimite && newFechaLimite !== currentFechaLimite) {
     newStatus = 'Reprogramado';
+
+    if (frecuencia) {
+      const nextDate = calculateNextGenerationDate(
+        mantenimientodata.fechaLimite!,
+        frecuencia
+      );
+      if (nextDate) {
+        newFechaProximaGeneracion = convertToStr(nextDate);
+      }
+    }
   }
 
-  // 3. Update Status if needed
   if (newStatus) {
     await database
       .update(trabajo)
@@ -248,6 +264,10 @@ export const updateMantenimientoPreventivo = async (
   const valuesToUpdate = cleanObject(mantenimientodata);
 
   valuesToUpdate.fechaLimite = newFechaLimite;
+
+  if (newFechaProximaGeneracion) {
+    valuesToUpdate.fechaProximaGeneracion = newFechaProximaGeneracion;
+  }
 
   console.log(valuesToUpdate.fechaLimite);
 

@@ -8,6 +8,7 @@ export enum estadoEnum {
 export type Inspeccion = {
   idInspeccion: number;
   fechaCreacion: string;
+  fechaProximaGeneracion?: string | Date;
   ubicacion: string;
   estado: estadoEnum | string;
   supervisor: string | null;
